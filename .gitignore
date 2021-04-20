@@ -1,3 +1,20 @@
+
+# ---------- Exclude manually ---------- #
+
+# ignore vscode project folder
+.vscode/
+
+# ignore virtual env for development
+lucidnet_dev_venv/
+
+# ignore virtual env for production
+lucidnet_venv/
+
+# ignore vscode workspace file
+lucidnet_dev_workspace
+
+# ----------- -------------- ----------- #
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
