@@ -1,2 +1,2 @@
-# LucidLite
-A Lightweight Framework for Transparent and Interpretable Neural Net Models
+# LucidNet
+A Lightweight Framework for Transparent and Interpretable FeedForward Neural Net Model
