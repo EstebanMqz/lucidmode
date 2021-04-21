@@ -184,30 +184,81 @@ def massive_ohlcv(p_class, p_ini_date, p_end_date, p_asset, p_freq, p_verbose):
     file_name = p_asset.replace('/', '_') + '_' + p_freq + '.csv'
 
     # write the data in a csv file
-    df_data.to_csv('files/' + file_name, index_label='timestamp')
+    df_data.to_csv('files/prices/' + file_name, index_label='timestamp')
 
     return df_data
 
 
-# ------------------------------------------------------------------------------------ masive OHLCV data -- #
-# --------------------------------------------------------------------------------------------------------- #
-
 # --------------------------------------------------------------------------- Download Masive OHLCV data -- #
 
-# s1 = os.environ['K1']
-# s2 = os.environ['K2']
-# p_class = ini_binance(p_s1=s1, p_s2=s2)
-# p_ini_date = '2018-01-01 00:00:00'
-# p_end_date = '2021-03-22 23:59:00'
-# p_asset = 'ETH/USDT'
-# p_freq = '1m'
-# p_verbose = True
+def dowload_massive_ohlc():
+    """
+    Download massive OHLCV data from exchange initialized with ccxt
 
-# -- RUN ONLY IF YOU WANT TO FETCH A LARGE HISTORICAL DATA
-# df_prices = massive_ohlcv(p_class, p_ini_date, p_end_date, p_asset, p_freq, p_verbose)
+    Parameters
+    ----------
+    
+    p_dataset:
+    
+    Returns
+    -------
 
-# ------------------------------------------------------------------------------- Read Masive OHLCV data -- #
+    References
+    ----------
 
-# -- RUN IF YOU WANT TO READ SAVED CSV FILE
-df_prices = pd.read_csv('files/prices/ETH_USDT_8h.csv')
+    Warnings
+    ********
+        This function could potentially run from hours, it depends on selected dates and exchange restrictions
+        on the quantity of historical days to fetch data from.
 
+    """
+
+    # s1 = os.environ['K1']
+    # s2 = os.environ['K2']
+    # p_class = ini_binance(p_s1=s1, p_s2=s2)
+    # p_ini_date = '2018-01-01 00:00:00'
+    # p_end_date = '2021-03-22 23:59:00'
+    # p_asset = 'ETH/USDT'
+    # p_freq = '1m'
+    # p_verbose = True
+
+    # -- RUN ONLY IF YOU WANT TO FETCH A LARGE HISTORICAL DATA
+    # df_prices = massive_ohlcv(p_class, p_ini_date, p_end_date, p_asset, p_freq, p_verbose)
+
+    return 1
+
+# ----------------------------------------------------------------------------- READ PRE-LOADED DATASETS -- #
+# --------------------------------------------------------------------------------------------------------- #
+
+def dataset(p_dataset):
+    """
+    Read different datasets, from publicly known like the MNIST series, to other particularly built
+    for this project, like OHLCV cryptocurrencies prices Time series.
+
+    
+    Parameters
+    ----------
+    
+    p_dataset:
+    
+    Returns
+    -------
+
+    References
+    ----------
+
+    """
+
+    if p_dataset == 'eth_ohlcv_H8':
+    
+        # read file from files folder
+        df_data = pd.read_csv('files/prices/ETH_USDT_8h.csv')
+
+    elif p_dataset == 'btc_ohlcv_H8':
+        # read file from files folder
+        df_data = pd.read_csv('files/prices/BTC_USDT_8h.csv')
+
+    else:
+        print('Error in: p_dataset')
+
+    return df_data
