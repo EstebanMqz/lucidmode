@@ -3,24 +3,30 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 # -- Project: LucidNet                                                                                   -- #
 # -- Description: A Lightweight Framework for Transparent and Interpretable FeedForward Neural Net       -- #
-# -- visualizations.py: python script with visualization functions                                       -- #
+# -- execution.py: python script with execution tools and functions                                      -- #
 # -- Author: IFFranciscoME - if.francisco.me@gmail.com                                                   -- #
 # -- license: GPL-3.0 License                                                                            -- #
 # -- Repository: https://github.com/IFFranciscoME/LucidNet                                               -- #
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
-# ------------------------------------------------------------------------------------- WEIGHTS ON LAYER -- #
+# ----------------------------------------------------------------------------------- PREPROCESSING DATA -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-# - Weight values per layer (Colored bar for each neuron, separation of all layers).
+# -- Preprocessing input data: Scale, Standard, Robust Standard.
 
-# ------------------------------------------------------------------------------ COST FUNCTION EVOLUTION -- #
+# ----------------------------------------------------------------------------- CALLBACK: TerminateOnNaN -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-# - CostFunction (train-val) evolution (two lines plot with two y-axis).
+# -- Callback for termination on NaN (cost functions divergence).
 
-# -------------------------------------------------------------------------------- CONVOLUTION OPERATION -- #
+# ------------------------------------------------------------------------------ CALLBACK: EarlyStopping -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-# - Convolution operation between layers.
+# -- Callback for early stopping on a metric value difference between Train-Validation sets.
+
+# ------------------------------------------------------------------------------------ SAVE/LOAD WEIGHTS -- #
+# --------------------------------------------------------------------------------------------------------- #
+
+# -- Save weights to external object/file.
+# -- Load weights from external object/file.
