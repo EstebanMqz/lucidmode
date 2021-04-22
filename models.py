@@ -102,31 +102,46 @@ class MLP():
     # -------------------------------------------------------------------------------- CLASS CONSTRUCTOR -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def __init__(self, l_hidden, n_hidden, a_hidden, n_output, a_output):
+    def __init__(self, n_hidden, l_hidden, a_hidden, n_output, a_output):
         """
+        Class constructor
+        
+        Parameters
+        ----------
+
+        n_hidden: list (of int)
+            Number of neurons per hidden layer
+
+        l_hidden: int 
+            Number of hidden layers
+
+        a_hidden: list (list of str, with length n_hidden)
+            Activation of hidden layers
+
+        n_output: int
+            Number of neurons in output layer
+
+        a_output: str
+            Activation of output layer (str)
+
         """
         
-        # Number of hidden layers (int)
-        self.l_hidden = l_hidden
-
-        # Number of neurons per hidden layer (list of ints, with length n_hidden)
         self.n_hidden = n_hidden
-
-        # Activation of hidden layers (list of str, with length n_hidden)
-        self.a_hidden = a_hidden
-        
-        # Number of neurons in output layer (int)
+        self.l_hidden = l_hidden
+        self.a_hidden = a_hidden        
         self.n_output = n_output
-
-        # Activation of output layer (str)
         self.a_output = a_output
     
     # -------------------------------------------------------------------------- HIDDEN LAYERS FORMATION -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def hidden_layers(self, n_layers, s_layers, a_layers, i_layers, r_layers, s_output, a_output):
+    def layer_formation(self, n_layers, s_layers, a_layers, i_layers, r_layers, s_output, a_output):
         """
+        Hidden layers formation with a 0 initialization on weights and bias.
         
+        Parameters
+        ----------
+
         n_layers: int
             number of layers
 
@@ -140,35 +155,32 @@ class MLP():
         
             list with each layer criteria for weights initialization, with options: 
 
-                'xavier_normal': Xavier factor & standard-normally distributed random weights [1]
-                'xavier_uniform': Xavier factor & uniformly distributed random weights [1]
                 'common-uniform': Commonly used factor & uniformly distributed random weights [1]
-                'he': Factor [2]
+                'xavier_uniform': Xavier factor & uniformly distributed random weights [1]
+                'xavier_normal': Xavier factor & standard-normally distributed random weights [1]            
+                'he-standard': Factor [2]
         
         r_layers: list (of str, with size of n_layers)
             list with each layer regularization criteria, options are:
 
-                'l1': 
-                'l2': 
-                'elasticnet': 
-                'dropout': 
-
-        References
-        ----------
+                'l1': Lasso regularization |b|
+                'l2': Ridge regularization |b|^2
+                'elasticnet': C(L1 - L2)
+                'dropout': Randomly (uniform) select N neurons in layer and turn its weight to 0
         
-        [1]: (Glorot and Bengio, 2010)
-
-        [2]: (HE)
-
+        s_output: int
+            size of the output layer, or, the number of neurons in the layer
+        
+        a_output: str
+            activation function for output layer
 
         """
 
-        # -- layers container
-
         # Hidden layers
         self.layers = {'hl_' + layer: {'W': {}, 'b':{}, 'a': {}, 'r':{}} for layer in np.arange(n_layers)}
+
         # Output layer
-        self.layers.update({'ol_' + out: {'a': ''} for out in np.arange(s_output)})
+        self.layers.update({'ol': {'a': a_output, 'W': np.zeros((s_output, 1))}})
 
         # iterative layer formation loop
         for layer in np.arange(n_layers):
@@ -185,57 +197,106 @@ class MLP():
             
             # check that the layer formation was performed OK
             assert(self.layers['hl_' + layer]['W'].shape == (s_layers[layer], s_layers[layer-1]))
-            assert(self.layers['hl_' + layer]['b'].shape == (s_layers[layer], s_layers[layer-1]))
+            assert(self.layers['hl_' + layer]['b'].shape == (s_layers[layer], s_layers[layer-1]))   
+ 
+
+    # --------------------------------------------------------------------------- WEIGHTS INITIALIZATION -- #
+    # -------------------------------------------------------------------------------------------------- -- #
+
+    def _init_weights(self, n_features, n_outputs):
+        """
+        Weight initialization
         
-        # multiplication factor (depends on the activation function) according to [1]
-        mf = 6
-        # number of inputs (and size of the input layer)
-        nx = 4
-        # number of outputs (and size of the output layer)
-        ny = 1
-        # number of neurons of a layer
-        nn = 4
-        # number of hidden layers
-        nh = 2
+        Parameters
+        ----------
 
-        # iterative layer formation loop
-        for layer in np.arange(n_layers):
+        n_features: int
+            number of features (inputs) in the model
+        
+        n_outputs: int
+            number of outputs in the model
 
-            # according to (Glorot and Bengio, 2010)
-            if type == 'xavier-uniform':
+        References
+        ----------
+        
+        [1] X. Glorot and Y. Bengio.  Understanding the difficulty oftraining deep feedforward neural   
+            networks. International Conference on Artificial Intelligence and Statistics, 2010.
+        
+        [2] He et al. "Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet 
+            Classification," 2015 IEEE International Conference on Computer Vision (ICCV), 2015, pp. 1026-1034, doi: 10.1109/ICCV.2015.123.
+
+        """
+
+        # number of hidden layers, (layers - 1), since the last is always the output
+        nh = len(self.layers.keys()) - 1
+
+        # hidden layers weights
+        for layer in np.arange(nh):
+
+            # -------------------------------------------------- Number of Neurons in the PREVIOUS layer -- # 
+            
+            # if is the first layer
+            if layer == 0:
+                # number of features or model inputs
+                nx = n_features
+            
+            # whether is a hidde or the output layer, is the same.
+            else:
+                # number of neurons of previous layer
+                nx = self.layers['hl_' + layer-1]['W'].shape[0]
+
+            # ------------------------------------------------------ Number of neurons in the NEXT layer -- #
+            
+            # if is the last hidden layer
+            if layer == nh:
+                # number of neurons for output layer, or model outputs
+                ny = n_outputs
+            
+            else:
+                # number of neurons of following layer
+                ny = self.layers['hl_' + layer+1]['W'].shape[0]
+            
+            # --------------------------------------------------- Number of neurons in the CURRENT layer -- #
+
+            # number of neurons of each layer
+            nn = self.layers['hl_' + layer]['W'].shape[0]
+            
+            # ------------------------------------------ Factor according to activation of CURRENT layer -- #
+
+            # multiplication factor (depends on the activation function) according to [1]
+            mf = 4 if self.layers['hl_' + layer]['a'] == 'tanh' else 1
+
+            # As mentioned in [1]
+            if type == 'common-uniform':
+                # Boundaries according to uniform distribution common heuristic
+                r = mf * np.sqrt(1/nn)
+                # Hidden layer weights and bias
+                self.layers['hl_' + layer]['W'] = np.random.uniform(-r, r, size=(ny, nx))
+                # Bias weigths in zero
+                self.layers['hl_' + layer]['b'] = np.zeros((nn, 1))
+
+            # According to eq:16 in [1]
+            elif type == 'xavier-uniform':
                 # Boundaries according to uniform distribution common heuristic
                 r = mf * np.sqrt(6/(nx + ny))
                 # Hidden layer weights and bias
-                self.layers['hl_' + layer]['W'] = np.random.uniform(-r, r, size=(nh, nx)) 
+                self.layers['hl_' + layer]['W'] = np.random.uniform(-r, r, size=(ny, nx)) 
                 # Bias weigths in zero
-                self.layers['hl_' + layer]['b'] = np.zeros((ny, 1))
+                self.layers['hl_' + layer]['b'] = np.zeros((nn, 1))
 
-            # to reproduce example results of this notebook
+            # A variation of the previous, according to [1]
             elif type == 'xavier-standard':
-                # Hidden layer weights and bias
-                self.layers['hl_' + layer]['W'] = np.random.randn(nn, nx) * np.sqrt(2/(nx + nh))
+                # Hidden layer weights and biasW
+                self.layers['hl_' + layer]['W'] = np.random.randn(ny, nx) * (0 + np.sqrt(2/(nx + ny)))
                 # Bias weigths in zero
-                self.layers['hl_' + layer]['b'] = np.zeros((ny, 1))
-
-            # according to (Glorot and Bengio, 2009)
-            elif type == 'common-uniform':
-                # Boundaries according to uniform distribution common heuristic
-                r = mf * np.sqrt(1/nx)
+                self.layers['hl_' + layer]['b'] = np.zeros((nn, 1))
+                       
+           # A variation of the previous, according to [1]
+            elif type == 'he-standard':
                 # Hidden layer weights and bias
-                self.layers['hl_' + layer]['W'] = np.random.uniform(-r, r, size=(nn, nx))
+                self.layers['hl_' + layer]['W'] = np.random.randn(ny, nx) * (0 + np.sqrt(2/nx))
                 # Bias weigths in zero
-                self.layers['hl_' + layer]['b'] = np.zeros((ny, 1))
-            
-            elif type == 'zeros':
-                # layer neurons composition
-                self.layers['hl_' + layer]['W'] = np.zeros((s_layers[layer], 1))
-                # layer biases
-                self.layers['hl_' + layer]['b'] = np.zeros((s_layers[layer], 1))
-            
-            # according to (Glorot and Bengio, 2009)
-            elif type == 'HE':
-                print('pending')
+                self.layers['hl_' + layer]['b'] = np.zeros((nn, 1))
 
             else: 
                 print('Raise Error')
-       
