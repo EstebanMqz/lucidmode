@@ -8,10 +8,10 @@
 lucidnet_dev_venv/
 
 # ignore virtual env for production
-lucidnet_venv/
+lucidnet_dev_venv/
 
 # ignore vscode workspace file
-lucidnet_dev_workspace
+lucidnet_dev.code-workspace
 
 # ----------- -------------- ----------- #
 
