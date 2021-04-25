@@ -19,7 +19,7 @@ import numpy as np
 def cost(A, Y, type):
 
     # -- Mean Squared Error
-    if type == 'mse':
+    if type == 'sse':
         
         # loss as the difference on prediction
         loss = A - Y
@@ -54,34 +54,33 @@ def cost(A, Y, type):
 
     # function final result
     return cost
+ 
+# ---------------------------------------------------------------- ACTIVATION FUNCTIONS -- #
 
-# --------------------------------------------------------------------------------- ACTIVATION FUNCTIONS -- #
-
-def __sigma(Z, activation):
+def sigma(Z, activation):
 
     # -- Sigmoidal (sigmoid)
     if activation == 'sigmoid':
-        A = 1 / (1 + np.exp(-Z))
+        return 1 / (1 + np.exp(-Z))
     
     # -- Hyperbolic Tangent (tanh)
     elif activation == 'tanh':
-        A = np.tanh(Z)
+        return np.tanh(Z)
 
     # -- Rectified Linear Unit (ReLU)
     elif activation == 'relu':
         A = np.maximum(0, Z)
         assert(A.shape == Z.shape)    
+        return A
     
     # -- Softmax
     elif activation == 'softmax':
         expZ = np.exp(Z - np.max(Z)).T 
-        A = (expZ / expZ.sum(axis=0, keepdims=True)).T
-    
-    return A, Z
+        return (expZ / expZ.sum(axis=0, keepdims=True)).T 
 
-# ------------------------------------------------------------------- DERIVATIVE OF ACTIVATION FUNCTIONS -- #
+# -------------------------------------------------- DERIVATIVE OF ACTIVATION FUNCTIONS -- #
 
-def __d_sigma(dA, Z, activation):
+def d_sigma(dA, Z, activation):
     
     # -- Sigmoid
     if activation == 'sigmoid':
@@ -91,7 +90,7 @@ def __d_sigma(dA, Z, activation):
     
     # -- Hyperbolic Tangent
     elif activation == 'tanh':
-        a = __sigma(Z, activation)
+        a = sigma(Z, activation)
         dZ = 1 - a**2
         assert (dZ.shape == Z.shape)
     
@@ -103,7 +102,7 @@ def __d_sigma(dA, Z, activation):
     
     # -- Softmax
     elif activation == 'softmax':
-        s = __sigma(Z, activation)
+        s = sigma(Z, activation)
         s = s.reshape(-1, 1)
         dZ = np.diagflat(s) - np.dot(s, s.T)
         assert (dZ.shape == Z.shape)

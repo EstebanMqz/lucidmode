@@ -11,7 +11,7 @@
 """
 
 # import other scripts from the project
-import data as dt
+import functions as fn
 
 # import libraries for this script
 import numpy as np
@@ -21,6 +21,8 @@ import numpy as np
 # ------------------------------------------------------------------------------------------------------ -- #
 
 class Sequential:
+
+
     """
     Artificial Neural Network (Feedforward multilayer pereceptron with backpropagation)
 
@@ -182,7 +184,7 @@ class Sequential:
                        for layer in range(0, len(self.hidden_l))}
 
         # Output layer
-        self.layers.update({'ol': {'a': self.output_a, 'W': np.zeros((self.output_n, 1))}})
+        self.layers.update({'ol': {'a': self.output_a, 'W': {}, 'b': {} }})   
 
         # iterative layer formation loop
         for layer in range(0, len(self.hidden_l)):
@@ -194,7 +196,9 @@ class Sequential:
             self.layers['hl_' + str(layer)]['b'] = None
 
             # layer activation
-            self.layers['hl_' + str(layer)]['a'] = None
+            # if only 1 activation function was provided, use it for all hidden layers
+            act = self.hidden_a[0] if len(self.hidden_a) == 1 else self.hidden_a[layer]
+            self.layers['hl_' + str(layer)]['a'] = act
 
             # layer regularization
             self.layers['hl_' + str(layer)]['r'] = None
@@ -212,7 +216,7 @@ class Sequential:
         Parameters
         ----------
 
-        n_features: int
+        input_shape: int
             number of features (inputs) in the model
                 
         init_layers: list (of str, with size of n_layers)
@@ -236,7 +240,7 @@ class Sequential:
         """
 
         # reproducibility
-        np.random.seed(3)
+        np.random.seed(2)
 
         # base topology formation
         self._formation()
@@ -275,72 +279,134 @@ class Sequential:
 
             # As mentioned in [1]
             if type == 'common-uniform':
+                
                 # Boundaries according to uniform distribution common heuristic
                 r = mf * np.sqrt(1/nn)
+                
                 # Hidden layer weights and bias
                 self.layers['hl_' + str(layer)]['W'] = np.random.uniform(-r, r, size=(n_next, n_prev))
+                
+                # Output layer
+                self.layers['ol']['W'] = np.random.uniform(-r, r, size=(self.output_n, self.hidden_l[-1]))
+                
                 # Bias weigths in zero
                 self.layers['hl_' + str(layer)]['b'] = np.zeros((nn, 1))
+                self.layers['ol']['b'] = np.zeros((self.output_n, 1))
 
             # According to eq:16 in [1]
             elif type == 'xavier-uniform':
+                
                 # Boundaries according to uniform distribution common heuristic
                 r = mf * np.sqrt(6/(n_prev + n_next))
+                
                 # Hidden layer weights and bias
                 self.layers['hl_' + str(layer)]['W'] = np.random.uniform(-r, r, size=(n_next, n_prev))
+
+                # Output layer
+                self.layers['ol']['W'] = np.random.uniform(-r, r, size=(self.output_n, self.hidden_l[-1]))
+                
                 # Bias weigths in zero
                 self.layers['hl_' + str(layer)]['b'] = np.zeros((nn, 1))
+                self.layers['ol']['b'] = np.zeros((self.output_n, 1))
 
             # A variation of the previous, according to [1]
             elif type == 'xavier-standard':
-                # Multiplying factor
-                r = mf * np.sqrt(2/(n_prev + n_next))
+                
+                # Multiplying factor (paper version)
+                # r = mf * np.sqrt(2/(n_prev + n_next))
+                # Multiplying factor (coursera Deeplearning version)
+                r = 0.01
+                
                 # Hidden layer weights and biasW
                 self.layers['hl_' + str(layer)]['W'] = np.random.randn(n_next, n_prev) * r
+                
+                # Output layer
+                self.layers['ol']['W'] = np.random.randn(self.output_n, self.hidden_l[-1]) * r
+                
                 # Bias weigths in zero
                 self.layers['hl_' + str(layer)]['b'] = np.zeros((nn, 1))
+                self.layers['ol']['b'] = np.zeros((self.output_n, 1))
 
-           # A variation of the previous, according to [1]
+           # According to [2]
             elif type == 'he-standard':
+                
                 # Multiplying factor
                 r = mf * np.sqrt(2/(n_prev + n_next))
+                
                 # Hidden layer weights and bias
                 self.layers['hl_' + str(layer)]['W'] = np.random.randn(n_next, n_prev) * r
+                
+                # Output layer
+                self.layers['ol']['W'] = np.random.randn(self.output_n, self.hidden_l[-1]) * r
+
                 # Bias weigths in zero
                 self.layers['hl_' + str(layer)]['b'] = np.zeros((nn, 1))
+                self.layers['ol']['b'] = np.zeros((self.output_n, 1))
 
             else: 
                 print('Raise Error')
 
-
     # ------------------------------------------------------------------ FIT MODEL PARAMETERS (LEARNING) -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def fit(self):
+    def fit(self, data):
         """
         """
+
+        from functions import sigma, d_sigma
+
+        X_train = data['x']
+        y_train = data['y']
+
+        # X_train = data['X_train']
+        # X_val = data['X_val']
+        # y_train = data['y_train']
+        # y_val = data['y_val']
 
         # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
         
-        epoch = 1
+        # loop for epoch iteration
+        # epoch = 1
 
         # -- FORWARD
 
-        def base_forward(A, W, b):
+        def forward_pass(self, X): 
+            A = X.T
+            for l in range(0, len(self.hidden_l) + 1):
+                A_prev = A
+                A = forward_activation(self, A_prev, l)            
+            return A
+        
+        def forward_activation(self, A_prev, l):
+            Z = forward(self, A_prev, l)
+            layer = list(self.layers.keys())[l]
+            A = sigma(Z, self.layers[layer]['a'])
+            return A
+        
+        def forward(self, A, l):
+            layer = list(self.layers.keys())[l]
+            W = self.layers[layer]['W']
+            b = self.layers[layer]['b']
+            return np.dot(W, A) + b
 
-            Z = np.dot(W, A) + b
-            A2 = sigma(Z2, a_f)
-            
-            assert(Z.shape == (W.shape[0], A.shape[1]))
-            cache = (A, W, b)
-            
-            return Z, cache
+        fwd = forward_pass(self, X_train)
+        
+        cost_value = fn.cost(fwd.T, data['y'], 'sse')
 
+        
         # -- BACKWARD
+
+
+        return cost_value
+
+        
+
+
+
         # -- COST EVALUATION
         # -- GRADIENTS UPDATE
 
-        return 1
+        
 
     # ------------------------------------------------------------------------------- PREDICT WITH MODEL -- #
     # -------------------------------------------------------------------------------------------------- -- #
