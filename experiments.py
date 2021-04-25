@@ -26,28 +26,17 @@ from rich import inspect
 # --------------------------------------------------------------------------------------------------------- #
 
 # Neural Net Topology Definition
-lucid = Sequential(l_hidden=2, n_hidden=[4, 3], a_hidden=['sigmoid', 'relu'],
-                   n_output=1, a_output='sigmoid')
+lucid = Sequential(hidden_l=[4, 3], hidden_a=['sigmoid', 'relu'], output_n=1, output_a='sigmoid')
 
 # load example data
 data = datasets('xor')
 # X train
-X = data['x']
+X_train = data['x']
 # y train
 y = data['y']
 
 # initialize weights
-lucid.init_weights(n_features=X.shape[1], n_outputs=1, i_layers=['xavier-standard', 'xavier-uniform'])
+lucid.init_weights(input_shape=X_train.shape[1], init_layers=['xavier-standard', 'xavier-uniform'])
 
 # Inspect object contents
 inspect(lucid)
-
-# fit
-
-# describe
-
-# predict
-
-# save model
-
-# load model

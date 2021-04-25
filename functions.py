@@ -16,9 +16,7 @@ import numpy as np
 # --------------------------------------------------------------------------------------- COST FUNCTIONS -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def _cost(A, Y, type):
-    """
-    """
+def cost(A, Y, type):
 
     # -- Mean Squared Error
     if type == 'mse':
@@ -58,12 +56,8 @@ def _cost(A, Y, type):
     return cost
 
 # --------------------------------------------------------------------------------- ACTIVATION FUNCTIONS -- #
-# --------------------------------------------------------------------------------------------------------- #
 
 def __sigma(Z, activation):
-    """
-
-    """
 
     # -- Sigmoidal (sigmoid)
     if activation == 'sigmoid':
@@ -86,16 +80,13 @@ def __sigma(Z, activation):
     return A, Z
 
 # ------------------------------------------------------------------- DERIVATIVE OF ACTIVATION FUNCTIONS -- #
-# --------------------------------------------------------------------------------------------------------- #
 
-def __dsigma(dA, Z, activation):
-    """
-    """
-
+def __d_sigma(dA, Z, activation):
+    
     # -- Sigmoid
     if activation == 'sigmoid':
-        s = 1/(1+np.exp(-Z))
-        dZ = dA * s * (1-s)
+        s = 1/(1 + np.exp(-Z))
+        dZ = dA * s * (1 - s)
         assert (dZ.shape == Z.shape)
     
     # -- Hyperbolic Tangent
@@ -113,56 +104,8 @@ def __dsigma(dA, Z, activation):
     # -- Softmax
     elif activation == 'softmax':
         s = __sigma(Z, activation)
-        s = s.reshape(-1,1)
+        s = s.reshape(-1, 1)
         dZ = np.diagflat(s) - np.dot(s, s.T)
         assert (dZ.shape == Z.shape)
     
     return dZ
-
-
-# --------------------------------------------------------------------------- FORWARD/BACKWARD FUNCTIONS -- #
-# --------------------------------------------------------------------------------------------------------- #
-
-def __s_forward(A, W, b):
-    """
-    """
-
-    Z = np.dot(W, A) + b
-    assert(Z.shape == (W.shape[0], A.shape[1]))
-    cache = (A, W, b)
-    return Z, cache
-
-def __forward(A_prev, W, b, activation):
-
-    Z, linear_cache = __s_forward(A_prev, W, b)
-    A, activation_cache = __sigma(Z, activation)
-    assert (A.shape == (W.shape[0], A_prev.shape[1]))
-    cache = (linear_cache, activation_cache)
-    return A, cache 
-
-
-def __s_backward(dZ, cache):
-
-    A_prev, W, b = cache
-    m = A_prev.shape[1]
-   
-    dW = (1/m)*np.dot(dZ,np.transpose(A_prev))
-    db = (1/m)*np.sum(dZ,axis=1,keepdims=True)
-    dA_prev = np.dot(np.transpose(W),dZ)
-    
-    assert (dA_prev.shape == A_prev.shape)
-    assert (dW.shape == W.shape)
-    assert (db.shape == b.shape)
-    
-    return dA_prev, dW, db
-
-
-def __backward(dA, cache):
-
-    linear_cache, activation_cache = cache
-    dZ =__dsigma(dA, activation_cache)
-    dA_prev, dW, db = __s_backward(dZ, linear_cache)
-
-    return dA_prev, dW, db
-
-

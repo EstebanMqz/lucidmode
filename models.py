@@ -28,10 +28,10 @@ class Sequential:
     ------------------------
 
     l_hidden: Number of hidden layers (int)
-    n_hidden: Number of neurons per hidden layer (list of int, with length of l_hidden)
-    a_hidden: Activation of hidden layers (list of str, with length l_hidden)   
-    n_output: Number of neurons in output layer (int)
-    a_output: Activation of output layer (str)
+    hidden_l: Number of neurons per hidden layer (list of int, with length of l_hidden)
+    hidden_a: Activation of hidden layers (list of str, with length l_hidden)   
+    output_n: Number of neurons in output layer (int)
+    output_a: Activation of output layer (str)
    
     Other characteristics
     ---------------------
@@ -111,7 +111,7 @@ class Sequential:
     # -------------------------------------------------------------------------------- CLASS CONSTRUCTOR -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def __init__(self, n_hidden, l_hidden, a_hidden, n_output, a_output, cost_f=None, cost_r=None, 
+    def __init__(self, hidden_l, hidden_a, output_n, output_a, cost_f=None, cost_r=None,
                  hidden_r=None):
 
         """
@@ -120,19 +120,16 @@ class Sequential:
         Parameters
         ----------
 
-        l_hidden: int 
-            Number of hidden layers
-
-        n_hidden: list (of int)
+        hidden_l: list (of int)
             Number of neurons per hidden layer
 
-        a_hidden: list (list of str, with length n_hidden)
+        hidden_a: list (list of str, with length hidden_l)
             Activation of hidden layers
 
-        n_output: int
+        output_n: int
             Number of neurons in output layer
 
-        a_output: str
+        output_a: str
             Activation of output layer (str)
         
         r_hidden: list (of str, of size l_hidden)
@@ -151,20 +148,17 @@ class Sequential:
 
         """
         
-        # Number of hidden layers
-        self.l_hidden = l_hidden
-
         # Number of neurons per hidden layer
-        self.n_hidden = n_hidden
+        self.hidden_l = hidden_l
 
         # Activation of hidden layers
-        self.a_hidden = a_hidden
+        self.hidden_a = hidden_a
 
         # Number of neurons in output layer
-        self.n_output = n_output
+        self.output_n = output_n
 
         # Activation of output layer (str)
-        self.a_output = a_output
+        self.output_a = output_a
 
         # Cost function definition
         self.cost_f = cost_f
@@ -175,7 +169,7 @@ class Sequential:
         # Regularization criteria for hidden layer
         self.hidden_r = hidden_r
     
-    # -------------------------------------------------------------------------- HIDDEN LAYERS FORMATION -- #
+    # --------------------------------------------------------------------------------- LAYERS FORMATION -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
     def _formation(self):
@@ -185,13 +179,13 @@ class Sequential:
 
         # Hidden layers
         self.layers = {'hl_' + str(layer): {'W': {}, 'b':{}, 'a': {}, 'r':{}}
-                       for layer in range(0, len(self.n_hidden))}
+                       for layer in range(0, len(self.hidden_l))}
 
         # Output layer
-        self.layers.update({'ol': {'a': self.a_output, 'W': np.zeros((self.n_output, 1))}})
+        self.layers.update({'ol': {'a': self.output_a, 'W': np.zeros((self.output_n, 1))}})
 
         # iterative layer formation loop
-        for layer in range(0, len(self.n_hidden)):
+        for layer in range(0, len(self.hidden_l)):
 
             # layer neurons composition
             self.layers['hl_' + str(layer)]['W'] = None
@@ -211,7 +205,7 @@ class Sequential:
     # --------------------------------------------------------------------------- WEIGHTS INITIALIZATION -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def init_weights(self, n_features, n_outputs, i_layers):
+    def init_weights(self, input_shape, init_layers):
         """
         Weight initialization
         
@@ -220,11 +214,8 @@ class Sequential:
 
         n_features: int
             number of features (inputs) in the model
-        
-        n_outputs: int
-            number of outputs in the model
-        
-        i_layers: list (of str, with size of n_layers)
+                
+        init_layers: list (of str, with size of n_layers)
         
             list with each layer criteria for weights initialization, with options: 
 
@@ -251,36 +242,36 @@ class Sequential:
         self._formation()
 
         # number of hidden layers
-        layers = len(self.n_hidden)
+        layers = len(self.hidden_l)
 
         # hidden layers weights
         for layer in range(0, layers):
 
             # if only one weight initialization criteria is specified, use it for all layers.
-            if len(i_layers) == 1 and len(self.n_hidden):
-                i_layers = [i_layers[0]]*len(self.n_hidden)
+            if len(init_layers) == 1 and len(self.hidden_l):
+                init_layers = [init_layers[0]]*len(self.hidden_l)
 
             # type of initialization for each layer
-            type = i_layers[layer]
+            type = init_layers[layer]
 
             # store the type of initialization used for each layer
             self.layers['hl_' + str(layer)]['i'] = type
 
             # number of Neurons in layer
-            nn = self.n_hidden[layer]
+            nn = self.hidden_l[layer]
 
             # multiplication factor (depends on the activation function) according to [1]
             mf = 4 if self.layers['hl_' + str(layer)]['a'] == 'tanh' else 1
 
             # check input dimensions for first layer
             if layer == 0:
-                n_prev = n_features
-                n_next = self.n_hidden[layer]
+                n_prev = input_shape
+                n_next = self.hidden_l[layer]
             
             # following layers are the same
             else:
-                n_prev = self.n_hidden[layer-1]
-                n_next = self.n_hidden[layer]
+                n_prev = self.hidden_l[layer-1]
+                n_next = self.hidden_l[layer]
 
             # As mentioned in [1]
             if type == 'common-uniform':
@@ -329,13 +320,25 @@ class Sequential:
         """
         """
 
-        # loop 
+        # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
+        
+        epoch = 1
 
-        # forward
-        # backward
-        # cost
-        # grads
-        # update params
+        # -- FORWARD
+
+        def base_forward(A, W, b):
+
+            Z = np.dot(W, A) + b
+            A2 = sigma(Z2, a_f)
+            
+            assert(Z.shape == (W.shape[0], A.shape[1]))
+            cache = (A, W, b)
+            
+            return Z, cache
+
+        # -- BACKWARD
+        # -- COST EVALUATION
+        # -- GRADIENTS UPDATE
 
         return 1
 
