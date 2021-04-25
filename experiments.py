@@ -11,7 +11,10 @@
 """
 
 # -- load class
-from models import ANN
+from models import Sequential
+
+# -- load datasets
+from data import datasets
 
 # -- complementary tools
 from rich import inspect
@@ -23,11 +26,28 @@ from rich import inspect
 # --------------------------------------------------------------------------------------------------------- #
 
 # Neural Net Topology Definition
-lucid = ANN(l_hidden=2, n_hidden=[4, 3], a_hidden=['sigmoid', 'relu'],
-            n_output=1, a_output='sigmoid')
+lucid = Sequential(l_hidden=2, n_hidden=[4, 3], a_hidden=['sigmoid', 'relu'],
+                   n_output=1, a_output='sigmoid')
+
+# load example data
+data = datasets('xor')
+# X train
+X = data['x']
+# y train
+y = data['y']
 
 # initialize weights
-lucid.init_weights(n_features=5, n_outputs=1, i_layers=['xavier-standard', 'xavier-uniform'])
+lucid.init_weights(n_features=X.shape[1], n_outputs=1, i_layers=['xavier-standard', 'xavier-uniform'])
 
 # Inspect object contents
 inspect(lucid)
+
+# fit
+
+# describe
+
+# predict
+
+# save model
+
+# load model

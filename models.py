@@ -16,14 +16,11 @@ import data as dt
 # import libraries for this script
 import numpy as np
 
-# Load data
-ohlc_prices = dt.dataset('eth_ohlcv_H8')
-
 # ------------------------------------------------------------------------------------------------------ -- #
 # ------------------------------------------------------------------- FEEDFORWARD MULTILAYER PERECEPTRON -- #
 # ------------------------------------------------------------------------------------------------------ -- #
 
-class ANN:
+class Sequential:
     """
     Artificial Neural Network (Feedforward multilayer pereceptron with backpropagation)
 
@@ -323,3 +320,30 @@ class ANN:
 
             else: 
                 print('Raise Error')
+
+
+    # ------------------------------------------------------------------ FIT MODEL PARAMETERS (LEARNING) -- #
+    # -------------------------------------------------------------------------------------------------- -- #
+
+    def fit(self):
+        """
+        """
+
+        # loop 
+
+        # forward
+        # backward
+        # cost
+        # grads
+        # update params
+
+        return 1
+
+    # ------------------------------------------------------------------------------- PREDICT WITH MODEL -- #
+    # -------------------------------------------------------------------------------------------------- -- #
+
+    def predict(self):
+        """
+        """
+
+        return 1

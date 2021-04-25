@@ -12,11 +12,12 @@
 
 # -- Load libraries for script
 import pandas as pd
+import numpy as np
 
 # ----------------------------------------------------------------------------- READ PRE-LOADED DATASETS -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def dataset(p_dataset):
+def datasets(p_dataset):
     """
     Read different datasets, from publicly known like the MNIST series, to other particularly built
     for this project, like OHLCV cryptocurrencies prices Time series.
@@ -38,13 +39,22 @@ def dataset(p_dataset):
     if p_dataset == 'eth_ohlcv_H8':
     
         # read file from files folder
-        df_data = pd.read_csv('files/prices/ETH_USDT_8h.csv')
+        return pd.read_csv('files/prices/ETH_USDT_8h.csv')
 
     elif p_dataset == 'btc_ohlcv_H8':
+
         # read file from files folder
-        df_data = pd.read_csv('files/prices/BTC_USDT_8h.csv')
+        return pd.read_csv('files/prices/BTC_USDT_8h.csv')
+    
+    elif p_dataset == 'xor':
+        
+        # generate random data 
+        np.random.seed(1)
+        x = np.random.randn(200, 2)
+        y = np.logical_xor(x[:, 0] > 0, x[:, 1] > 0)
+        y = y.reshape(y.shape[0], 1)
+        
+        return {'y': y, 'x': x}
 
     else:
         print('Error in: p_dataset')
-
-    return df_data
