@@ -37,11 +37,16 @@ X, y = data['x'], data['y']
 # initialize weights
 lucid.init_weights(input_shape=data['x'].shape[1], init_layers=['xavier-standard'])
 
+# Inspect object contents
+inspect(lucid)
+
+# cost evolution
 J = lucid.fit(data, 1000, 0.1)
 
 # Inspect object contents
-#  inspect(lucid)
+inspect(lucid)
 
+# plot cost evolution
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -52,3 +57,5 @@ plt.title('Cost over epochs')
 plt.xlabel('epochs')
 plt.ylabel('cost');
 plt.show()
+
+

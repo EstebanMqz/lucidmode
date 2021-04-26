@@ -323,6 +323,7 @@ class Sequential:
                 
                 # Multiplying factor (paper version)
                 # r = mf * np.sqrt(2/(n_prev + n_next))
+
                 # Multiplying factor (coursera Deeplearning version)
                 r = 0.01
                 
@@ -364,8 +365,8 @@ class Sequential:
 
         from functions import sigma, d_sigma
 
-        X_train = data['x']
-        y_train = data['y'].astype(np.int)
+        X_train = data['x'] # shape = (200, 2)
+        y_train = data['y'].astype(np.int) # shape = (200,1)
        
         # -------------------------------------------------------------------------------------- FORWARD -- #
 
@@ -373,8 +374,8 @@ class Sequential:
             layer = list(self.layers.keys())[l]
             W = self.layers[layer]['W']
             b = self.layers[layer]['b']
-            # return np.dot(W, A) + b
-            return np.matmul(W, A) + b
+
+            return np.matmul(A, W.T) + b.T
 
         def forward_activation(self, A_prev, l):
             layer = list(self.layers.keys())[l]
@@ -385,7 +386,6 @@ class Sequential:
             return A, Z
 
         def forward_propagate(self, X): 
-            Al = X.T
             
             # memory to store all the values for later use in backward process
             memory = {'A_' + str(i): 0 for i in range(1, len(self.hidden_l) + 3)}
@@ -393,16 +393,15 @@ class Sequential:
             memory.update({'d_' + str(i): 0 for i in range(2, len(self.hidden_l) + 3)})
             memory.update({'dW_' + str(i): 0 for i in range(1, len(self.hidden_l) + 2)})
             memory.update({'db_' + str(i): 0 for i in range(1, len(self.hidden_l) + 2)})
-
-            memory['A_' + str(1)] = X.T
+            Al, memory['A_1'] = X, X
 
             for l in range(0, len(self.hidden_l) + 1):
                 A_prev = Al
                 Al, Zl = forward_activation(self, A_prev, l)
                 
                 # save A and Z for every layer (for backward process)
-                memory['Z_' + str(l + 1)] = Zl.T
-                memory['A_' + str(l + 2)] = Al.T
+                memory['Z_' + str(l + 1)] = Zl
+                memory['A_' + str(l + 2)] = Al
 
             return memory
 
@@ -414,35 +413,41 @@ class Sequential:
             # get the post-activation values for the last layer
             AL = memory['A_' + str(len(self.hidden_l) + 2)]
             Y = Y.reshape(AL.shape)
-            m = 200
+            m = memory['A_1'].shape[0]
             
-            # first delta for the output layer
+            # factor to reproduce results of deep learning coursera and xor data
+            wm_i = 100
+            
+            # first delta for output layer
             dAL = (AL - Y)*d_sigma(memory['Z_' + str(len(self.hidden_l) + 1)], self.output_a)
             memory['d_' + str(len(self.hidden_l) + 2)] = dAL
 
             # just loop hidden layers since the above was for the outputlayer
             for l in range(len(self.hidden_l) - 1 , -1, -1):
 
-                layer = list(self.layers.keys())[l + 1]
+                # layer labels
+                layer = list(self.layers.keys())[l]
+                layer_1 = list(self.layers.keys())[l+1]
 
-                # dW previous layer
+                # dW and db previous layer
                 dW = (1/m) * np.dot(memory['d_' + str(l + 3)].T, memory['A_' + str(l + 2)])
-                db = (1/m) * np.sum(memory['d_' + str(l + 3)]).reshape(self.layers[layer]['b'].shape)
-
-                memory['dW_' + str(l + 2)] = dW 
-                memory['db_' + str(l + 2)] = db
+                memory['dW_' + str(l + 2)] = dW * wm_i
+                db = (1/m) * np.sum(memory['d_' + str(l + 3)]).reshape(dW.shape[0], 1)
+                memory['db_' + str(l + 2)] = db * wm_i
                 
-                delta = d_sigma(memory['Z_' + str(l + 2)], self.layers[layer]['a'])
-                d = delta * (memory['d_' + str(l + 3)] * self.layers[layer]['W'])
+                # delta of layer
+                delta = d_sigma(memory['Z_' + str(l + 1)], self.layers[layer]['a'])
+                d = delta * (memory['d_' + str(l + 3)] * self.layers[layer_1]['W'])
                 memory['d_' + str(l + 2)] = d
 
+                # check for dimensions
                 assert (d.shape == memory['A_' + str(l + 2)].shape)
-                assert (dW.shape == self.layers[layer]['W'].shape)
-                assert (db.shape == self.layers[layer]['b'].shape)
-            
+                assert (dW.shape == self.layers[layer_1]['W'].shape)
+                assert (db.shape == self.layers[layer_1]['b'].shape)           
+
             # last delta for the input layer
-            memory['dW_1'] =  (1/m) * np.dot(memory['d_2'].T, memory['A_1'].T)
-            memory['db_1'] =  (1/m) * sum(memory['d_2']).reshape(2, 1)
+            memory['dW_1'] =  (1/m) * np.dot(memory['d_2'].T, memory['A_1']) * wm_i
+            memory['db_1'] =  (1/m) * sum(memory['d_2']).reshape(self.layers['hl_0']['W'].shape[0], 1) * wm_i
 
             return memory           
        
@@ -477,13 +482,13 @@ class Sequential:
             for l in range(0, len(self.hidden_l) + 1):
 
                 layer  = list(self.layers.keys())[l]               
-                dW = grads['dW_' + str(l + 1)] * (1/0.01)
-                db = grads['db_' + str(l + 1)] * (1/0.01)
+                dW = grads['dW_' + str(l + 1)]
+                db = grads['db_' + str(l + 1)]
                 W = self.layers[layer]['W']
                 b = self.layers[layer]['b']
 
-                self.layers[layer]['W'] = W - (lr * sum(dW))
-                self.layers[layer]['b'] = b - (lr * sum(db))
+                self.layers[layer]['W'] = W - (lr * dW)
+                self.layers[layer]['b'] = b - (lr * db)
 
         print('Final cost:', J[epochs-1])
         
