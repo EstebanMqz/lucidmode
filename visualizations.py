@@ -20,6 +20,17 @@
 
 # - CostFunction (train-val) evolution (two lines plot with two y-axis).
 
+# plot cost evolution
+# import numpy as np
+# import matplotlib.pyplot as plt
+# plt.style.use('seaborn-whitegrid')
+# plt.figure(figsize=(16, 4))
+# plt.plot(list(J.keys()), list(J.values()), color='r', linewidth=3)
+# plt.title('Cost over epochs')
+# plt.xlabel('epochs')
+# plt.ylabel('cost');
+# plt.show()
+
 # -------------------------------------------------------------------------------- CONVOLUTION OPERATION -- #
 # --------------------------------------------------------------------------------------------------------- #
 

@@ -18,42 +18,28 @@ from data import datasets
 
 # -- complementary tools
 from rich import inspect
-
-from functions import cost
 from metrics import accuracy
 
 # ------------------------------------------------------------------------------------------- RANDOM XOR -- #
 # --------------------------------------------------------------------------------------------------------- #
 
 # Neural Net Topology Definition
-lucid = Sequential(hidden_l=[6], hidden_a=['tanh'], output_n=1, output_a='sigmoid')
+lucid = Sequential(hidden_l=[2], hidden_a=['sigmoid'], output_n=1, output_a='sigmoid')
 
-# load example data
+# load example data XOR
 data = datasets('xor')
-X, y = data['x'], data['y']
 
 # initialize weights
 lucid.init_weights(input_shape=data['x'].shape[1], init_layers=['xavier-standard'])
 
-# Inspect object contents
+# Inspect object contents  (Weights initialization)
 # inspect(lucid)
 
 # cost evolution
-J = lucid.fit(data, 5000, 0.1)
+J = lucid.fit(data, 1000, 0.1)
 
-# Inspect object contents
+# Inspect object contents  (Weights final values)
 # inspect(lucid)
-
-# plot cost evolution
-# import numpy as np
-# import matplotlib.pyplot as plt
-# plt.style.use('seaborn-whitegrid')
-# plt.figure(figsize=(16, 4))
-# plt.plot(list(J.keys()), list(J.values()), color='r', linewidth=3)
-# plt.title('Cost over epochs')
-# plt.xlabel('epochs')
-# plt.ylabel('cost');
-# plt.show()
 
 # predict
 y_test = lucid.predict(data)

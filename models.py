@@ -366,8 +366,8 @@ class Sequential:
 
         from propagate import forward_propagate, backward_propagate
 
-        X_train = data['x'] # shape = (200, 2)
-        y_train = data['y'].astype(np.int) # shape = (200,1)
+        X_train = data['x']
+        y_train = data['y'].astype(np.int)
        
         # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
         
