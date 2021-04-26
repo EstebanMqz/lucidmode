@@ -10,7 +10,7 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
-# -- basic
+# -- Load libraries for script
 import numpy as np
 
 # --------------------------------------------------------------------------------------- COST FUNCTIONS -- #
@@ -55,7 +55,7 @@ def cost(A, Y, type):
     # function final result
     return cost
  
-# ---------------------------------------------------------------- ACTIVATION FUNCTIONS -- #
+# --------------------------------------------------------------------------------- ACTIVATION FUNCTIONS -- #
 
 def sigma(Z, activation):
 
@@ -78,7 +78,7 @@ def sigma(Z, activation):
         expZ = np.exp(Z - np.max(Z)).T 
         return (expZ / expZ.sum(axis=0, keepdims=True)).T 
 
-# -------------------------------------------------- DERIVATIVE OF ACTIVATION FUNCTIONS -- #
+# ------------------------------------------------------------------- DERIVATIVE OF ACTIVATION FUNCTIONS -- #
 
 def d_sigma(Z, activation):
     

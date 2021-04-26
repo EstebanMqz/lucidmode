@@ -36,15 +36,22 @@ def datasets(p_dataset):
 
     """
 
+    # ------------------------------------------------------------------------------------------- ETH H8 -- #
+
     if p_dataset == 'eth_ohlcv_H8':
     
         # read file from files folder
         return pd.read_csv('files/prices/ETH_USDT_8h.csv')
 
+    # ------------------------------------------------------------------------------------------- BTC H8 -- #
+
     elif p_dataset == 'btc_ohlcv_H8':
 
         # read file from files folder
         return pd.read_csv('files/prices/BTC_USDT_8h.csv')
+    
+    
+    # --------------------------------------------------------------------------------------- RANDOM XOR -- #
     
     elif p_dataset == 'xor':
         

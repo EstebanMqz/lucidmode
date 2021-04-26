@@ -10,10 +10,10 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
-# import other scripts from the project
+# -- Load other scripts
 import functions as fn
 
-# import libraries for this script
+# -- Load libraries for script
 import numpy as np
 
 # ------------------------------------------------------------------------------------------------------ -- #
@@ -359,7 +359,7 @@ class Sequential:
     # ------------------------------------------------------------------ FIT MODEL PARAMETERS (LEARNING) -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def fit(self, data, epochs, lr):
+    def fit(self, data, epochs, alpha):
         """
         """
 
@@ -453,32 +453,27 @@ class Sequential:
        
         # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
         
+        # to store the costs across epochs
         J = {}
+        
+        # epochs for training
         for epoch in range(epochs):
             
+            # Forward pass
             memory = forward_propagate(self, X_train)
-            Al = memory['A_3']
-            cost = fn.cost(Al, y_train, 'sse')
+            
+            # Cost
+            cost = fn.cost(memory['A_3'], y_train, 'sse')
+            J[epoch] = cost
 
+            # print initial cost
             if epoch == 0:
                 print('initial cost: ', cost)
 
-            J[epoch] = cost
+            # Backward pass
             grads = backward_propagate(self, memory, y_train)
 
-            # -- tests
-            # print('dW_1', grads['dW_1'].shape)
-            # print(grads['dW_1'])
-            
-            # print('db_1', grads['db_1'].shape)
-            # print(grads['db_1'])
-
-            # print('dW_2', grads['dW_2'].shape)
-            # print(grads['dW_2'])
-            
-            # print('db_2 ', grads['db_2'].shape)
-            # print(grads['db_2'])
-
+            # update all layers weights
             for l in range(0, len(self.hidden_l) + 1):
 
                 layer  = list(self.layers.keys())[l]               
@@ -486,12 +481,13 @@ class Sequential:
                 db = grads['db_' + str(l + 1)]
                 W = self.layers[layer]['W']
                 b = self.layers[layer]['b']
+                self.layers[layer]['W'] = W - (alpha * dW)
+                self.layers[layer]['b'] = b - (alpha * db)
 
-                self.layers[layer]['W'] = W - (lr * dW)
-                self.layers[layer]['b'] = b - (lr * db)
-
+        # print final cost
         print('Final cost:', J[epochs-1])
         
+        # return cost list
         return J
 
     # ------------------------------------------------------------------------------- PREDICT WITH MODEL -- #
