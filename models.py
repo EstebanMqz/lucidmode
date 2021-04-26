@@ -373,7 +373,8 @@ class Sequential:
             layer = list(self.layers.keys())[l]
             W = self.layers[layer]['W']
             b = self.layers[layer]['b']
-            return np.dot(W, A) + b
+            # return np.dot(W, A) + b
+            return np.matmul(W, A) + b
 
         def forward_activation(self, A_prev, l):
             layer = list(self.layers.keys())[l]
@@ -400,7 +401,7 @@ class Sequential:
                 Al, Zl = forward_activation(self, A_prev, l)
                 
                 # save A and Z for every layer (for backward process)
-                memory['Z_' + str(l + 1)] = Zl
+                memory['Z_' + str(l + 1)] = Zl.T
                 memory['A_' + str(l + 2)] = Al.T
 
             return memory
@@ -412,43 +413,38 @@ class Sequential:
             
             # get the post-activation values for the last layer
             AL = memory['A_' + str(len(self.hidden_l) + 2)]
-            # Y = Y.reshape(AL.shape)
+            Y = Y.reshape(AL.shape)
+            m = 200
             
             # first delta for the output layer
-            dAL = (1/AL.shape[1]) * (AL - Y)
+            dAL = (AL - Y)*d_sigma(memory['Z_' + str(len(self.hidden_l) + 1)], self.output_a)
             memory['d_' + str(len(self.hidden_l) + 2)] = dAL
 
             # just loop hidden layers since the above was for the outputlayer
             for l in range(len(self.hidden_l) - 1 , -1, -1):
 
-                layer = list(self.layers.keys())[l + 0]
+                layer = list(self.layers.keys())[l + 1]
 
                 # dW previous layer
-                dW = memory['d_' + str(l + 3)] * memory['A_' + str(l + 2)]
-                memory['dW_' + str(l + 2)] = dW
-                memory['db_' + str(l + 2)] = memory['d_' + str(l + 3)].sum()
+                dW = (1/m) * np.dot(memory['d_' + str(l + 3)].T, memory['A_' + str(l + 2)])
+                db = (1/m) * np.sum(memory['d_' + str(l + 3)]).reshape(self.layers[layer]['b'].shape)
+
+                memory['dW_' + str(l + 2)] = dW 
+                memory['db_' + str(l + 2)] = db
                 
-                d = np.dot((memory['A_' + str(l + 2)] * memory['d_' + str(l + 3)]), self.layers[layer]['W'])
+                delta = d_sigma(memory['Z_' + str(l + 2)], self.layers[layer]['a'])
+                d = delta * (memory['d_' + str(l + 3)] * self.layers[layer]['W'])
                 memory['d_' + str(l + 2)] = d
+
+                assert (d.shape == memory['A_' + str(l + 2)].shape)
+                assert (dW.shape == self.layers[layer]['W'].shape)
+                assert (db.shape == self.layers[layer]['b'].shape)
             
             # last delta for the input layer
-            memory['dW_' + str(1)] = np.dot(memory['d_' + str(2)].T, memory['A_' + str(1)].T)
-            memory['db_' + str(1)] = memory['d_' + str(2)].sum()
+            memory['dW_1'] =  (1/m) * np.dot(memory['d_2'].T, memory['A_1'].T)
+            memory['db_1'] =  (1/m) * sum(memory['d_2']).reshape(2, 1)
 
-            return memory
-
-        # ----------------------------------------------------------------------------- GRADIENTS UPDATE -- #
-
-        def update_grads(self, memory):
-
-            for l in range(1, len(self.hidden_l) + 2):
-
-                layer  = list(self.layers.keys())[l - 1]               
-                dW = memory['dW_' + str(l)]
-                db = memory['db_' + str(l)]
-
-                self.layers[layer]['W'] = self.layers[layer]['W'] - lr*dW
-                self.layers[layer]['b'] = self.layers[layer]['b'] - lr*db
+            return memory           
        
         # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
         
@@ -457,12 +453,37 @@ class Sequential:
             
             memory = forward_propagate(self, X_train)
             Al = memory['A_3']
-            cost = fn.cost(Al, data['y'], 'sse')
-            print(cost)
-            J[epoch] = cost
-            bwd = backward_propagate(self, memory, y_train)
+            cost = fn.cost(Al, y_train, 'sse')
 
-            update_grads(self,bwd)
+            if epoch == 0:
+                print('initial cost: ', cost)
+
+            J[epoch] = cost
+            grads = backward_propagate(self, memory, y_train)
+
+            # -- tests
+            # print('dW_1', grads['dW_1'].shape)
+            # print(grads['dW_1'])
+            
+            # print('db_1', grads['db_1'].shape)
+            # print(grads['db_1'])
+
+            # print('dW_2', grads['dW_2'].shape)
+            # print(grads['dW_2'])
+            
+            # print('db_2 ', grads['db_2'].shape)
+            # print(grads['db_2'])
+
+            for l in range(0, len(self.hidden_l) + 1):
+
+                layer  = list(self.layers.keys())[l]               
+                dW = grads['dW_' + str(l + 1)] * (1/0.01)
+                db = grads['db_' + str(l + 1)] * (1/0.01)
+                W = self.layers[layer]['W']
+                b = self.layers[layer]['b']
+
+                self.layers[layer]['W'] = W - (lr * sum(dW))
+                self.layers[layer]['b'] = b - (lr * sum(db))
 
         print('Final cost:', J[epochs-1])
         

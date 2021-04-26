@@ -32,11 +32,23 @@ lucid = Sequential(hidden_l=[2], hidden_a=['sigmoid'], output_n=1, output_a='sig
 
 # load example data
 data = datasets('xor')
+X, y = data['x'], data['y']
 
 # initialize weights
 lucid.init_weights(input_shape=data['x'].shape[1], init_layers=['xavier-standard'])
 
-# Inspect object contents
-inspect(lucid)
+J = lucid.fit(data, 1000, 0.1)
 
-cost = lucid.fit(data, 2, 0.1)
+# Inspect object contents
+#  inspect(lucid)
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+plt.style.use('seaborn-whitegrid')
+plt.figure(figsize=(16, 4))
+plt.plot(list(J.keys()), list(J.values()), color='r', linewidth=3)
+plt.title('Cost over epochs')
+plt.xlabel('epochs')
+plt.ylabel('cost');
+plt.show()
