@@ -80,12 +80,12 @@ def sigma(Z, activation):
 
 # -------------------------------------------------- DERIVATIVE OF ACTIVATION FUNCTIONS -- #
 
-def d_sigma(dA, Z, activation):
+def d_sigma(Z, activation):
     
     # -- Sigmoid
     if activation == 'sigmoid':
-        s = 1/(1 + np.exp(-Z))
-        dZ = dA * s * (1 - s)
+        s = sigma(Z, 'sigmoid')
+        dZ = s*(1-s)
         assert (dZ.shape == Z.shape)
     
     # -- Hyperbolic Tangent
@@ -96,7 +96,7 @@ def d_sigma(dA, Z, activation):
     
     # -- Rectified Linear Unit (ReLU)
     elif activation == 'relu':
-        dZ = np.array(dA, copy=True)
+        dZ = np.array(Z, copy=True)
         dZ[Z <= 0] = 0
         assert (dZ.shape == Z.shape)
     

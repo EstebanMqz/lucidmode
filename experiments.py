@@ -28,16 +28,15 @@ from functions import cost
 # --------------------------------------------------------------------------------------------------------- #
 
 # Neural Net Topology Definition
-lucid = Sequential(hidden_l=[2, 2], hidden_a=['sigmoid', 'sigmoid'], output_n=1, output_a='sigmoid')
+lucid = Sequential(hidden_l=[2], hidden_a=['sigmoid'], output_n=1, output_a='sigmoid')
 
 # load example data
 data = datasets('xor')
 
 # initialize weights
-lucid.init_weights(input_shape=data['x'].shape[1], init_layers=['xavier-standard', 'xavier-standard'])
+lucid.init_weights(input_shape=data['x'].shape[1], init_layers=['xavier-standard'])
 
 # Inspect object contents
 inspect(lucid)
 
-cost = lucid.fit(data)
-cost
+cost = lucid.fit(data, 2, 0.1)

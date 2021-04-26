@@ -22,14 +22,12 @@ import numpy as np
 
 class Sequential:
 
-
     """
     Artificial Neural Network (Feedforward multilayer pereceptron with backpropagation)
 
     Topology characteristics
     ------------------------
 
-    l_hidden: Number of hidden layers (int)
     hidden_l: Number of neurons per hidden layer (list of int, with length of l_hidden)
     hidden_a: Activation of hidden layers (list of str, with length l_hidden)   
     output_n: Number of neurons in output layer (int)
@@ -39,12 +37,12 @@ class Sequential:
     ---------------------
 
     Layer transformations:
-        - none
+        - linear
         - convolution
    
     Activation functions:
         For hidden -> Sigmoid, Tanh, ReLu
-        For output -> Linear, Sigmoid, Softmax
+        For output -> Linear (regression), Sigmoid (binary classification), Softmax (multivariate classification)
     
     Methods
     -------
@@ -55,9 +53,20 @@ class Sequential:
         - Load from object.
     
     Training Schemes:
-        - Gradient Descent (Train with all data)
-        - Stochastic Gradient Descent (Train with 1 data at a time)
-        - Mini-Batch (Train with N data)   
+        - Gradient Descent
+            - train: use all the data on each epoch
+            - validation: use all the data on each epoch
+            - note for FTS: None of particular importance
+
+        - Stochastic Gradient Descent
+            - train: use 1 example at a time and iterate through all of them on each epoch
+            - validation: use all the data when train finishes, do that on each epoch 
+            - note for FTS: Do not shuffle data
+
+        - Mini-Batch
+            - train: use a partition or subset of the whole data
+            - validation: 
+
         - Nesterov
         - Adam
     
@@ -349,64 +358,115 @@ class Sequential:
     # ------------------------------------------------------------------ FIT MODEL PARAMETERS (LEARNING) -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def fit(self, data):
+    def fit(self, data, epochs, lr):
         """
         """
 
         from functions import sigma, d_sigma
 
         X_train = data['x']
-        y_train = data['y']
+        y_train = data['y'].astype(np.int)
+       
+        # -------------------------------------------------------------------------------------- FORWARD -- #
 
-        # X_train = data['X_train']
-        # X_val = data['X_val']
-        # y_train = data['y_train']
-        # y_val = data['y_val']
-
-        # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
-        
-        # loop for epoch iteration
-        # epoch = 1
-
-        # -- FORWARD
-
-        def forward_pass(self, X): 
-            A = X.T
-            for l in range(0, len(self.hidden_l) + 1):
-                A_prev = A
-                A = forward_activation(self, A_prev, l)            
-            return A
-        
-        def forward_activation(self, A_prev, l):
-            Z = forward(self, A_prev, l)
-            layer = list(self.layers.keys())[l]
-            A = sigma(Z, self.layers[layer]['a'])
-            return A
-        
         def forward(self, A, l):
             layer = list(self.layers.keys())[l]
             W = self.layers[layer]['W']
             b = self.layers[layer]['b']
             return np.dot(W, A) + b
 
-        fwd = forward_pass(self, X_train)
+        def forward_activation(self, A_prev, l):
+            layer = list(self.layers.keys())[l]
+
+            Z = forward(self, A_prev, l)
+            A = sigma(Z, self.layers[layer]['a'])
+
+            return A, Z
+
+        def forward_propagate(self, X): 
+            Al = X.T
+            
+            # memory to store all the values for later use in backward process
+            memory = {'A_' + str(i): 0 for i in range(1, len(self.hidden_l) + 3)}
+            memory.update({'Z_' + str(i): 0 for i in range(1, len(self.hidden_l) + 2)})
+            memory.update({'d_' + str(i): 0 for i in range(2, len(self.hidden_l) + 3)})
+            memory.update({'dW_' + str(i): 0 for i in range(1, len(self.hidden_l) + 2)})
+            memory.update({'db_' + str(i): 0 for i in range(1, len(self.hidden_l) + 2)})
+
+            memory['A_' + str(1)] = X.T
+
+            for l in range(0, len(self.hidden_l) + 1):
+                A_prev = Al
+                Al, Zl = forward_activation(self, A_prev, l)
+                
+                # save A and Z for every layer (for backward process)
+                memory['Z_' + str(l + 1)] = Zl
+                memory['A_' + str(l + 2)] = Al.T
+
+            return memory
+
+        # ------------------------------------------------------------------------------------- BACKWARD -- #
+
+
+        def backward_propagate(self, memory, Y):
+            
+            # get the post-activation values for the last layer
+            AL = memory['A_' + str(len(self.hidden_l) + 2)]
+            # Y = Y.reshape(AL.shape)
+            
+            # first delta for the output layer
+            dAL = (1/AL.shape[1]) * (AL - Y)
+            memory['d_' + str(len(self.hidden_l) + 2)] = dAL
+
+            # just loop hidden layers since the above was for the outputlayer
+            for l in range(len(self.hidden_l) - 1 , -1, -1):
+
+                layer = list(self.layers.keys())[l + 0]
+
+                # dW previous layer
+                dW = memory['d_' + str(l + 3)] * memory['A_' + str(l + 2)]
+                memory['dW_' + str(l + 2)] = dW
+                memory['db_' + str(l + 2)] = memory['d_' + str(l + 3)].sum()
+                
+                d = np.dot((memory['A_' + str(l + 2)] * memory['d_' + str(l + 3)]), self.layers[layer]['W'])
+                memory['d_' + str(l + 2)] = d
+            
+            # last delta for the input layer
+            memory['dW_' + str(1)] = np.dot(memory['d_' + str(2)].T, memory['A_' + str(1)].T)
+            memory['db_' + str(1)] = memory['d_' + str(2)].sum()
+
+            return memory
+
+        # ----------------------------------------------------------------------------- GRADIENTS UPDATE -- #
+
+        def update_grads(self, memory):
+
+            for l in range(1, len(self.hidden_l) + 2):
+
+                layer  = list(self.layers.keys())[l - 1]               
+                dW = memory['dW_' + str(l)]
+                db = memory['db_' + str(l)]
+
+                self.layers[layer]['W'] = self.layers[layer]['W'] - lr*dW
+                self.layers[layer]['b'] = self.layers[layer]['b'] - lr*db
+       
+        # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
         
-        cost_value = fn.cost(fwd.T, data['y'], 'sse')
+        J = {}
+        for epoch in range(epochs):
+            
+            memory = forward_propagate(self, X_train)
+            Al = memory['A_3']
+            cost = fn.cost(Al, data['y'], 'sse')
+            print(cost)
+            J[epoch] = cost
+            bwd = backward_propagate(self, memory, y_train)
 
+            update_grads(self,bwd)
+
+        print('Final cost:', J[epochs-1])
         
-        # -- BACKWARD
-
-
-        return cost_value
-
-        
-
-
-
-        # -- COST EVALUATION
-        # -- GRADIENTS UPDATE
-
-        
+        return J
 
     # ------------------------------------------------------------------------------- PREDICT WITH MODEL -- #
     # -------------------------------------------------------------------------------------------------- -- #
