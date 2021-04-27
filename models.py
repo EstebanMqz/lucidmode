@@ -11,8 +11,9 @@
 """
 
 # -- Load other scripts
+import propagate as prop
 import functions as fn
-import propagate as pŕop
+import regularization as reg
 
 # -- Load libraries for script
 import numpy as np
@@ -124,7 +125,7 @@ class Sequential:
     # -------------------------------------------------------------------------------------------------- -- #
 
     def __init__(self, hidden_l, hidden_a, output_n, output_a, cost_f=None, cost_r=None,
-                 hidden_r=None):
+                 hidden_r=None, output_r=None):
 
         """
         ANN Class constructor
@@ -144,19 +145,23 @@ class Sequential:
         output_a: str
             Activation of output layer (str)
         
-        r_hidden: list (of str, of size l_hidden)
-            list with each layer regularization criteria, options are:
+        hidden_r / output_r: list (of str, of size l_hidden)
+            list with each pre-layer weights and biases regularization criteria, options are:
 
                 'l1': Lasso regularization |b|
                 'l2': Ridge regularization |b|^2
                 'elasticnet': C(L1 - L2)
                 'dropout': Randomly (uniform) select N neurons in layer and turn its weight to 0
             
-        r_cost: str
-            regularization criteria applied to cost function, options are: 
-                'l1': Lasso regularization |b|
-                'l2': Ridge regularization |b|^2
-                'elasticnet': C(L1 - L2)
+        cost_f: str
+            cost function, options are according to functions.cost
+
+        cost_r: str
+            regularization criteria applied to cost function, options are according to functions.cost
+
+        Returns
+        -------
+            self: Modifications on instance of class
 
         """
         
@@ -172,13 +177,16 @@ class Sequential:
         # Activation of output layer (str)
         self.output_a = output_a
 
+        # Regularization criteria for pre-output-layer weights and biases
+        self.output_r = output_r
+
         # Cost function definition
         self.cost_f = cost_f
 
         # Regularization criteria for cost function
-        self.cos_rt = cost_r
+        self.cost_r = cost_r
 
-        # Regularization criteria for hidden layer
+        # Regularization criteria for pre-hidden-layer weights and biases
         self.hidden_r = hidden_r
     
     # --------------------------------------------------------------------------------- LAYERS FORMATION -- #
@@ -187,14 +195,26 @@ class Sequential:
     def _formation(self):
         """
         Neural Network Model Topology Formation.        
+
+        Parameters
+        ----------
+        
+        self: Instance of class
+
+
+        Returns
+        -------
+        
+        self: Modifications on instance of class
+
         """
 
         # Hidden layers
-        self.layers = {'hl_' + str(layer): {'W': {}, 'b':{}, 'a': {}, 'r':{}}
+        self.layers = {'hl_' + str(layer): {'W': {}, 'b':{}, 'a': {}, 'r':self.hidden_r[layer]}
                        for layer in range(0, len(self.hidden_l))}
 
         # Output layer
-        self.layers.update({'ol': {'a': self.output_a, 'W': {}, 'b': {} }})   
+        self.layers.update({'ol': {'W': {}, 'b': {}, 'a': self.output_a, 'r': self.output_r}})
 
         # iterative layer formation loop
         for layer in range(0, len(self.hidden_l)):
@@ -211,7 +231,7 @@ class Sequential:
             self.layers['hl_' + str(layer)]['a'] = act
 
             # layer regularization
-            self.layers['hl_' + str(layer)]['r'] = None
+            self.layers['hl_' + str(layer)]['r'] = self.hidden_r[layer]
 
             # layer weights initialization
             self.layers['hl_' + str(layer)]['i'] = ''
@@ -325,7 +345,7 @@ class Sequential:
                 # Multiplying factor (paper version)
                 r = mf * np.sqrt(2/(n_prev + n_next))
 
-                # Multiplying factor (coursera Deeplearning version)
+                # Multiplying factor (coursera Deeplearning version with XOR data)
                 # r = 0.01
                 
                 # Hidden layer weights and biasW
@@ -361,7 +381,7 @@ class Sequential:
     # -------------------------------------------------------------------------------------------------- -- #
 
     def fit(self, x_train, y_train, x_val=None, y_val=None, epochs=10, alpha=0.1, 
-            cost_function='binary-logloss'):
+            cost_f='binary-logloss', verbosity=3):
         
         """
         Train model according to specified parameters
@@ -387,6 +407,13 @@ class Sequential:
         alpha: float
             Learning rate for Gradient Descent
         
+        cost_f: str
+            Cost function, options are according to functions.cost
+
+        verbosity: int
+            level of verbosity to show progress
+            3: cost train and cost val at every epoch
+        
         Returns
         -------
 
@@ -398,43 +425,79 @@ class Sequential:
 
         """
 
-        from propagate import forward_propagate, backward_propagate       
+        # from propagate import forward_propagate, backward_propagate       
        
         # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
         
         # to store the costs across epochs
-        history = {'cost': {}}
+        history = {'cost': {'train': {}, 'val': {}}}
         
         # Epochs for training
         for epoch in range(epochs):
             
             # Forward pass
-            memory = forward_propagate(self, x_train)
+            memory = prop.forward_propagate(self, x_train)
             
-            # Cost
-            cost_value = fn.cost(memory['A_' + str(len(self.hidden_l) + 2)], y_train, cost_function)
-            history['cost'][epoch] = cost_value
+            # Cost (train)
+            cost_train = fn.cost(memory['A_' + str(len(self.hidden_l) + 2)], y_train, cost_f)
 
-            # Print initial cost
-            if epoch == 0:
-                print('initial cost: ', cost_value)
+            if len(x_val) !=0 :
+                # Forward pass
+                memory_val = prop.forward_propagate(self, x_val)
+                
+                # Cost (validation)
+                cost_val = np.round(fn.cost(memory_val['A_' + str(len(self.hidden_l) + 2)], y_val, cost_f), 8)
+                history['cost']['val'][epoch] = cost_val
+            
+            # Regularization components (applied only to train)
+            if self.cost_r:
+                Weights = [self.layers[layer]['W'] for layer in self.layers]
+                reg_term = reg.l1_l2_EN(Weights,
+                                        type=self.cost_r['type'],
+                                        lmbda=self.cost_r['lmbda'],
+                                        ratio=self.cost_r['ratio'])/x_train.shape[0]
+
+                # update current value with regularization term
+                cost_train += reg_term
+
+            # update cost value to history
+            history['cost']['train'][epoch] = np.round(cost_train.astype(np.float32), 8)
+           
+            if verbosity == 3:
+                print('-- epoch: ', "%2i" % epoch,
+                      '-- cost_train: ', "%.6f" % history['cost']['train'][epoch],
+                      '-- cost_val: ', "%.6f" % history['cost']['val'][epoch])
 
             # Backward pass
-            grads = backward_propagate(self, memory, y_train)
+            grads = prop.backward_propagate(self, memory, y_train)
 
-            # Update all layers weights
+            # Update all layers weights and biases
             for l in range(0, len(self.hidden_l) + 1):
 
                 layer  = list(self.layers.keys())[l]               
                 dW = grads['dW_' + str(l + 1)]
-                db = grads['db_' + str(l + 1)]
                 W = self.layers[layer]['W']
+                db = grads['db_' + str(l + 1)]
                 b = self.layers[layer]['b']
-                self.layers[layer]['W'] = W - (alpha * dW)
-                self.layers[layer]['b'] = b - (alpha * db)
+                
+                # if the layer has regularization 
+                if self.layers[layer]['r']:
+                    r_t = self.layers[layer]['r']['type']
+                    r_l = self.layers[layer]['r']['lmbda']
+                    r_r = self.layers[layer]['r']['ratio']
+                    regW = reg.l1_l2_EN([W], type=r_t, lmbda=r_l, ratio=r_r)/x_train.shape[0]
+                    regb = reg.l1_l2_EN([b], type=r_t, lmbda=r_l, ratio=r_r)/x_train.shape[0]
+                else:
+                    regW, regb = 0
+
+                self.layers[layer]['W'] = W - (alpha * dW) + regW
+                self.layers[layer]['b'] = b - (alpha * db) + regb
 
         # print final cost
-        print('Final cost:', history['cost'][epochs-1])
+        print('\n\n-- FINAL epoch: ', "%2i" % epoch,
+              ' -- cost_train: ', "%.6f" % history['cost']['train'][epochs-1],
+              ' -- cost_val: ', "%.6f" % history['cost']['val'][epochs-1],
+              '-- ')
         
         # return cost list
         return history

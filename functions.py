@@ -17,6 +17,18 @@ import numpy as np
 # --------------------------------------------------------------------------------------------------------- #
 
 def cost(A, Y, type):
+    """
+    Cost function calculation
+
+    A
+    Y
+    type
+
+    """
+    
+    # numerical stability parameter
+    ns = 1e-25
+    A = A + ns
 
     # -- Mean Squared Error
     if type == 'sse':
@@ -53,7 +65,7 @@ def cost(A, Y, type):
     assert(cost.shape == ())
 
     # function final result
-    return cost
+    return cost.astype(np.float32)
  
 # --------------------------------------------------------------------------------- ACTIVATION FUNCTIONS -- #
 # --------------------------------------------------------------------------------------------------------- #

@@ -1,5 +1,28 @@
 # RELEASES NOTES
 
+## v0.3-beta1.0
+
+Regularization:
+- On weights and biases, location: gradients
+- - L1, L2 and ElasticNet
+
+- On weights and biases, location: cost function
+- - L1, L2 and ElasticNet
+
+Numerical Stability:
+- in functions.py, in cost, added a 1e-25 value to A,
+  to avoid a divide by zero and invalid multiply cases
+  in computations of np.log(A)
+
+Data Handling:
+- train and validation cost
+
+Visualization:
+- print: verbose of cost evolution
+
+Documentation:
+- Improve README
+
 ## v0.2-beta1.0
 
 Files:

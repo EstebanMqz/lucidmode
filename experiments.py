@@ -34,13 +34,21 @@ images = data['images']
 
 from sklearn.model_selection import train_test_split
 
-X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size = 0.3, random_state = 1)
+X_train, X_val, y_train, y_val = train_test_split(images, labels, test_size = 0.3, random_state = 1)
 
 # -- Train dataset: X_train.shape(16800, 784) y_train.shape(16800,)
 # -- Test dataset: X_train.shape(7200, 784) y_train.test(7200,)
 
 # Neural Net Topology Definition
-lucid = Sequential(hidden_l=[5, 5], hidden_a=['tanh', 'tanh'], output_n=10, output_a='softmax')
+lucid = Sequential(cost_f='multi-logloss', cost_r={'type': 'l1', 'lmbda': 0.01, 'ratio':0.1},
+                   
+                   hidden_l=[30, 30, 10], hidden_a=['tanh', 'tanh', 'tanh'],
+                   hidden_r=[{'type': 'l2', 'lmbda': 0.01, 'ratio':0.1},
+                             {'type': 'l2', 'lmbda': 0.01, 'ratio':0.1},
+                             {'type': 'l2', 'lmbda': 0.01, 'ratio':0.1}],
+                   
+                   output_r={'type': 'l2', 'lmbda': 0.01, 'ratio':0.1},
+                   output_n=10, output_a='softmax')
 
 # initialize weights
 lucid.init_weights(input_shape=X_train.shape[1], init_layers=['common-uniform'])
@@ -49,19 +57,39 @@ lucid.init_weights(input_shape=X_train.shape[1], init_layers=['common-uniform'])
 inspect(lucid)
 
 # cost evolution
-history = lucid.fit(x_train=X_train, y_train=y_train, epochs=50, alpha=0.05,
-                    cost_function='multi-logloss')
+history = lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val,
+                    epochs=150, alpha=0.015,
+                    cost_f='multi-logloss', verbosity=3)
 
-# predict
+# predict train
 y_hat = lucid.predict(x_train=X_train)
+train_acc = accuracy(y_train, y_hat)
+print(train_acc)
 
-# metrics
-acc = accuracy(y_train, y_hat)
-print(acc)
+# predict train
+y_val_hat = lucid.predict(x_train=X_val)
+val_acc = accuracy(y_val, y_val_hat)
+print(val_acc)
 
 # confussion matrix
 cm = confusion_matrix(y_train, y_hat)
 print(cm)
+
+"""
+Some results:
+
+-- 10 classes fashion MNIST
+
+hidden_l=[30, 30, 10]
+['tanh', 'tanh', 'tanh']
+init_layers=['common-uniform']
+epochs=1000, alpha=0.05,
+
+initial cost:  3.608454635186387
+Final cost: 0.8032320438470425
+acc = 0.6972142857142857
+
+"""
 
 # ------------------------------------------------------------------------------------------- RANDOM XOR -- #
 # --------------------------------------------------------------------------------------------------------- #
