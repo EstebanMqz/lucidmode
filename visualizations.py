@@ -35,3 +35,20 @@
 # --------------------------------------------------------------------------------------------------------- #
 
 # - Convolution operation between layers.
+
+# ---------------------------------------------------------------------------------------- IMAGE CATALOG -- #
+# --------------------------------------------------------------------------------------------------------- #
+
+# - A matrix of nxm randomly seleceted images for visual exploration
+
+# cols = 10
+# rows = 4
+# fig, axs = plt.subplots(rows, cols, figsize=(16, 5))
+# for i in range(rows):
+    #img = 0
+    #l = np.nonzero(labels == i)
+    #for j in np.random.choice(l[0], cols):
+        #axs[i, img].axis('off')
+        #hm = images[j, :].reshape(28, 28)
+        #axs[i, img].imshow(hm.astype(np.uint8))
+        #img += 1

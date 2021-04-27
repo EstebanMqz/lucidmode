@@ -16,37 +16,85 @@ from models import Sequential
 # -- load datasets
 from data import datasets
 
+# -- base libraries
+import numpy as np
+import pandas as pd
+
 # -- complementary tools
 from rich import inspect
-from metrics import accuracy
+from metrics import accuracy, confussion_matrix
 
-# ------------------------------------------------------------------------------------------- RANDOM XOR -- #
+# ------------------------------------------------------------------------------------- IMAGE CLASSIFIER -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-# Neural Net Topology Definition
-lucid = Sequential(hidden_l=[2], hidden_a=['sigmoid'], output_n=1, output_a='sigmoid')
+# load example data 
+data = datasets('fashion_MNIST')
+labels = data['labels']
+images = data['images']
 
-# load example data XOR
-data = datasets('xor')
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size = 0.3, random_state = 1)
+
+# -- Train dataset: X_train.shape(16800, 784) y_train.shape(16800,)
+# -- Test dataset: X_train.shape(7200, 784) y_train.test(7200,)
+
+# Neural Net Topology Definition
+lucid = Sequential(hidden_l=[20, 10], hidden_a=['sigmoid', 'tanh'], output_n=10, output_a='softmax')
 
 # initialize weights
-lucid.init_weights(input_shape=data['x'].shape[1], init_layers=['xavier-standard'])
+lucid.init_weights(input_shape=X_train.shape[1], init_layers=['common-uniform'])
 
 # Inspect object contents  (Weights initialization)
 # inspect(lucid)
 
 # cost evolution
-J = lucid.fit(data, 1000, 0.1)
+history = lucid.fit(x_train=X_train, y_train=y_train, epochs=50, alpha=0.1,
+                   cost_function='multi-logloss')
+
+# predict
+y_hat = lucid.predict(x_train=X_train)
+
+# metrics
+acc = accuracy(y_train, y_hat)
+print(acc)
+
+# confussion matrix
+cm = confussion_matrix(y_train, y_hat)
+print(cm)
+
+# ------------------------------------------------------------------------------------------- RANDOM XOR -- #
+# --------------------------------------------------------------------------------------------------------- #
+
+# r in init and wm in fit and no regularization
+
+# load example data XOR
+# data = datasets('xor')
+
+# Neural Net Topology Definition
+# lucid = Sequential(hidden_l=[2], hidden_a=['tanh'], output_n=1, output_a='sigmoid')
+
+# initialize weights
+# lucid.init_weights(input_shape=data['x'].shape[1], init_layers=['xavier-standard'])
+
+# Inspect object contents  (Weights initialization)
+# inspect(lucid)
+
+# x_train = data['x'].astype(np.float16)
+# y_train = data['y'].astype(np.int8)
+
+# cost evolution
+# history = lucid.fit(x_train=x_train, y_train=y_train, epochs=1000, alpha=0.1, cost_function='sse')
 
 # Inspect object contents  (Weights final values)
 # inspect(lucid)
 
 # predict
-y_test = lucid.predict(data)
+# y_hat = lucid.predict(x_train)
 
 # metrics
-acc = accuracy(data['y'], y_test)
-print(acc)
+# acc = accuracy(data['y'], y_hat)
+# print(acc)
 
 # --------------------------------------------------------------------------------- CRYPTO H8 CLASSIFIER -- #
 # --------------------------------------------------------------------------------------------------------- #

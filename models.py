@@ -323,10 +323,10 @@ class Sequential:
             elif type == 'xavier-standard':
                 
                 # Multiplying factor (paper version)
-                # r = mf * np.sqrt(2/(n_prev + n_next))
+                r = mf * np.sqrt(2/(n_prev + n_next))
 
                 # Multiplying factor (coursera Deeplearning version)
-                r = 0.01
+                # r = 0.01
                 
                 # Hidden layer weights and biasW
                 self.layers['hl_' + str(layer)]['W'] = np.random.randn(n_next, n_prev) * r
@@ -360,33 +360,64 @@ class Sequential:
     # ------------------------------------------------------------------ FIT MODEL PARAMETERS (LEARNING) -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def fit(self, data, epochs, alpha):
+    def fit(self, x_train, y_train, x_val=None, y_val=None, epochs=10, alpha=0.1, 
+            cost_function='binary-logloss'):
+        
         """
+        Train model according to specified parameters
+
+        Parameters
+        ----------
+
+        x_train: np.array / pd.Series
+            Features data with nxm dimensions, n = observations, m = features
+        
+        y_train: np.array / pd.Series
+            Target variable data, dimensions of: nx1 por binary classification and nxm for multi-class
+        
+        x_val: np.array / pd.Series
+            Same as x_train but with data considered as validation
+
+        y_val: np.array / pd.Series
+            Same as y_train but with data considered as validation
+
+        epochs: int
+            Epochs to iterate the model training
+        
+        alpha: float
+            Learning rate for Gradient Descent
+        
+        Returns
+        -------
+
+        history: dict
+            with dynamic keys and iterated values of selected metrics
+
+        # binary output
+        # y_train = data['y'].astype(np.int)
+
         """
 
-        from propagate import forward_propagate, backward_propagate
-
-        X_train = data['x']
-        y_train = data['y'].astype(np.int)
+        from propagate import forward_propagate, backward_propagate       
        
         # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
         
         # to store the costs across epochs
-        J = {}
+        history = {'cost': {}}
         
         # epochs for training
         for epoch in range(epochs):
             
             # Forward pass
-            memory = forward_propagate(self, X_train)
+            memory = forward_propagate(self, x_train)
             
             # Cost
-            cost = fn.cost(memory['A_3'], y_train, 'sse')
-            J[epoch] = cost
+            cost_value = fn.cost(memory['A_' + str(len(self.hidden_l) + 2)], y_train, cost_function)
+            history['cost'][epoch] = cost_value
 
             # print initial cost
             if epoch == 0:
-                print('initial cost: ', cost)
+                print('initial cost: ', cost_value)
 
             # Backward pass
             grads = backward_propagate(self, memory, y_train)
@@ -399,29 +430,40 @@ class Sequential:
                 db = grads['db_' + str(l + 1)]
                 W = self.layers[layer]['W']
                 b = self.layers[layer]['b']
-                self.layers[layer]['W'] = W - (alpha * dW)
+                self.layers[layer]['W'] = W - (alpha * dW) - (0.30/x_train.shape[0])*np.sum(W)
                 self.layers[layer]['b'] = b - (alpha * db)
 
         # print final cost
-        print('Final cost:', J[epochs-1])
+        print('Final cost:', history['cost'][epochs-1])
         
         # return cost list
-        return J
+        return history
 
     # ------------------------------------------------------------------------------- PREDICT WITH MODEL -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def predict(self, data):
+    def predict(self, x_train):
         """
+
+        PREDICT depends of the activation function and number of outpus in output layer
+
         """
         
         from propagate import forward_propagate
 
-        memory = forward_propagate(self, data['x'])
-        p = memory['A_3']
-        thr = 0.5
-        indx = p > thr
-        p[indx] = 1
-        p[~indx] = 0
+        # -- SINGLE-CLASS
+        if self.output_n == 1:            
+            # tested only with sigmoid output
+            memory = forward_propagate(self, x_train)
+            p = memory['A_' + str(len(self.hidden_l) + 2)]
+            thr = 0.5
+            indx = p > thr
+            p[indx] = 1
+            p[~indx] = 0
+
+        # -- MULTI-CLASS 
+        else:
+            memory = forward_propagate(self, x_train)
+            p = np.argmax(memory['A_' + str(len(self.hidden_l) + 2)], axis=1)
 
         return p

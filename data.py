@@ -13,6 +13,7 @@
 # -- Load libraries for script
 import pandas as pd
 import numpy as np
+import os
 
 # ----------------------------------------------------------------------------- READ PRE-LOADED DATASETS -- #
 # --------------------------------------------------------------------------------------------------------- #
@@ -62,6 +63,54 @@ def datasets(p_dataset):
         y = y.reshape(y.shape[0], 1)
         
         return {'y': y, 'x': x}
+    
+    # ------------------------------------------------------------------------------------ FASHION MNIST -- #
+
+    elif p_dataset == 'fashion_MNIST':
+        """
+        28x28 pixel pictures of fashion clothes: https://github.com/zalandoresearch/fashion-mnist
+        """
+
+        # -- read files from local system folder (both )
+        labels_path = os.path.join('files/data/images/' + p_dataset + '/', 'train-labels-idx1-ubyte')
+        with open(labels_path,'rb') as lbpath:
+            labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8)
+                
+        images_path = os.path.join('files/data/images/' + p_dataset + '/', 'train-images-idx3-ubyte')
+        with open(images_path,'rb') as imgpath:
+            images = np.frombuffer(imgpath.read(), dtype=np.uint8, offset=16).reshape(len(labels), 784)
+
+        # SIMPLIER VERSION: drop all samples from the following class. 
+        # todrop = [4, 5, 6, 7, 8, 9]
+        todrop = []
+        for i in todrop:
+            idxs = (labels == i)
+            images = images[~idxs]
+            labels = labels[~idxs]
+
+        return {'images': images, 'labels': labels}
+    
+    # ------------------------------------------------------------------------------------ DIGITS MNIST -- #
+
+    elif p_dataset == 'digits_MNIST':
+
+        """
+        28x28 pixel pictures of handwritten digits: http://yann.lecun.com/exdb/mnist/
+        """
+
+        # -- read files from local system folder (both )
+        labels_path = os.path.join('files/data/images/' + p_dataset + '/', 'train-labels-idx1-ubyte')
+        with open(labels_path,'rb') as lbpath:
+            labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8).reshape(-1, 1)
+                
+        images_path = os.path.join('files/data/images/' + p_dataset + '/', 'train-images-idx3-ubyte')
+        with open(images_path,'rb') as imgpath:
+            images = np.frombuffer(imgpath.read(), dtype=np.uint8, offset=16).reshape(len(labels), 784)
+        
+        # normalize images 
+        img_norm = images / 255
+
+        return {'images': img_norm, 'labels': labels}
 
     else:
         print('Error in: p_dataset')

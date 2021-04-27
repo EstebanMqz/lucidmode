@@ -22,8 +22,9 @@ def forward(self, A, l):
     layer = list(self.layers.keys())[l]
     W = self.layers[layer]['W']
     b = self.layers[layer]['b']
-
-    return np.matmul(A, W.T) + b.T
+    f = np.matmul(A, W.T) + b.T
+    
+    return f.astype(np.float64)
 
 def forward_activation(self, A_prev, l):
     layer = list(self.layers.keys())[l]
@@ -58,16 +59,38 @@ def forward_propagate(self, X):
 
 def backward_propagate(self, memory, Y):
     
-    # get the post-activation values for the last layer
-    AL = memory['A_' + str(len(self.hidden_l) + 2)]
-    Y = Y.reshape(AL.shape)
+    # number of samples to scale gradients values
     m = memory['A_1'].shape[0]
     
-    # factor to reproduce results of deep learning coursera and xor data
-    wm_i = 100
+    # factor to reproduce results
     
-    # first delta for output layer
-    dAL = (AL - Y)*fn.d_sigma(memory['Z_' + str(len(self.hidden_l) + 1)], self.output_a)
+    # XOR data
+    # wm_i = 100
+
+    # Other
+    wm_i = 1
+
+    # -- MULTI-CLASS: perform one-hot, simple difference for output delta
+    if self.output_n != 1:
+        # one-hot encoding
+        one_hot = np.zeros(shape=(len(Y), self.output_n))
+        one_hot[range(len(Y)), Y] = 1
+        Y = one_hot.astype(np.int8)
+        one_hot = None
+        # get the post-activation values for the last layer
+        AL = memory['A_' + str(len(self.hidden_l) + 2)]
+        # first delta for output layer
+        dAL = (AL - Y)
+
+    # -- SINGLE-CLASS: Plain variable usage, activated difference for output delta
+    else: 
+        # get the post-activation values for the last layer
+        AL = memory['A_' + str(len(self.hidden_l) + 2)] + 1e-25 # to avoid 0 division 
+        Y = Y.reshape(AL.shape)   
+        # first delta for output layer
+        dAL = (AL - Y)*fn.d_sigma(memory['Z_' + str(len(self.hidden_l) + 1)], self.output_a)
+
+    # store output layer delta
     memory['d_' + str(len(self.hidden_l) + 2)] = dAL
 
     # just loop hidden layers since the above was for the outputlayer
@@ -80,12 +103,12 @@ def backward_propagate(self, memory, Y):
         # dW and db previous layer
         dW = (1/m) * np.dot(memory['d_' + str(l + 3)].T, memory['A_' + str(l + 2)])
         memory['dW_' + str(l + 2)] = dW * wm_i
-        db = (1/m) * np.sum(memory['d_' + str(l + 3)]).reshape(dW.shape[0], 1)
+        db = (1/m) * np.sum(memory['d_' + str(l + 3)], axis=0).reshape(dW.shape[0], 1)
         memory['db_' + str(l + 2)] = db * wm_i
         
         # delta of layer
-        delta = fn.d_sigma(memory['Z_' + str(l + 1)], self.layers[layer]['a'])
-        d = delta * (memory['d_' + str(l + 3)] * self.layers[layer_1]['W'])
+        delta = fn.d_sigma(memory['A_' + str(l + 2)], self.layers[layer]['a'])
+        d = delta * np.matmul(memory['d_' + str(l + 3)], self.layers[layer_1]['W'])
         memory['d_' + str(l + 2)] = d
 
         # check for dimensions

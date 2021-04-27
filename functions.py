@@ -35,7 +35,7 @@ def cost(A, Y, type):
         cost = -(1/Y.shape[1]) * np.sum(loss)
     
     # -- Multiclass Cross-Entropy (pending)
-    elif type == 'multiclass-logloss':
+    elif type == 'multi-logloss':
 
         # auxiliary object
         y_hat = np.zeros(shape=(Y.shape[0], A.shape[1]))
@@ -62,22 +62,28 @@ def sigma(Z, activation):
 
     # -- Sigmoidal (sigmoid)
     if activation == 'sigmoid':
-        return 1 / (1 + np.exp(-Z))
+        Z = 1 / (1 + np.exp(-Z))
+        Z = Z.astype(np.float32)
+        return Z
     
     # -- Hyperbolic Tangent (tanh)
     elif activation == 'tanh':
-        return np.tanh(Z)
+        Z = np.tanh(Z)
+        Z = Z.astype(np.float32)
+        return Z
 
     # -- Rectified Linear Unit (ReLU)
     elif activation == 'relu':
         A = np.maximum(0, Z)
-        assert(A.shape == Z.shape)    
+        assert(A.shape == Z.shape)
         return A
     
     # -- Softmax
     elif activation == 'softmax':
         expZ = np.exp(Z - np.max(Z)).T 
-        return (expZ / expZ.sum(axis=0, keepdims=True)).T 
+        Z = (expZ / expZ.sum(axis=0, keepdims=True)).T 
+        Z = Z.astype(np.float32)
+        return Z
 
 # ------------------------------------------------------------------- DERIVATIVE OF ACTIVATION FUNCTIONS -- #
 # --------------------------------------------------------------------------------------------------------- #
@@ -86,26 +92,30 @@ def d_sigma(Z, activation):
     
     # -- Sigmoid
     if activation == 'sigmoid':
-        s = sigma(Z, 'sigmoid')
+        s = sigma(Z, activation)
         dZ = s*(1-s)
+        dZ = dZ.astype(np.float32)
         assert (dZ.shape == Z.shape)
     
     # -- Hyperbolic Tangent
     elif activation == 'tanh':
         a = sigma(Z, activation)
         dZ = 1 - a**2
+        dZ = dZ.astype(np.float32)
         assert (dZ.shape == Z.shape)
     
     # -- Rectified Linear Unit (ReLU)
     elif activation == 'relu':
         dZ = np.array(Z, copy=True)
         dZ[Z <= 0] = 0
+        dZ = dZ.astype(np.int8)
         assert (dZ.shape == Z.shape)
     
     # -- Softmax
     elif activation == 'softmax':
         s = sigma(Z, activation)
         s = s.reshape(-1, 1)
+        s = s.astype(np.float32)
         dZ = np.diagflat(s) - np.dot(s, s.T)
         assert (dZ.shape == Z.shape)
     
