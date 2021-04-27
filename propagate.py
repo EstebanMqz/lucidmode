@@ -24,7 +24,7 @@ def forward(self, A, l):
     b = self.layers[layer]['b']
     f = np.matmul(A, W.T) + b.T
     
-    return f.astype(np.float64)
+    return f.astype(np.float16)
 
 def forward_activation(self, A_prev, l):
     layer = list(self.layers.keys())[l]
@@ -85,7 +85,7 @@ def backward_propagate(self, memory, Y):
     # -- SINGLE-CLASS: Plain variable usage, activated difference for output delta
     else: 
         # get the post-activation values for the last layer
-        AL = memory['A_' + str(len(self.hidden_l) + 2)] + 1e-25 # to avoid 0 division 
+        AL = memory['A_' + str(len(self.hidden_l) + 2)] + 1e-20 # to avoid 0 division 
         Y = Y.reshape(AL.shape)   
         # first delta for output layer
         dAL = (AL - Y)*fn.d_sigma(memory['Z_' + str(len(self.hidden_l) + 1)], self.output_a)

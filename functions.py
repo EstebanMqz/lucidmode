@@ -80,6 +80,7 @@ def sigma(Z, activation):
     
     # -- Softmax
     elif activation == 'softmax':
+
         expZ = np.exp(Z - np.max(Z)).T 
         Z = (expZ / expZ.sum(axis=0, keepdims=True)).T 
         Z = Z.astype(np.float32)

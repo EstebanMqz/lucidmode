@@ -45,7 +45,7 @@ def accuracy(y, y_hat):
 
 # ------------------------------------------------------------------------------------ Confussion Matrix -- # 
 
-def confussion_matrix(y, y_hat):
+def confusion_matrix(y, y_hat):
 
     k = 10
     mat = np.zeros((k, k)).astype(int)

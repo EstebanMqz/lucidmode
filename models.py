@@ -405,7 +405,7 @@ class Sequential:
         # to store the costs across epochs
         history = {'cost': {}}
         
-        # epochs for training
+        # Epochs for training
         for epoch in range(epochs):
             
             # Forward pass
@@ -415,14 +415,14 @@ class Sequential:
             cost_value = fn.cost(memory['A_' + str(len(self.hidden_l) + 2)], y_train, cost_function)
             history['cost'][epoch] = cost_value
 
-            # print initial cost
+            # Print initial cost
             if epoch == 0:
                 print('initial cost: ', cost_value)
 
             # Backward pass
             grads = backward_propagate(self, memory, y_train)
 
-            # update all layers weights
+            # Update all layers weights
             for l in range(0, len(self.hidden_l) + 1):
 
                 layer  = list(self.layers.keys())[l]               
@@ -430,7 +430,7 @@ class Sequential:
                 db = grads['db_' + str(l + 1)]
                 W = self.layers[layer]['W']
                 b = self.layers[layer]['b']
-                self.layers[layer]['W'] = W - (alpha * dW) - (0.30/x_train.shape[0])*np.sum(W)
+                self.layers[layer]['W'] = W - (alpha * dW)
                 self.layers[layer]['b'] = b - (alpha * db)
 
         # print final cost

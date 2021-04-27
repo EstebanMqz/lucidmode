@@ -24,7 +24,7 @@ Cost Functions:
 - 'multi-logloss' (Multi-class Cross-Entropy)
 
 Metrics:
-- Confussion matrix (Multi-class)
+- Confusion matrix (Multi-class)
 - Accuracy (Multi-class)
 
 ## v0.1-beta1.0

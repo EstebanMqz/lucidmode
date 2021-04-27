@@ -22,7 +22,7 @@ import pandas as pd
 
 # -- complementary tools
 from rich import inspect
-from metrics import accuracy, confussion_matrix
+from metrics import accuracy, confusion_matrix
 
 # ------------------------------------------------------------------------------------- IMAGE CLASSIFIER -- #
 # --------------------------------------------------------------------------------------------------------- #
@@ -40,17 +40,17 @@ X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size = 
 # -- Test dataset: X_train.shape(7200, 784) y_train.test(7200,)
 
 # Neural Net Topology Definition
-lucid = Sequential(hidden_l=[20, 10], hidden_a=['sigmoid', 'tanh'], output_n=10, output_a='softmax')
+lucid = Sequential(hidden_l=[5, 5], hidden_a=['tanh', 'tanh'], output_n=10, output_a='softmax')
 
 # initialize weights
 lucid.init_weights(input_shape=X_train.shape[1], init_layers=['common-uniform'])
 
 # Inspect object contents  (Weights initialization)
-# inspect(lucid)
+inspect(lucid)
 
 # cost evolution
-history = lucid.fit(x_train=X_train, y_train=y_train, epochs=50, alpha=0.1,
-                   cost_function='multi-logloss')
+history = lucid.fit(x_train=X_train, y_train=y_train, epochs=50, alpha=0.05,
+                    cost_function='multi-logloss')
 
 # predict
 y_hat = lucid.predict(x_train=X_train)
@@ -60,7 +60,7 @@ acc = accuracy(y_train, y_hat)
 print(acc)
 
 # confussion matrix
-cm = confussion_matrix(y_train, y_hat)
+cm = confusion_matrix(y_train, y_hat)
 print(cm)
 
 # ------------------------------------------------------------------------------------------- RANDOM XOR -- #
