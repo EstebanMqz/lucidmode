@@ -1,19 +1,19 @@
 
 """
 # -- --------------------------------------------------------------------------------------------------- -- #
-# -- Project: lucidlite                                                                                  -- #
+# -- Project: lucidmode                                                                                  -- #
 # -- Description: A Lightweight Framework with Transparent and Interpretable Machine Learning Models     -- #
 # -- models.py: python script with Machine Learning Models                                               -- #
 # -- Author: IFFranciscoME - if.francisco.me@gmail.com                                                   -- #
 # -- license: GPL-3.0 License                                                                            -- #
-# -- Repository: https://github.com/IFFranciscoME/lucidlite                                              -- #
+# -- Repository: https://github.com/lucidmode/lucidmode                                                  -- #
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
 # -- Load other scripts
-import lucidlite.propagate as prop
-import lucidlite.functions as fn
-import lucidlite.regularization as reg
+import lucidmode.propagate as prop
+import lucidmode.functions as fn
+import lucidmode.regularization as reg
 import tools.metrics as mt
 
 # -- Load libraries for script
@@ -560,12 +560,10 @@ class Sequential:
 
         """
         
-        from propagate import forward_propagate
-
         # -- SINGLE-CLASS
         if self.output_n == 1:            
             # tested only with sigmoid output
-            memory = forward_propagate(self, x_train)
+            memory = prop.forward_propagate(self, x_train)
             p = memory['A_' + str(len(self.hidden_l) + 2)]
             thr = 0.5
             indx = p > thr
@@ -574,7 +572,7 @@ class Sequential:
 
         # -- MULTI-CLASS 
         else:
-            memory = forward_propagate(self, x_train)
+            memory = prop.forward_propagate(self, x_train)
             p = np.argmax(memory['A_' + str(len(self.hidden_l) + 2)], axis=1)
 
         return p

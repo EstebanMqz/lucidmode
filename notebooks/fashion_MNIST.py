@@ -1,17 +1,17 @@
 
 """
 # -- --------------------------------------------------------------------------------------------------- -- #
-# -- Project: lucidlite                                                                                  -- #
+# -- Project: lucidmode                                                                                  -- #
 # -- Description: A Lightweight Framework with Transparent and Interpretable Machine Learning Models     -- #
 # -- experiments.py: python script with experiment cases                                                 -- #
 # -- Author: IFFranciscoME - if.francisco.me@gmail.com                                                   -- #
 # -- license: GPL-3.0 License                                                                            -- #
-# -- Repository: https://github.com/IFFranciscoME/lucidlite                                              -- #
+# -- Repository: https://github.com/lucidmode/lucidmode                                                  -- #
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
 # -- load class
-from lucidlite.models import Sequential
+from lucidmode.models import Sequential
 
 # -- load datasets
 from tools.io_data import datasets

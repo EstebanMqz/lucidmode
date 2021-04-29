@@ -1,12 +1,12 @@
 
 """
 # -- --------------------------------------------------------------------------------------------------- -- #
-# -- Project: lucidlite                                                                                  -- #
+# -- Project: lucidmode                                                                                  -- #
 # -- Description: A Lightweight Framework with Transparent and Interpretable Machine Learning Models     -- #
 # -- propagate.py: python script with forward and backward propagation functions                         -- #
 # -- Author: IFFranciscoME - if.francisco.me@gmail.com                                                   -- #
 # -- license: GPL-3.0 License                                                                            -- #
-# -- Repository: https://github.com/IFFranciscoME/lucidlite                                              -- #
+# -- Repository: https://github.com/lucidmode/lucidmode                                                  -- #
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
@@ -14,7 +14,7 @@
 import numpy as np
 
 # -- Load other scripts
-import lucidlite.functions as fn
+import lucidmode.functions as fn
 
  # --------------------------------------------------------------------------------------------- FORWARD -- #
 
