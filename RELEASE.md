@@ -1,5 +1,29 @@
 # RELEASES NOTES
 
+## v0.4-beta1.0
+
+Metrics
+- Calculation of several metrics for classification
+	sensitivity (TPR), specificity (TNR), accuracy (acc),
+	likelihood ratio (positive), likelihood ratio (negative),
+	confusion matrix (binary and multiclass)
+	confusion tensor (binary for every class in multi-class)
+
+Sequential Class
+- Move the cost_f and cost_r parameters to be specified from formation method, leave the class
+	instantiation with just the model architecture
+
+- Move the init_weights method to be specified from formation method
+
+Execution
+- Create formation method in the Sequential Class, with the following parameters
+	init, cost, metrics, optimizer
+
+- Store selected metrics in Train and Validation History
+
+Visualizations
+- Select metrics for verbose output
+
 ## v0.3-beta1.0
 
 Regularization:

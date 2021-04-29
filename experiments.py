@@ -22,7 +22,7 @@ import pandas as pd
 
 # -- complementary tools
 from rich import inspect
-from metrics import accuracy, confusion_matrix
+from metrics import metrics
 
 # ------------------------------------------------------------------------------------- IMAGE CLASSIFIER -- #
 # --------------------------------------------------------------------------------------------------------- #
@@ -40,40 +40,44 @@ X_train, X_val, y_train, y_val = train_test_split(images, labels, test_size = 0.
 # -- Test dataset: X_train.shape(7200, 784) y_train.test(7200,)
 
 # Neural Net Topology Definition
-lucid = Sequential(cost_f='multi-logloss', cost_r={'type': 'l1', 'lmbda': 0.01, 'ratio':0.1},
+lucid = Sequential(hidden_l=[30, 30, 10], hidden_a=['tanh', 'tanh', 'tanh'],
+                   hidden_r=[{'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
+                             {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
+                             {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1}],
                    
-                   hidden_l=[30, 30, 10], hidden_a=['tanh', 'tanh', 'tanh'],
-                   hidden_r=[{'type': 'l2', 'lmbda': 0.01, 'ratio':0.1},
-                             {'type': 'l2', 'lmbda': 0.01, 'ratio':0.1},
-                             {'type': 'l2', 'lmbda': 0.01, 'ratio':0.1}],
-                   
-                   output_r={'type': 'l2', 'lmbda': 0.01, 'ratio':0.1},
+                   output_r={'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
                    output_n=10, output_a='softmax')
 
-# initialize weights
-lucid.init_weights(input_shape=X_train.shape[1], init_layers=['common-uniform'])
+# Model and implementation case Formation
+lucid.formation(cost={'function': 'multi-logloss', 'reg': {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1}},
+                init={'input_shape': X_train.shape[1], 'init_layers': 'common-uniform'},
+                optimizer={'type': 'gd', 'params': {'lr': 0.075}},
+                metrics=['acc'])
 
 # Inspect object contents  (Weights initialization)
 inspect(lucid)
 
 # cost evolution
 history = lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val,
-                    epochs=150, alpha=0.015,
-                    cost_f='multi-logloss', verbosity=3)
+                    epochs=660, verbosity=3)
 
-# predict train
+# Predict train
 y_hat = lucid.predict(x_train=X_train)
-train_acc = accuracy(y_train, y_hat)
-print(train_acc)
+train_metrics = metrics(y_train, y_hat, type='classification')
 
-# predict train
+# Confusion matrix
+train_metrics['cm']
+
+# Overall accuracy
+train_metrics['acc']
+
+# Predict train
 y_val_hat = lucid.predict(x_train=X_val)
-val_acc = accuracy(y_val, y_val_hat)
-print(val_acc)
+val_metrics = metrics(y_val, y_val_hat, type='classification')
 
-# confussion matrix
-cm = confusion_matrix(y_train, y_hat)
-print(cm)
+# Overall accuracy
+val_metrics['acc']
+
 
 """
 Some results:

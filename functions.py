@@ -65,7 +65,7 @@ def cost(A, Y, type):
     assert(cost.shape == ())
 
     # function final result
-    return cost.astype(np.float32)
+    return cost.astype(np.float32).round(decimals=4)
  
 # --------------------------------------------------------------------------------- ACTIVATION FUNCTIONS -- #
 # --------------------------------------------------------------------------------------------------------- #

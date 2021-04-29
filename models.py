@@ -14,6 +14,7 @@
 import propagate as prop
 import functions as fn
 import regularization as reg
+import metrics as mt
 
 # -- Load libraries for script
 import numpy as np
@@ -124,8 +125,8 @@ class Sequential:
     # -------------------------------------------------------------------------------- CLASS CONSTRUCTOR -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def __init__(self, hidden_l, hidden_a, output_n, output_a, cost_f=None, cost_r=None,
-                 hidden_r=None, output_r=None):
+    def __init__(self, hidden_l, hidden_a, output_n, output_a, cost=None, 
+                 hidden_r=None, output_r=None, optimizer=None):
 
         """
         ANN Class constructor
@@ -152,12 +153,14 @@ class Sequential:
                 'l2': Ridge regularization |b|^2
                 'elasticnet': C(L1 - L2)
                 'dropout': Randomly (uniform) select N neurons in layer and turn its weight to 0
-            
-        cost_f: str
-            cost function, options are according to functions.cost
+                   
+        cost: str
+            cost information for model.
+            'function': 'binary-logloss', 'multi-logloss', 'mse'
+            'reg': {'type': ['l1', 'l2', 'elasticnet'], 'lambda': 0.001, 'ratio': 0.01}
 
-        cost_r: str
-            regularization criteria applied to cost function, options are according to functions.cost
+        init: str
+            initialization of weights specified from compile method
 
         Returns
         -------
@@ -181,61 +184,14 @@ class Sequential:
         self.output_r = output_r
 
         # Cost function definition
-        self.cost_f = cost_f
+        self.cost = cost
 
-        # Regularization criteria for cost function
-        self.cost_r = cost_r
+        # Cost function definition
+        self.optimizer = optimizer
 
         # Regularization criteria for pre-hidden-layer weights and biases
         self.hidden_r = hidden_r
     
-    # --------------------------------------------------------------------------------- LAYERS FORMATION -- #
-    # -------------------------------------------------------------------------------------------------- -- #
-
-    def _formation(self):
-        """
-        Neural Network Model Topology Formation.        
-
-        Parameters
-        ----------
-        
-        self: Instance of class
-
-
-        Returns
-        -------
-        
-        self: Modifications on instance of class
-
-        """
-
-        # Hidden layers
-        self.layers = {'hl_' + str(layer): {'W': {}, 'b':{}, 'a': {}, 'r':self.hidden_r[layer]}
-                       for layer in range(0, len(self.hidden_l))}
-
-        # Output layer
-        self.layers.update({'ol': {'W': {}, 'b': {}, 'a': self.output_a, 'r': self.output_r}})
-
-        # iterative layer formation loop
-        for layer in range(0, len(self.hidden_l)):
-
-            # layer neurons composition
-            self.layers['hl_' + str(layer)]['W'] = None
-
-            # layer biases
-            self.layers['hl_' + str(layer)]['b'] = None
-
-            # layer activation
-            # if only 1 activation function was provided, use it for all hidden layers
-            act = self.hidden_a[0] if len(self.hidden_a) == 1 else self.hidden_a[layer]
-            self.layers['hl_' + str(layer)]['a'] = act
-
-            # layer regularization
-            self.layers['hl_' + str(layer)]['r'] = self.hidden_r[layer]
-
-            # layer weights initialization
-            self.layers['hl_' + str(layer)]['i'] = ''
-
     # --------------------------------------------------------------------------- WEIGHTS INITIALIZATION -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
@@ -272,21 +228,14 @@ class Sequential:
         # reproducibility
         np.random.seed(2)
 
-        # base topology formation
-        self._formation()
-
         # number of hidden layers
         layers = len(self.hidden_l)
 
         # hidden layers weights
         for layer in range(0, layers):
 
-            # if only one weight initialization criteria is specified, use it for all layers.
-            if len(init_layers) == 1 and len(self.hidden_l):
-                init_layers = [init_layers[0]]*len(self.hidden_l)
-
             # type of initialization for each layer
-            type = init_layers[layer]
+            type = init_layers
 
             # store the type of initialization used for each layer
             self.layers['hl_' + str(layer)]['i'] = type
@@ -377,11 +326,87 @@ class Sequential:
             else: 
                 print('Raise Error')
 
+    
+    # --------------------------------------------------------------------------------- LAYERS FORMATION -- #
+    # -------------------------------------------------------------------------------------------------- -- #
+
+
+    def formation(self, cost=None, optimizer=None, init=None, metrics=None):
+        """
+        Neural Network Model Formation.        
+        
+        Parameters
+        ----------
+        
+        self: Instance of class
+
+        cost: 
+            cost_f: Cost function
+            cost_r: Cost regularization
+        
+        optimizer: 
+            type: Name of method for optimization
+            params: parameters according to method
+        
+        init:
+            weight initialization
+        
+        metrics: 
+            metrics to monitor training
+
+
+        Returns
+        -------
+        
+        self: Modifications on instance of class
+
+        """
+
+        # Hidden layers
+        self.layers = {'hl_' + str(layer): {'W': {}, 'b':{}, 'a': {}, 'r':self.hidden_r[layer]}
+                       for layer in range(0, len(self.hidden_l))}
+
+        # Output layer
+        self.layers.update({'ol': {'W': {}, 'b': {}, 'a': self.output_a, 'r': self.output_r}})
+
+        # iterative layer formation loop
+        for layer in range(0, len(self.hidden_l)):
+
+            # layer neurons composition
+            self.layers['hl_' + str(layer)]['W'] = None
+
+            # layer biases
+            self.layers['hl_' + str(layer)]['b'] = None
+
+            # layer activation
+            # if only 1 activation function was provided, use it for all hidden layers
+            act = self.hidden_a[0] if len(self.hidden_a) == 1 else self.hidden_a[layer]
+            self.layers['hl_' + str(layer)]['a'] = act
+
+            # layer regularization
+            self.layers['hl_' + str(layer)]['r'] = self.hidden_r[layer]
+
+            # layer weights initialization
+            self.layers['hl_' + str(layer)]['i'] = ''
+        
+        # Weights initialization
+        self.init_weights(input_shape=init['input_shape'], init_layers=init['init_layers'])
+
+        # Cost (function and regularization definition)
+        self.cost = cost
+        
+        # Metrics to track progress on learning
+        self.metrics = metrics
+
+        # Optimizer
+        self.optimizer = optimizer
+
+
     # ------------------------------------------------------------------ FIT MODEL PARAMETERS (LEARNING) -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def fit(self, x_train, y_train, x_val=None, y_val=None, epochs=10, alpha=0.1, 
-            cost_f='binary-logloss', verbosity=3):
+
+    def fit(self, x_train, y_train, x_val=None, y_val=None, epochs=10, alpha=0.1, verbosity=3):
         
         """
         Train model according to specified parameters
@@ -423,81 +448,104 @@ class Sequential:
         # binary output
         # y_train = data['y'].astype(np.int)
 
-        """
-
-        # from propagate import forward_propagate, backward_propagate       
-       
+        """ 
+               
+        # Store evolution of cost and other metrics across epochs
+        history = {self.cost['function']: {'train': {}, 'val': {}}}
+        history.update({metric: {'train': {}, 'val': {}} for metric in self.metrics})
+        
         # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
-        
-        # to store the costs across epochs
-        history = {'cost': {'train': {}, 'val': {}}}
-        
-        # Epochs for training
         for epoch in range(epochs):
             
             # Forward pass
-            memory = prop.forward_propagate(self, x_train)
-            
-            # Cost (train)
-            cost_train = fn.cost(memory['A_' + str(len(self.hidden_l) + 2)], y_train, cost_f)
+            memory_train = prop.forward_propagate(self, x_train)
+            mem_layer = 'A_' + str(len(self.hidden_l) + 2)
 
-            if len(x_val) !=0 :
+            # If there exists a validation test
+            if len(x_val) !=0:
+
                 # Forward pass
                 memory_val = prop.forward_propagate(self, x_val)
+                y_val_hat = memory_val[mem_layer]
                 
                 # Cost (validation)
-                cost_val = np.round(fn.cost(memory_val['A_' + str(len(self.hidden_l) + 2)], y_val, cost_f), 8)
-                history['cost']['val'][epoch] = cost_val
+                cost_val = fn.cost(y_val_hat, y_val, self.cost['function'])
+                history[self.cost['function']]['val'][epoch] = cost_val
+
+                # value prediction
+                y_val_hat = self.predict(x_val)
+
+                # Any other metrics registered to track
+                for metric in self.metrics:
+                    history[metric]['val'][epoch] = mt.metrics(y_val, y_val_hat, type='classification')
             
+            # Probability prediction
+            y_train_p = memory_train[mem_layer]
+
+            # Value prediction
+            y_train_hat = self.predict(x_train)
+            
+            # Cost (train)
+            cost_train = fn.cost(y_train_p, y_train, self.cost['function'])
+
             # Regularization components (applied only to train)
-            if self.cost_r:
+            if self.cost['reg']:
                 Weights = [self.layers[layer]['W'] for layer in self.layers]
                 reg_term = reg.l1_l2_EN(Weights,
-                                        type=self.cost_r['type'],
-                                        lmbda=self.cost_r['lmbda'],
-                                        ratio=self.cost_r['ratio'])/x_train.shape[0]
+                                        type=self.cost['reg']['type'],
+                                        lmbda=self.cost['reg']['lmbda'],
+                                        ratio=self.cost['reg']['ratio'])/x_train.shape[0]
 
-                # update current value with regularization term
+                # Update current value with regularization term
                 cost_train += reg_term
 
-            # update cost value to history
-            history['cost']['train'][epoch] = np.round(cost_train.astype(np.float32), 8)
+            # Update cost value to history
+            history[self.cost['function']]['train'][epoch] = cost_train.astype(np.float32).round(decimals=4)
+            
+            # Any other metrics registered to track
+            for metric in self.metrics:
+                history[metric]['train'][epoch] = mt.metrics(y_train, y_train_hat, type='classification')
            
+            # Verbosity
             if verbosity == 3:
-                print('-- epoch: ', "%2i" % epoch,
-                      '-- cost_train: ', "%.6f" % history['cost']['train'][epoch],
-                      '-- cost_val: ', "%.6f" % history['cost']['val'][epoch])
+                print('\n- epoch:', "%3i" % epoch, '\n --------------------------------------- ', 
+                      '\n- cost_train:', "%.4f" % history[self.cost['function']]['train'][epoch],
+                      '- cost_val:', "%.4f" % history[self.cost['function']]['val'][epoch])
+                if self.metrics:
+                    for metric in self.metrics:
+                        print('- ' + metric + '_train' + ': ' + 
+                                "%.4f" % history[metric]['train'][epoch][metric],
+                                '- ' + metric + '_val' + ': ' +
+                                "%.4f" % history[metric]['val'][epoch][metric])
 
-            # Backward pass
-            grads = prop.backward_propagate(self, memory, y_train)
+            # -- Backward pass
+            grads = prop.backward_propagate(self, memory_train, y_train)
 
             # Update all layers weights and biases
             for l in range(0, len(self.hidden_l) + 1):
 
+                # Model Elements
                 layer  = list(self.layers.keys())[l]               
                 dW = grads['dW_' + str(l + 1)]
                 W = self.layers[layer]['W']
                 db = grads['db_' + str(l + 1)]
                 b = self.layers[layer]['b']
                 
-                # if the layer has regularization 
+                # If the layer has regularization criteria
                 if self.layers[layer]['r']:
                     r_t = self.layers[layer]['r']['type']
                     r_l = self.layers[layer]['r']['lmbda']
                     r_r = self.layers[layer]['r']['ratio']
                     regW = reg.l1_l2_EN([W], type=r_t, lmbda=r_l, ratio=r_r)/x_train.shape[0]
                     regb = reg.l1_l2_EN([b], type=r_t, lmbda=r_l, ratio=r_r)/x_train.shape[0]
+                
+                # No regularization
                 else:
                     regW, regb = 0
 
-                self.layers[layer]['W'] = W - (alpha * dW) + regW
-                self.layers[layer]['b'] = b - (alpha * db) + regb
-
-        # print final cost
-        print('\n\n-- FINAL epoch: ', "%2i" % epoch,
-              ' -- cost_train: ', "%.6f" % history['cost']['train'][epochs-1],
-              ' -- cost_val: ', "%.6f" % history['cost']['val'][epochs-1],
-              '-- ')
+                # Gradient updating
+                self.layers[layer]['W'] = W - (self.optimizer['params']['lr'] * dW) + regW
+                self.layers[layer]['b'] = b - (self.optimizer['params']['lr'] * db) + regb
         
         # return cost list
         return history

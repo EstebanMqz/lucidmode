@@ -15,6 +15,11 @@
 
 # -- Preprocessing input data: Scale, Standard, Robust Standard.
 
+# -------------------------------------------------------------------------- CALLBACK: ReduceLROnPlateau -- #
+# --------------------------------------------------------------------------------------------------------- #
+
+# -- Callback for reducing learning rate when reached a plateau of non improving metric
+
 # ----------------------------------------------------------------------------- CALLBACK: TerminateOnNaN -- #
 # --------------------------------------------------------------------------------------------------------- #
 
@@ -28,5 +33,16 @@
 # ------------------------------------------------------------------------------------ SAVE/LOAD WEIGHTS -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-# -- Save weights to external object/file.
-# -- Load weights from external object/file.
+
+def save_load_model(model):
+    """
+    # -- Save weights to external object/file.
+    # -- Load weights from external object/file.
+    # https://pypi.org/project/h5py/
+
+    """
+
+    
+
+    return 'coming soon'
+
