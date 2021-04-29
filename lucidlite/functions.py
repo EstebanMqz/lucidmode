@@ -1,12 +1,12 @@
 
 """
 # -- --------------------------------------------------------------------------------------------------- -- #
-# -- Project: LucidNet                                                                                   -- #
-# -- Description: A Lightweight Framework for Transparent and Interpretable FeedForward Neural Net       -- #
+# -- Project: lucidlite                                                                                  -- #
+# -- Description: A Lightweight Framework with Transparent and Interpretable Machine Learning Models     -- #
 # -- functions.py: python script with math functions                                                     -- #
 # -- Author: IFFranciscoME - if.francisco.me@gmail.com                                                   -- #
 # -- license: GPL-3.0 License                                                                            -- #
-# -- Repository: https://github.com/IFFranciscoME/LucidNet                                               -- #
+# -- Repository: https://github.com/IFFranciscoME/lucidlite                                              -- #
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 

@@ -1,20 +1,20 @@
 
 """
 # -- --------------------------------------------------------------------------------------------------- -- #
-# -- Project: LucidNet                                                                                   -- #
-# -- Description: A Lightweight Framework for Transparent and Interpretable FeedForward Neural Net       -- #
+# -- Project: lucidlite                                                                                  -- #
+# -- Description: A Lightweight Framework with Transparent and Interpretable Machine Learning Models     -- #
 # -- models.py: python script with Machine Learning Models                                               -- #
 # -- Author: IFFranciscoME - if.francisco.me@gmail.com                                                   -- #
 # -- license: GPL-3.0 License                                                                            -- #
-# -- Repository: https://github.com/IFFranciscoME/LucidNet                                               -- #
+# -- Repository: https://github.com/IFFranciscoME/lucidlite                                              -- #
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
 # -- Load other scripts
-import propagate as prop
-import functions as fn
-import regularization as reg
-import metrics as mt
+import lucidlite.propagate as prop
+import lucidlite.functions as fn
+import lucidlite.regularization as reg
+import tools.metrics as mt
 
 # -- Load libraries for script
 import numpy as np

@@ -3,29 +3,20 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 # -- Project: lucidlite                                                                                  -- #
 # -- Description: A Lightweight Framework with Transparent and Interpretable Machine Learning Models     -- #
-# -- optimizers.py: python script with optimization algorithms functions                                 -- #
+# -- processing.py: python script with data pre-post processing functions                                -- #
 # -- Author: IFFranciscoME - if.francisco.me@gmail.com                                                   -- #
 # -- license: GPL-3.0 License                                                                            -- #
 # -- Repository: https://github.com/IFFranciscoME/lucidlite                                              -- #
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
-# -------------------------------------------------------------------------------------------------- SGD -- #
+# ------------------------------------------------------------------------------------- TRAIN_TEST_SPLIT -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def sgd():
+def train_val_split():
     """
-    Stochastic Gradient Descent
-
-    Parameters
-    ----------
-
-    Returns
-    -------
-
-    References
-    ----------
+    To split into train and validation split with an optional third split for final test.
 
     """
-    
-    return 1
+
+    return 'coming soon'

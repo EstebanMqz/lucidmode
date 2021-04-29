@@ -1,6 +1,6 @@
 
-# LucidNet
-A Lightweight Framework for Transparent and Interpretable FeedForward Neural Net Model
+# lucidlite
+A Lightweight Framework with Transparent and Interpretable Machine Learning Models. Model
 
 ## Install dependencies
 

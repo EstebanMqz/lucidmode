@@ -5,13 +5,13 @@
 .vscode/
 
 # ignore virtual env for development
-lucidnet_dev_venv/
+lucidlite_dev_venv/
 
 # ignore virtual env for production
-lucidnet_dev_venv/
+lucidlite_dev_venv/
 
 # ignore vscode workspace file
-lucidnet_dev.code-workspace
+lucidlite_dev.code-workspace
 
 # ----------- -------------- ----------- #
 
