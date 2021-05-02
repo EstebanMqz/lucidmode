@@ -1,4 +1,4 @@
-.. _home:
+. _home:
 
 Home
 ====
@@ -71,7 +71,7 @@ must be preserved. Contributors provide an express grant of patent rights.*
 Contact
 -------
 
-For more information in reggards of this repo, please contact if.francisco.me@gmail.com*
+For more information in reggards of this repo, please contact if.francisco.me@gmail.com
 
 Contents
 --------
