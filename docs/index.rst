@@ -25,9 +25,9 @@ Current version
 Install dependencies
 --------------------
 
-Install all the dependencies stated in the requirements.txt file, just run the following command in terminal:
+Install all the dependencies stated in the requirements.txt file, just run the following command in terminal::
 
-         pip install -r requirements.txt
+   pip install -r requirements.txt
          
 Or you can manually install one by one using the name and version in the file.
 
@@ -80,7 +80,6 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   index
    pages/introduction
    pages/examples
    pages/installation
