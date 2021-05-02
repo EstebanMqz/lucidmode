@@ -84,20 +84,13 @@ Contact
 -------
 For more information in reggards of this repo, please contact if.francisco.me@gmail.com*
 
-**Contents**:
+Contents:
 
 .. toctree::
    :maxdepth: 2
 
    intro
    examples
-   Installation
-   roadmap
+   installation
    license
-
-|
-
------
-
-|
-
+   roadmap

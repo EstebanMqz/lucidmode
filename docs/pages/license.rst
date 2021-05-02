@@ -2,3 +2,5 @@
 
 License
 =======
+
+``lucidmode`` requires ...  
