@@ -3,5 +3,4 @@
 Examples
 ========
 
-
 ``lucidmode`` requires ...  

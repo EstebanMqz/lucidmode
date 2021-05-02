@@ -2,7 +2,6 @@
 Home
 ====
 
-
 +-----------------+-----------------------------------------------------------------------------------------+
 | Project: lucidmode                                                                                        |
 +=================+=========================================================================================+
@@ -52,7 +51,6 @@ Feedforward Multilayer perceptron with backpropagation.
 - **Public Datasets**: MNIST, Fashion MNIST
 - **Special Datasets**: OHLCV + Symbolic Features of Cryptocurrencies (ETH, BTC)
 
-
 Author/Principal Maintainer
 ---------------------------
 
@@ -83,6 +81,5 @@ Contents
    pages/introduction
    pages/examples
    pages/installation
-   pages/license
    pages/roadmap
    pages/releases
