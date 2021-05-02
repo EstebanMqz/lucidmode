@@ -89,8 +89,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   intro
-   examples
-   installation
-   license
-   roadmap
+   pages/intro
+   pages/examples
+   pages/installation
+   pages/license
+   pages/roadmap
