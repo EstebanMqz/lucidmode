@@ -17,26 +17,6 @@ import numpy as np
 # --------------------------------------------------------------------------------------------------------- #
 
 def _cost(A, Y, type):
-    """
-    Cost function calculation
-
-    
-    Parameters
-    ----------
-
-    A: 
-
-    Y: 
-
-    type: 
-
-    Returns
-    -------
-
-    References
-    ----------
-
-    """
     
     # numerical stability parameter
     ns = 1e-25

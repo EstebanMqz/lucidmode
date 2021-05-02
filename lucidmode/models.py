@@ -41,11 +41,13 @@ class NeuralNet:
 
     Layer transformations:
         - linear
-        - convolution
+        - (pending) convolution
    
     Activation functions:
-        For hidden -> Sigmoid, Tanh, ReLu
-        For output -> Linear (regression), Sigmoid (binary classification), Softmax (multivariate classification)
+        For hidden layers: 
+            - Sigmoid, Tanh, ReLu (pending)
+        For output layer:
+            - Softmax, Linear (pending), Sigmoid (pending)
     
     Methods
     -------
@@ -53,26 +55,30 @@ class NeuralNet:
     Weights Initialization:
         - Xavier normal, Xavier uniform, common uniform, according to [1]
         - He, according to [2]
-        - Load from object.
+        - (pending) Save/Load from object.
     
     Training Schemes:
-        - Gradient Descent
+        - Gradient Descent (Use all data)
             - train: use all the data on each epoch
             - validation: use all the data on each epoch
-            - note for FTS: None of particular importance
+            - (pending) note for FTS: None of particular importance
 
-        - Stochastic Gradient Descent
-            - train: use 1 example at a time and iterate through all of them on each epoch
+        - Stochastic Gradient Descent (use 1 sample)
+            - train: use 1 saample at a time and iterate through all of them on each epoch
             - validation: use all the data when train finishes, do that on each epoch 
-            - note for FTS: Do not shuffle data
+            - (pending) note for FTS: Do not shuffle data
 
-        - Mini-Batch
+        - Mini-Batch Gradient Descent (use N samples)
             - train: use a partition or subset of the whole data
-            - validation: 
+            - validation: use a partition or subset of the whole data (same as train)
+            - (pending) note for FTS: Do not shuffle data
 
-        - Nesterov
-        - Adam
-    
+        - (pending) Adapting Learning
+            - Momentum
+            - Nesterov
+        
+        - (pending) Levenberg-Marquardt Algorithm
+
     Regularization:
         - Types: l1, l2, elasticnet, dropout
         
@@ -80,9 +86,9 @@ class NeuralNet:
             - Weights values of all layers (l1, l2, elasticnet)
         
         - In layers
-            - Weights gradient values (l1, l2, elasticnet)
-            - Bias gradient values (l1, l2, elasticnet)
-            - Neurons activation (dropout)
+            - (pending) Weights gradient values (l1, l2, elasticnet)
+            - (pending) Bias gradient values (l1, l2, elasticnet)
+            - (pending) Neurons activation (dropout)
 
     Cost Functions: 
         - For classification: 
@@ -93,32 +99,31 @@ class NeuralNet:
             - Mean Squared Error
     
     Execution Tools:
-        - Preprocessing input data: Scale, Standard, Robust Standard.
-        - Callback for termination on NaN (cost functions divergence).
-        - Callback for early stopping on a metric value difference between Train-Validation sets.
-        - Save weights to external object/file.
-        - Load weights from external object/file.
+        - (pending) Preprocessing input data: Scale, Standard, Robust Standard.
+        - (pending) Callback for termination on NaN (cost functions divergence).
+        - (pending) Callback for early stopping on a metric value difference between Train-Validation sets.
+        - (pending) Save weights to external object/file.
+        - (pending) Load weights from external object/file.
 
     Visualization/Interpretation Tools: 
-        - Weight values per layer (Colored bar for each neuron, separation of all layers).
-        - CostFunction (train-val) evolution (two lines plot with two y-axis).
-        - Convolution operation between layers.
+        - (pending) Weight values per layer (Colored bar for each neuron, separation of all layers).
+        - (pending) CostFunction (train-val) evolution (two lines plot with two y-axis).
+        - (pending) Convolution operation between layers.
     
-    Methods
-        - __private: init, init_weights, activation, forward, backward, derivative
-        - _protected: train, cost, metrics, regularization, callback
-        - public: fit, predict, explain, load, save
+    General Methods List:
+        - public: fit, predict
     
-    Special
+    Special:
+    --------
 
     "Ubuntu does not mean that people should not address themselves, the question, therefore is, are you
      going to do so in order to enable the community around you?", Nelson Mandela, 2006. Recorded in a 
      video made previously to the launch of Ubuntu linux distribution.
 
-    - ubuntu_fit: Distributed learning using parallel processing among mini-batches of data selected by its 
-                  value on an information divergence matrix.
+    - (pending) ubuntu_fit: Distributed learning using parallel processing among mini-batches of data 
+                            selected by its value on an information divergence matrix.
 
-    - ubuntu_predict: Voting system (classification) or Average system (regression).
+    - (pending) ubuntu_predict: Voting system (classification) or Average system (regression).
 
     """
 

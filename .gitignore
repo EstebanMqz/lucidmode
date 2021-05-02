@@ -1,6 +1,9 @@
 
 # ---------- Exclude manually ---------- #
 
+# ignore pycharm project folder
+.idea/
+
 # ignore vscode project folder
 .vscode/
 
