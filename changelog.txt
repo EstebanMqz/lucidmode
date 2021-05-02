@@ -1,0 +1,41 @@
+
+# -- --------------------------------------------------------------------------------------------------- -- #
+# -- Project: lucidmode                                                                                  -- #
+# -- Description: A Lightweight Framework with Transparent and Interpretable Machine Learning Models     -- #
+# -- changelog.txt: A text file with notes on planning and progress on changes                           -- #
+# -- Author: IFFranciscoME - if.francisco.me@gmail.com                                                   -- #
+# -- License: GPL-3.0 License                                                                            -- #
+# -- Repository: https://github.com/lucidmode/lucidmode                                                  -- #
+# -- --------------------------------------------------------------------------------------------------- -- #
+
+## TODO: v0.4.1-beta1.0
+
+*** DONE ****
+
+#### Functionality
+
+Optimizers
+- Modify Gradient Descent to support other two options
+- Add Stochastic Gradient Descent (batch_size == 1)
+- Add Batch Gradient Descent (1 < batch_size < n_sample)
+
+#### Changelog
+- Modification: Rename Sequential class as NeuralNet
+- Documentation: Renamed private methods according to python official docs: 
+	https://docs.python.org/3/tutorial/classes.html#private-variables
+
+*** PENDING ****
+
+Optimizers
+- Create Optimizer class with SGD and LM
+- Port SGD from fit to Optimizers class
+- Create Levenberg-Marquardt Algorithm for weights optimization
+
+Execution
+- Add ignore_warnings flag for cases of RuntimeWarning in math operations
+- - divide by zero, very large weights
+
+Tests
+- Optimizers.py
+- 1) Default values for all params
+- 2) different values for batch_size

@@ -16,13 +16,25 @@ import numpy as np
 # --------------------------------------------------------------------------------------- COST FUNCTIONS -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def cost(A, Y, type):
+def _cost(A, Y, type):
     """
     Cost function calculation
 
-    A
-    Y
-    type
+    
+    Parameters
+    ----------
+
+    A: 
+
+    Y: 
+
+    type: 
+
+    Returns
+    -------
+
+    References
+    ----------
 
     """
     
@@ -70,7 +82,7 @@ def cost(A, Y, type):
 # --------------------------------------------------------------------------------- ACTIVATION FUNCTIONS -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def sigma(Z, activation):
+def _sigma(Z, activation):
 
     # -- Sigmoidal (sigmoid)
     if activation == 'sigmoid':
@@ -101,18 +113,18 @@ def sigma(Z, activation):
 # ------------------------------------------------------------------- DERIVATIVE OF ACTIVATION FUNCTIONS -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def d_sigma(Z, activation):
+def _dsigma(Z, activation):
     
     # -- Sigmoid
     if activation == 'sigmoid':
-        s = sigma(Z, activation)
+        s = _sigma(Z, activation)
         dZ = s*(1-s)
         dZ = dZ.astype(np.float32)
         assert (dZ.shape == Z.shape)
     
     # -- Hyperbolic Tangent
     elif activation == 'tanh':
-        a = sigma(Z, activation)
+        a = _sigma(Z, activation)
         dZ = 1 - a**2
         dZ = dZ.astype(np.float32)
         assert (dZ.shape == Z.shape)
@@ -126,7 +138,7 @@ def d_sigma(Z, activation):
     
     # -- Softmax
     elif activation == 'softmax':
-        s = sigma(Z, activation)
+        s = _sigma(Z, activation)
         s = s.reshape(-1, 1)
         s = s.astype(np.float32)
         dZ = np.diagflat(s) - np.dot(s, s.T)

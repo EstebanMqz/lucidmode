@@ -10,15 +10,15 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
+
 # -- Load libraries for script
 import numpy as np
 
-# ----------------------------------------------------------------------------------- FOR CLASSIFICATION -- #
+
+# ---------------------------------------------------------------------------------- PERFORMANCE METRICS -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-# ---------------------------------------------------------------------------------------------- Metrics -- # 
-
-def metrics(y, y_hat, type):
+def metrics(y, y_hat, type, use='learning'):
     """
     
     Metrics for classification. for single class One-Vs-One, for multiclass One-Vs-Rest.
@@ -36,6 +36,10 @@ def metrics(y, y_hat, type):
 
     type: str
         The type of model is going to be tested. The options are: 'classification', 'regression'
+    
+    use: str
+        'learning': To measeure performance of models in the learning process
+        'information': To measure information aspects for generalization goals
 
     Results
     -------
@@ -50,6 +54,8 @@ def metrics(y, y_hat, type):
         acc : Accuracy of results (tpr + tnr) / Population
         lr_p : Positive Likelihodd (tpr/fpr)
         lr_n : Negative Likelihodd (fnr/tnr)
+
+    Pending: Precision, Recall, AUC
 
     """
 
@@ -147,19 +153,29 @@ def metrics(y, y_hat, type):
 
         return 'coming soon'
 
-# -------------------------------------------------------------------------------------------- Precision -- #
 
-# ----------------------------------------------------------------------------------------------- Recall -- #
-
-# -------------------------------------------------------------------------------------------------- AUC -- #
-
-
-# --------------------------------------------------------------------------------------- FOR REGRESSION -- #
+# ------------------------------------------------------------------------------------- LEARNING METRICS -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-# -- R2
+def learning_metrics(data, type):
+    """
+    Metrics used for the learning process
 
-# ----------------------------------------------------------------------------------------- FOR LEARNING -- #
-# --------------------------------------------------------------------------------------------------------- #
+    
+    Parameters
+    ----------
 
-# -- Kullback-Liebler
+
+    Returns
+    ------
+
+
+    References
+    ----------
+
+
+    """
+
+    # -- Kullback-Liebler
+
+    return 'coming soon'

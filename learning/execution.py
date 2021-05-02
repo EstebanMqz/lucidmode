@@ -46,3 +46,35 @@ def save_load_model(model):
 
     return 'coming soon'
 
+
+# ------------------------------------------------------------------------------ RECORD AND DISPLAY LOGS -- #
+# --------------------------------------------------------------------------------------------------------- #
+
+# -- Record and display messages and logs from execution activity
+
+def record_logger(data, verbosity, source):
+    """
+    Record and display logs of execution and results
+    
+    
+    Parameters
+    ----------
+
+    data: dict
+        With data to be logged. It must be specified as the following
+        {'ith-metric': [ith-value]}
+
+    source: str ; {'terminal', 'file'}
+        Where to store logs
+    
+    verbosity: {3: execution & results (detailed), 2: execution & results (compact), 1: results, 0: nothing}
+        Level of verbosity on the logs    
+
+    Results
+    -------
+    
+    """
+
+    
+    return 1
+

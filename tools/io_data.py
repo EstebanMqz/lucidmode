@@ -11,7 +11,6 @@
 """
 
 # -- Load libraries for script
-import pandas as pd
 import numpy as np
 import os
 
@@ -37,21 +36,23 @@ def datasets(p_dataset):
 
     """
 
+    # Base directory
+    basedir = 'datasets/'
+
     # ------------------------------------------------------------------------------------------- ETH H8 -- #
 
     if p_dataset == 'eth_ohlcv_H8':
     
         # read file from files folder
-        return pd.read_csv('files/prices/ETH_USDT_8h.csv')
+        return np.genfromtxt(basedir + 'timeseries/ETH_USDT_8h.csv', delimiter=',')
 
     # ------------------------------------------------------------------------------------------- BTC H8 -- #
 
     elif p_dataset == 'btc_ohlcv_H8':
 
         # read file from files folder
-        return pd.read_csv('files/prices/BTC_USDT_8h.csv')
-    
-    
+        return np.genfromtxt(basedir + 'timeseries/BTC_USDT_8h.csv', delimiter=',')
+        
     # --------------------------------------------------------------------------------------- RANDOM XOR -- #
     
     elif p_dataset == 'xor':
@@ -71,22 +72,27 @@ def datasets(p_dataset):
         28x28 pixel pictures of fashion clothes: https://github.com/zalandoresearch/fashion-mnist
         """
 
+        folder = basedir + 'images/' + p_dataset + '/'
+        file_1 = 'train-labels-idx1-ubyte'
+        file_2 = 'train-images-idx3-ubyte'
+
         # -- read files from local system folder (both )
-        labels_path = os.path.join('files/data/images/' + p_dataset + '/', 'train-labels-idx1-ubyte')
+        labels_path = os.path.join(folder + file_1)
         with open(labels_path,'rb') as lbpath:
             labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8)
                 
-        images_path = os.path.join('files/data/images/' + p_dataset + '/', 'train-images-idx3-ubyte')
+        images_path = os.path.join(folder + file_2)
         with open(images_path,'rb') as imgpath:
             images = np.frombuffer(imgpath.read(), dtype=np.uint8, offset=16).reshape(len(labels), 784)
 
         # SIMPLIER VERSION: drop all samples from the following class. 
-        # todrop = [4, 5, 6, 7, 8, 9]
-        todrop = []
+        """
+        todrop = [4, 5, 6, 7, 8, 9]
         for i in todrop:
             idxs = (labels == i)
             images = images[~idxs]
             labels = labels[~idxs]
+        """
 
         return {'images': images, 'labels': labels}
     
@@ -99,7 +105,7 @@ def datasets(p_dataset):
         """
 
         # -- read files from local system folder (both )
-        labels_path = os.path.join('files/data/images/' + p_dataset + '/', 'train-labels-idx1-ubyte')
+        labels_path = os.path.join('datasets/images/' + p_dataset + '/', 'train-labels-idx1-ubyte')
         with open(labels_path,'rb') as lbpath:
             labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8).reshape(-1, 1)
                 

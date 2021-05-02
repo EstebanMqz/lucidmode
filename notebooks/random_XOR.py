@@ -11,14 +11,13 @@
 """
 
 # -- load class
-from lucidmode.models import Sequential
+from lucidmode.models import NeuralNet
 
 # -- load datasets
 from tools.io_data import datasets
 
 # -- base libraries
 import numpy as np
-import pandas as pd
 
 # -- complementary tools
 from rich import inspect
@@ -33,7 +32,7 @@ from tools.metrics import metrics
 # data = datasets('xor')
 
 # Neural Net Topology Definition
-# lucid = Sequential(hidden_l=[2], hidden_a=['tanh'], output_n=1, output_a='sigmoid')
+# lucid = NeuralNet(hidden_l=[2], hidden_a=['tanh'], output_n=1, output_a='sigmoid')
 
 # initialize weights
 # lucid.init_weights(input_shape=data['x'].shape[1], init_layers=['xavier-standard'])

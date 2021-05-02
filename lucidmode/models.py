@@ -12,18 +12,18 @@
 
 # -- Load other scripts
 import lucidmode.propagate as prop
-import lucidmode.functions as fn
 import lucidmode.regularization as reg
-import tools.metrics as mt
 
 # -- Load libraries for script
 import numpy as np
+
 
 # ------------------------------------------------------------------------------------------------------ -- #
 # ------------------------------------------------------------------- FEEDFORWARD MULTILAYER PERECEPTRON -- #
 # ------------------------------------------------------------------------------------------------------ -- #
 
-class Sequential:
+
+class NeuralNet:
 
     """
     Artificial Neural Network (Feedforward multilayer pereceptron with backpropagation)
@@ -164,7 +164,8 @@ class Sequential:
 
         Returns
         -------
-            self: Modifications on instance of class
+        
+        self: Modifications on instance of class
 
         """
         
@@ -195,7 +196,7 @@ class Sequential:
     # --------------------------------------------------------------------------- WEIGHTS INITIALIZATION -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def init_weights(self, input_shape, init_layers):
+    def __init_weights(self, input_shape, init_layers, random_state=1):
         """
         Weight initialization
         
@@ -226,7 +227,7 @@ class Sequential:
         """
 
         # reproducibility
-        np.random.seed(2)
+        np.random.seed(random_state)
 
         # number of hidden layers
         layers = len(self.hidden_l)
@@ -234,11 +235,8 @@ class Sequential:
         # hidden layers weights
         for layer in range(0, layers):
 
-            # type of initialization for each layer
-            type = init_layers
-
             # store the type of initialization used for each layer
-            self.layers['hl_' + str(layer)]['i'] = type
+            self.layers['hl_' + str(layer)]['i'] = init_layers
 
             # number of Neurons in layer
             nn = self.hidden_l[layer]
@@ -257,7 +255,7 @@ class Sequential:
                 n_next = self.hidden_l[layer]
 
             # As mentioned in [1]
-            if type == 'common-uniform':
+            if init_layers == 'common-uniform':
                 
                 # Boundaries according to uniform distribution common heuristic
                 r = mf * np.sqrt(1/nn)
@@ -273,7 +271,7 @@ class Sequential:
                 self.layers['ol']['b'] = np.zeros((self.output_n, 1))
 
             # According to eq:16 in [1]
-            elif type == 'xavier-uniform':
+            elif init_layers == 'xavier-uniform':
                 
                 # Boundaries according to uniform distribution common heuristic
                 r = mf * np.sqrt(6/(n_prev + n_next))
@@ -289,13 +287,10 @@ class Sequential:
                 self.layers['ol']['b'] = np.zeros((self.output_n, 1))
 
             # A variation of the previous, according to [1]
-            elif type == 'xavier-standard':
+            elif init_layers == 'xavier-standard':
                 
                 # Multiplying factor (paper version)
                 r = mf * np.sqrt(2/(n_prev + n_next))
-
-                # Multiplying factor (coursera Deeplearning version with XOR data)
-                # r = 0.01
                 
                 # Hidden layer weights and biasW
                 self.layers['hl_' + str(layer)]['W'] = np.random.randn(n_next, n_prev) * r
@@ -308,7 +303,7 @@ class Sequential:
                 self.layers['ol']['b'] = np.zeros((self.output_n, 1))
 
            # According to [2]
-            elif type == 'he-standard':
+            elif init_layers == 'he-standard':
                 
                 # Multiplying factor
                 r = mf * np.sqrt(2/(n_prev + n_next))
@@ -390,7 +385,7 @@ class Sequential:
             self.layers['hl_' + str(layer)]['i'] = ''
         
         # Weights initialization
-        self.init_weights(input_shape=init['input_shape'], init_layers=init['init_layers'])
+        self.__init_weights(input_shape=init['input_shape'], init_layers=init['init_layers'])
 
         # Cost (function and regularization definition)
         self.cost = cost
@@ -400,13 +395,18 @@ class Sequential:
 
         # Optimizer
         self.optimizer = optimizer
-
+        
+        # Store evolution of cost and other metrics across epochs
+        history = {self.cost['function']: {'train': {}, 'val': {}}}
+        history.update({metric: {'train': {}, 'val': {}} for metric in self.metrics})
+        self.history = history
 
     # ------------------------------------------------------------------ FIT MODEL PARAMETERS (LEARNING) -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
 
-    def fit(self, x_train, y_train, x_val=None, y_val=None, epochs=10, alpha=0.1, verbosity=3):
+    def fit(self, x_train, y_train, x_val=None, y_val=None, epochs=10, alpha=0.1, verbosity=3,
+            random_state=1):
         
         """
         Train model according to specified parameters
@@ -449,109 +449,85 @@ class Sequential:
         # y_train = data['y'].astype(np.int)
 
         """ 
-               
-        # Store evolution of cost and other metrics across epochs
-        history = {self.cost['function']: {'train': {}, 'val': {}}}
-        history.update({metric: {'train': {}, 'val': {}} for metric in self.metrics})
-        
+                       
         # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
-        for epoch in range(epochs):
-            
-            # Forward pass
-            memory_train = prop.forward_propagate(self, x_train)
-            mem_layer = 'A_' + str(len(self.hidden_l) + 2)
-
-            # If there exists a validation test
-            if len(x_val) !=0:
-
-                # Forward pass
-                memory_val = prop.forward_propagate(self, x_val)
-                y_val_hat = memory_val[mem_layer]
-                
-                # Cost (validation)
-                cost_val = fn.cost(y_val_hat, y_val, self.cost['function'])
-                history[self.cost['function']]['val'][epoch] = cost_val
-
-                # value prediction
-                y_val_hat = self.predict(x_val)
-
-                # Any other metrics registered to track
-                for metric in self.metrics:
-                    history[metric]['val'][epoch] = mt.metrics(y_val, y_val_hat, type='classification')
-            
-            # Probability prediction
-            y_train_p = memory_train[mem_layer]
-
-            # Value prediction
-            y_train_hat = self.predict(x_train)
-            
-            # Cost (train)
-            cost_train = fn.cost(y_train_p, y_train, self.cost['function'])
-
-            # Regularization components (applied only to train)
-            if self.cost['reg']:
-                Weights = [self.layers[layer]['W'] for layer in self.layers]
-                reg_term = reg.l1_l2_EN(Weights,
-                                        type=self.cost['reg']['type'],
-                                        lmbda=self.cost['reg']['lmbda'],
-                                        ratio=self.cost['reg']['ratio'])/x_train.shape[0]
-
-                # Update current value with regularization term
-                cost_train += reg_term
-
-            # Update cost value to history
-            history[self.cost['function']]['train'][epoch] = cost_train.astype(np.float32).round(decimals=4)
-            
-            # Any other metrics registered to track
-            for metric in self.metrics:
-                history[metric]['train'][epoch] = mt.metrics(y_train, y_train_hat, type='classification')
-           
-            # Verbosity
-            if verbosity == 3:
-                print('\n- epoch:', "%3i" % epoch, '\n --------------------------------------- ', 
-                      '\n- cost_train:', "%.4f" % history[self.cost['function']]['train'][epoch],
-                      '- cost_val:', "%.4f" % history[self.cost['function']]['val'][epoch])
-                if self.metrics:
-                    for metric in self.metrics:
-                        print('- ' + metric + '_train' + ': ' + 
-                                "%.4f" % history[metric]['train'][epoch][metric],
-                                '- ' + metric + '_val' + ': ' +
-                                "%.4f" % history[metric]['val'][epoch][metric])
-
-            # -- Backward pass
-            grads = prop.backward_propagate(self, memory_train, y_train)
-
-            # Update all layers weights and biases
-            for l in range(0, len(self.hidden_l) + 1):
-
-                # Model Elements
-                layer  = list(self.layers.keys())[l]               
-                dW = grads['dW_' + str(l + 1)]
-                W = self.layers[layer]['W']
-                db = grads['db_' + str(l + 1)]
-                b = self.layers[layer]['b']
-                
-                # If the layer has regularization criteria
-                if self.layers[layer]['r']:
-                    r_t = self.layers[layer]['r']['type']
-                    r_l = self.layers[layer]['r']['lmbda']
-                    r_r = self.layers[layer]['r']['ratio']
-                    regW = reg.l1_l2_EN([W], type=r_t, lmbda=r_l, ratio=r_r)/x_train.shape[0]
-                    regb = reg.l1_l2_EN([b], type=r_t, lmbda=r_l, ratio=r_r)/x_train.shape[0]
-                
-                # No regularization
-                else:
-                    regW, regb = 0
-
-                # Gradient updating
-                self.layers[layer]['W'] = W - (self.optimizer['params']['lr'] * dW) + regW
-                self.layers[layer]['b'] = b - (self.optimizer['params']['lr'] * db) + regb
         
-        # return cost list
-        return history
+        for epoch in range(epochs):
+
+            # reproducibility
+            np.random.seed(random_state)
+            m_train = x_train.shape[0]
+
+            # -- Stochastic Gradient Descent
+            if self.optimizer['type'] == 'SGD':
+
+                # get value for batch size
+                batch_size = self.optimizer['params']['batch_size']
+                
+                # if batch size is 0 then use all of samples
+                batch_size = m_train if batch_size == 0 else batch_size
+
+                # randomize samples
+                perm_train = list(np.random.permutation(m_train))
+                s_x_train = x_train[perm_train, :]
+                s_y_train = y_train[perm_train]
+
+                # number of batches
+                n_train = np.trunc(m_train / batch_size).astype(int)
+
+                # iterate over all batches
+                for k in range(n_train):
+                    
+                    batch_x = s_x_train[k*batch_size : (k + 1)*batch_size, :]
+                    batch_y = s_y_train[k*batch_size : (k + 1)*batch_size]
+
+                    grads = prop._forward_backward(self, batch_x, batch_y, x_val=x_val, y_val=y_val,
+                                                   epoch=epoch)
+                
+                if m_train % batch_size != 0:
+                    
+                    num_last_batch = m_train - (batch_size * n_train)
+                    batch_x = s_x_train[:, m_train - num_last_batch:m_train]
+                    batch_y = s_y_train[:, m_train - num_last_batch:m_train]
+
+                    grads = prop._forward_backward(self, batch_x, batch_y, x_val=x_val, y_val=y_val,
+                                                   epoch=epoch)
+        
+                # Update all layers weights and biases
+                for l in range(0, len(self.hidden_l) + 1):
+
+                    # Model Elements
+                    layer  = list(self.layers.keys())[l]               
+                    dW = grads['dW_' + str(l + 1)]
+                    W = self.layers[layer]['W']
+                    db = grads['db_' + str(l + 1)]
+                    b = self.layers[layer]['b']
+                    
+                    # If the layer has regularization criteria
+                    if self.layers[layer]['r']:
+                        r_t = self.layers[layer]['r']['type']
+                        r_l = self.layers[layer]['r']['lmbda']
+                        r_r = self.layers[layer]['r']['ratio']
+                        regW = reg._l1_l2_EN([W], type=r_t, lmbda=r_l, ratio=r_r)/x_train.shape[0]
+                        regb = reg._l1_l2_EN([b], type=r_t, lmbda=r_l, ratio=r_r)/x_train.shape[0]
+                    
+                    # No regularization
+                    else:
+                        regW, regb = 0
+
+                    # Gradient updating
+                    self.layers[layer]['W'] = W - (self.optimizer['params']['learning_rate'] * dW) + regW
+                    self.layers[layer]['b'] = b - (self.optimizer['params']['learning_rate'] * db) + regb
+                                           
+            # -- levenberg-Marquardt Algorithm
+            elif self.optimizer['type'] == 'LMA':
+                
+                return 'coming soon'
+
 
     # ------------------------------------------------------------------------------- PREDICT WITH MODEL -- #
     # -------------------------------------------------------------------------------------------------- -- #
+
 
     def predict(self, x_train):
         """
@@ -563,7 +539,7 @@ class Sequential:
         # -- SINGLE-CLASS
         if self.output_n == 1:            
             # tested only with sigmoid output
-            memory = prop.forward_propagate(self, x_train)
+            memory = prop._forward_propagate(self, x_train)
             p = memory['A_' + str(len(self.hidden_l) + 2)]
             thr = 0.5
             indx = p > thr
@@ -572,7 +548,7 @@ class Sequential:
 
         # -- MULTI-CLASS 
         else:
-            memory = prop.forward_propagate(self, x_train)
+            memory = prop._forward_propagate(self, x_train)
             p = np.argmax(memory['A_' + str(len(self.hidden_l) + 2)], axis=1)
 
         return p

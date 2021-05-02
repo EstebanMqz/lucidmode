@@ -4,5 +4,21 @@
 			"path": "."
 		}
 	],
-	"settings": {}
-}
+	"settings": {
+		"python.pythonPath": "lucidmode_dev_venv/bin/python"
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Python File in Integrated Terminal",
+				"type": "python",
+				"request": "launch",
+				"program": "${file}",
+				"cwd": "${workspaceRoot}",
+				"env": {"PYTHONPATH": "${workspaceRoot}"},
+				"console": "integratedTerminal"
+			}
+		]
+	}
+} 

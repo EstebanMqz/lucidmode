@@ -10,13 +10,26 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
+# -- Load libraries for script
+import numpy as np
+
 # ------------------------------------------------------------------------------------- TRAIN_TEST_SPLIT -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def train_val_split():
+def train_val_split(x_data, y_data, train_size=0.8, random_state=1):
     """
+    
     To split into train and validation split with an optional third split for final test.
 
     """
 
-    return 'coming soon'
+    np.random.seed(random_state)
+    arr_rand = np.random.rand(x_data.shape[0])
+    split = arr_rand < np.percentile(arr_rand, train_size*100)
+
+    x_train = x_data[split]
+    y_train = y_data[split]
+    x_val =  x_data[~split]
+    y_val = y_data[~split]
+
+    return x_train, x_val, y_train, y_val

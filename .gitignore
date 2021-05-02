@@ -8,7 +8,7 @@
 lucidmode_dev_venv/
 
 # ignore vscode workspace file
-lucidmode_dev.code-workspace
+lucidmode_dev_workspace.code-workspace
 
 # ----------- -------------- ----------- #
 
