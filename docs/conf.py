@@ -37,8 +37,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode',
-    'numpydoc',
+    'sphinx.ext.viewcode'
 ]
 
 numpydoc_show_class_members = False
