@@ -57,7 +57,7 @@ lucid.formation(cost={'function': 'multi-logloss', 'reg': {'type': 'l1', 'lmbda'
 inspect(lucid)
 
 # cost evolution
-lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val, epochs=5, verbosity=3)
+lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val, epochs=100, verbosity=3)
 
 # acces to the train history information
 history = lucid.history

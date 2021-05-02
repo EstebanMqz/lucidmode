@@ -1,10 +1,14 @@
 
 
-# lucidmode
+"""""""""
+lucidmode
+"""""""""
 
 A Lucid Framework for Transparent and Interpretable Machine Learning Models.
 
-## Install dependencies
+--------------------
+Install dependencies
+--------------------
 
 Install all the dependencies stated in the requirements.txt file, just run the following command in terminal:
 
@@ -12,16 +16,20 @@ Install all the dependencies stated in the requirements.txt file, just run the f
         
 Or you can manually install one by one using the name and version in the file.
 
-## Models
+------
+Models
+------
 
-### Artificial Neural Network
+Artificial Neural Network
+-------------------------
 
 Feedforward Multilayer perceptron with backpropagation.
 
 - **fit**: Fit model to data
 - **predict**: Prediction according to model
 
-### Initialization, Activations, Cost functions, regularization, optimization
+Initialization, Activations, Cost functions, regularization, optimization
+-------------------------------------------------------------------------
 
 - **Weights Initialization**: With 4 types of criterias (zeros, xavier, common, he)
 - **Activation Functions**: sigmoid, tanh, softmax
@@ -29,18 +37,25 @@ Feedforward Multilayer perceptron with backpropagation.
 - **Regularization**: L1, L2, ElasticNet for weights in cost function and in gradient updating
 - **Optimization**: Weights optimization with Gradient Descent and learning rate
 
-### Complementary
+Complementary
+-------------
 
 - **Metrics**: Accuracy, Confusion Matrix (Binary and Multiclass), Confusion Tensor (Multiclass OvR)
 - **Visualizations**: Cost evolution
 - **Public Datasets**: MNIST, Fashion MNIST
 - **Special Datasets**: OHLCV + Symbolic Features of Cryptocurrencies (ETH, BTC)
 
-## Author/Principal Maintainer
+---------------------------
+Author/Principal Maintainer
+---------------------------
+
 IFFranciscoME Associate Professor of Financial Engineering and Financial Machine Learning
 @ITESO (Western Institute of Technology and Higher Education)
 
-## License
+-------
+License
+-------
+
 **GNU General Public License v3.0** 
 
 *Permissions of this strong copyleft license are conditioned on making available 
