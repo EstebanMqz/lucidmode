@@ -6,6 +6,10 @@ lucidmode
 
 A Lucid Framework for Transparent and Interpretable Machine Learning Models.
 
+.. image:: https://readthedocs.org/projects/lucidmode/badge/?version=latest
+        :target: https://lucidmode.readthedocs.io/en/latest/?badge=latest
+        :alt: Documentation Status
+
 --------------------
 Install dependencies
 --------------------
