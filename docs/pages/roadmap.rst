@@ -1,9 +1,9 @@
 
 |
 
-"""""""""""""""""""""
-Roadmap for LucidMode
-"""""""""""""""""""""
+"""""""
+Roadmap
+"""""""
 
 |
 
@@ -25,21 +25,9 @@ Roadmap for LucidMode
 | Repository:     | https://github.com/lucidmode/lucidmode                                                  |
 +-----------------+-----------------------------------------------------------------------------------------+
 
-|
-
-------------
-
-|
-
----------------
-Current version
----------------
-
-**v0.4.1-beta1.0**
-
 
 ----
-DONE
+Done
 ----
 
 Documentation
@@ -58,7 +46,7 @@ Optimizers
 - Documentation: Renamed private methods according to python official docs.
 
 -------
-PENDING
+Pending
 -------
 
 Fix

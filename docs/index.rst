@@ -1,19 +1,37 @@
-.. lucidmode documentation master file, created by
-   sphinx-quickstart on Sun May  2 15:22:31 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
 
+""""
 Home
-====
+""""
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-   
-   pages/examples.rst
-   pages/roadmap.rst
-   pages/license.rst
+|
 
+------------
+
+|
+
++-----------------+-----------------------------------------------------------------------------------------+
+| Project: lucidmode                                                                                        |
++=================+=========================================================================================+
+| Description:    | A Lucid Framework for Interpretable Machine Learning Models                             |
++-----------------+-----------------------------------------------------------------------------------------+
+| Author:         | IFFranciscoME - if.francisco.me@gmail.com                                               |
++-----------------+-----------------------------------------------------------------------------------------+
+| License:        | GPL-3.0 License                                                                         |
++-----------------+-----------------------------------------------------------------------------------------+
+| Repository:     | https://github.com/lucidmode/lucidmode                                                  |
++-----------------+-----------------------------------------------------------------------------------------+
+
+|
+
+------------
+
+|
+
+---------------
+Current version
+---------------
+
+**v0.4.1-beta1.0**
 
 --------------------
 Install dependencies
@@ -76,10 +94,3 @@ must be preserved. Contributors provide an express grant of patent rights.*
 Contact
 -------
 For more information in reggards of this repo, please contact if.francisco.me@gmail.com*
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
