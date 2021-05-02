@@ -17,7 +17,6 @@ Roadmap
 | Repository:     | https://github.com/lucidmode/lucidmode                                                  |
 +-----------------+-----------------------------------------------------------------------------------------+
 
-
 ----
 Done
 ----
@@ -26,7 +25,7 @@ Documentation
 -------------
 
 - **Addition:** Create ROADMAP.rst with info for the roadmap of the project.
-- **Enhacements:** Write README file with srt sintax.
+- **Enhacements:** Write README file with srt sintax..
 
 Optimizers
 ----------
