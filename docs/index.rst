@@ -1,13 +1,8 @@
 
-""""
-Home
-""""
 
-|
+Welcome to lucidmode's documentation!
+=====================================
 
-------------
-
-|
 
 +-----------------+-----------------------------------------------------------------------------------------+
 | Project: lucidmode                                                                                        |
@@ -20,12 +15,6 @@ Home
 +-----------------+-----------------------------------------------------------------------------------------+
 | Repository:     | https://github.com/lucidmode/lucidmode                                                  |
 +-----------------+-----------------------------------------------------------------------------------------+
-
-|
-
-------------
-
-|
 
 ---------------
 Current version
@@ -94,3 +83,21 @@ must be preserved. Contributors provide an express grant of patent rights.*
 Contact
 -------
 For more information in reggards of this repo, please contact if.francisco.me@gmail.com*
+
+**Contents**:
+
+.. toctree::
+   :maxdepth: 2
+
+   intro
+   examples
+   Installation
+   roadmap
+   license
+
+|
+
+-----
+
+|
+

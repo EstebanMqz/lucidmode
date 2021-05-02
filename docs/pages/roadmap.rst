@@ -79,13 +79,10 @@ Tests
 - **Tests:** SGD with no validation data (only train data).
 - **Tests:** SGD with with different configurations and values of L1, L2, ElasticNet.
 
-|
-
 ------------
 
-
 ------------
-GLOBAL TASKS
+Global Tasks
 ------------ 
 
 - Build documentation with ReadTheDocs.
