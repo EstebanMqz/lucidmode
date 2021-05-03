@@ -10,6 +10,18 @@ A Lucid Framework for Transparent and Interpretable Machine Learning Models.
         :target: https://lucidmode.readthedocs.io/en/main/?badge=main
         :alt: Documentation Status
 
+.. image:: https://img.shields.io/github/license/lucidmode/lucidmode
+        :target: https://github.com/lucidmode/lucidmode/blob/master/LICENSE
+        :alt: License
+
+.. image:: https://img.shields.io/badge/python-v3.8-blue
+        :target: https://github.com/lucidmode/lucidmode/
+        :alt: Version
+        
+.. image:: https://img.shields.io/github/commit-activity/m/lucidmode/lucidmode
+        :target: https://github.com/lucidmode/lucidmode/
+        :alt: Commit history
+
 --------------------
 Install dependencies
 --------------------
@@ -67,5 +79,5 @@ complete source code of licensed works and modifications, which include larger
 works using a licensed work, under the same license. Copyright and license notices 
 must be preserved. Contributors provide an express grant of patent rights.*
 
-## Contact
+Contact
 *For more information in reggards of this repo, please contact if.francisco.me@gmail.com*
