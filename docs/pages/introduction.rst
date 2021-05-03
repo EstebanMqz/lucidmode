@@ -1,6 +1,6 @@
-.. _introduction:
+.. introduction:
 
 Introduction
 ============
 
-``lucidmode`` requires ...  
+.

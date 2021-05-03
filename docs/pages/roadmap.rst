@@ -1,4 +1,4 @@
-.. _roadmap:
+.. roadmap:
 
 Roadmap
 =======

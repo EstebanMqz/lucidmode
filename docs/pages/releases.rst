@@ -1,4 +1,4 @@
-.. _releases:
+.. releases:
 
 Release History
 ===============
