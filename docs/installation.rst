@@ -2,4 +2,4 @@
 Installation
 ============
 
-``lucidmode`` requires ...  
+``lucidmode`` requires ...  .

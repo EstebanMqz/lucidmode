@@ -2,4 +2,4 @@
 Roadmap
 =======
 
-``lucidmode`` requires ...  
+``lucidmode`` requires ...  .

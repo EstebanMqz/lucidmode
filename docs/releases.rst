@@ -22,7 +22,7 @@ sensitivity (TPR), specificity (TNR), accuracy (acc), likelihood ratio (positive
 
 **Visualizations**
 
-- Select metrics for verbose output
+- Select metrics for verbose output.
 
 v0.3-beta1.0
 ------------

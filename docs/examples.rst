@@ -2,4 +2,4 @@
 Examples
 ========
 
-``lucidmode`` requires ...  
+``lucidmode`` requires ...  .
