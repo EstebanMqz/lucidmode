@@ -7,7 +7,7 @@ A Lucid Framework for Transparent and Interpretable Machine Learning Models. It 
 methods optimized for visual interpretation of their must important calculations.
 
 .. image:: https://readthedocs.org/projects/lucidmode/badge/?version=latest
-        :target: https://lucidmode.readthedocs.io/en/latest/pages/home.html
+        :target: https://lucidmode.readthedocs.io
         :alt: Documentation Status
 
 .. image:: https://img.shields.io/github/license/lucidmode/lucidmode
