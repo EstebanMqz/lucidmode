@@ -1,4 +1,3 @@
-.. releases:
 
 Release History
 ===============
