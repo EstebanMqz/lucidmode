@@ -3,4 +3,4 @@
 Introduction
 ============
 
-.
+``lucidmode`` requires ...  

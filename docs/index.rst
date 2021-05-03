@@ -85,5 +85,4 @@ Contents
    pages/introduction
    pages/examples
    pages/installation
-   pages/roadmap
    pages/releases
