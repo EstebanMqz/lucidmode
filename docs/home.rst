@@ -73,16 +73,3 @@ Contact
 -------
 
 For more information in reggards of this repo, please contact if.francisco.me@gmail.com
-
-Contents
-========
-
-.. toctree::
-   :maxdepth: 1
-   
-   home
-   introduction
-   examples
-   installation
-   roadmap
-   releases

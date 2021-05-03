@@ -42,10 +42,7 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The master toctree document.
-master_doc = 'home.rst'
-root_doc = 'home.rst'
-
-html_use_index = False
+master_doc = 'index'
 
 # -- Options for HTML output -------------------------------------------------
 
