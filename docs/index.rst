@@ -1,6 +1,5 @@
-
-Home
-====
+Index
+=====
 
 +-----------------+-----------------------------------------------------------------------------------------+
 | Project: lucidmode                                                                                        |
@@ -73,9 +72,10 @@ Contact
 For more information in reggards of this repo, please contact if.francisco.me@gmail.com
 
 Contents
+========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    index
    pages/introduction
