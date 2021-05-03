@@ -77,7 +77,7 @@ Contents
 .. toctree::
    :maxdepth: 1
 
-   index
+   .. automodule:: index
    pages/introduction
    pages/examples
    pages/installation
