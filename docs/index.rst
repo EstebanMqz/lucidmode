@@ -78,8 +78,8 @@ Contents
 
 .. toctree::
    :maxdepth: 1
-
-   Home <https://lucidmode.readthedocs.io/index.html>
+   
+   :doc:`index <../index>`
    pages/introduction
    pages/examples
    pages/installation
