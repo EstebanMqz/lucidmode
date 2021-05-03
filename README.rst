@@ -7,7 +7,7 @@ A Lucid Framework for Transparent and Interpretable Machine Learning Models. It 
 methods optimized for visual interpretation of their must important calculations.
 
 .. image:: https://readthedocs.org/projects/lucidmode/badge/?version=main
-        :target: https://lucidmode.readthedocs.io/en/main/?badge=main
+        :target: https://lucidmode.readthedocs.io/index.html
         :alt: Documentation Status
 
 .. image:: https://img.shields.io/github/license/lucidmode/lucidmode
@@ -19,12 +19,14 @@ methods optimized for visual interpretation of their must important calculations
         :alt: Version
         
 .. image:: https://img.shields.io/github/commit-activity/w/lucidmode/lucidmode
-        :target: https://img.shields.io/github/commit-activity/m/lucidmode/lucidmode
+        :target: https://github.com/lucidmode/lucidmode/commits/main
         :alt: Commit history
 
 .. image:: https://badges.pufler.dev/visits/lucidmode/lucidmode
-        :target: https://badges.pufler.dev/visits/lucidmode/lucidmode
+        :target: https://github.com/lucidmode/lucidmode/graphs/traffic
         :alt: Visits     
+
+|
 
 --------------------
 Install dependencies
