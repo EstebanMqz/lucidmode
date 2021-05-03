@@ -4,7 +4,7 @@ lucidmode
 """""""""
 
 A Lucid Framework for Transparent and Interpretable Machine Learning Models. It has built in machine learning
-methods optimized for visual interpretation of their must important calculations.
+methods optimized for visual interpretation of their most relevant calculations.
 
 .. image:: https://readthedocs.org/projects/lucidmode/badge/?version=latest
         :target: https://lucidmode.readthedocs.io
