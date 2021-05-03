@@ -6,7 +6,7 @@ lucidmode
 A Lucid Framework for Transparent and Interpretable Machine Learning Models. It has built in machine learning
 methods optimized for visual interpretation of their must important calculations.
 
-.. image:: https://readthedocs.org/projects/lucidmode/badge/?version=main
+.. image:: https://readthedocs.org/projects/lucidmode/badge/?version=latest
         :target: https://lucidmode.readthedocs.io/index.html
         :alt: Documentation Status
 
@@ -18,10 +18,6 @@ methods optimized for visual interpretation of their must important calculations
         :target: https://github.com/lucidmode/lucidmode/
         :alt: Version
         
-.. image:: https://img.shields.io/github/commit-activity/w/lucidmode/lucidmode
-        :target: https://github.com/lucidmode/lucidmode/commits/main
-        :alt: Commit history
-
 .. image:: https://badges.pufler.dev/visits/lucidmode/lucidmode
         :target: https://github.com/lucidmode/lucidmode/graphs/traffic
         :alt: Visits     
