@@ -79,7 +79,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   home
+   index
    pages/introduction
    pages/examples
    pages/installation
