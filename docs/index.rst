@@ -1,4 +1,3 @@
-.. _index:
 
 Index
 =====
@@ -80,7 +79,7 @@ Contents
 .. toctree::
    :maxdepth: 1
 
-   :ref:`index`.
+   Home <../index#http://>
    pages/introduction
    pages/examples
    pages/installation
