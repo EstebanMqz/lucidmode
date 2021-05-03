@@ -1,0 +1,5 @@
+
+Examples
+========
+
+``lucidmode`` requires ...  
