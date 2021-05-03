@@ -80,7 +80,7 @@ Contents
 .. toctree::
    :maxdepth: 1
    
-   :doc:`../index`
+   :doc:`index <..docs/index>`
    pages/home
    pages/examples
    pages/installation
