@@ -113,6 +113,7 @@ def _dsigma(Z, activation):
     elif activation == 'relu':
         dZ = np.array(Z, copy=True)
         dZ[Z <= 0] = 0
+        dZ[Z > 0] = 1
         dZ = dZ.astype(np.int8)
         assert (dZ.shape == Z.shape)
     

@@ -39,7 +39,7 @@ X_train, X_val, y_train, y_val = train_val_split(images, labels, train_size = 0.
 # -- Test dataset: X_train.shape(7200, 784) y_train.test(7200,)
 
 # Neural Net Topology Definition
-lucid = NeuralNet(hidden_l=[60, 30, 10], hidden_a=['tanh', 'tanh', 'sigmoid'],
+lucid = NeuralNet(hidden_l=[60, 30, 10], hidden_a=['tanh', 'tanh', 'relu'],
                   hidden_r=[{'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
                             {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
                             {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1}],
