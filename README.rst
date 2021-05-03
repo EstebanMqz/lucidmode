@@ -25,7 +25,7 @@ methods optimized for visual interpretation of their must important calculations
 .. image:: https://badges.pufler.dev/visits/lucidmode/lucidmode
         :target: https://github.com/lucidmode/lucidmode/graphs/traffic
         :alt: Visits     
-        
+
 |
 
 |
@@ -39,6 +39,14 @@ Install all the dependencies stated in the requirements.txt file, just run the f
         pip install -r requirements.txt
         
 Or you can manually install one by one using the name and version in the file.
+
+|
+
+-------------
+Documentation
+-------------
+
+Read the documentation: https://lucidmode.readthedocs.io
 
 |
 
