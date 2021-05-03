@@ -1,7 +1,7 @@
 
-=====
-Index
-=====
+====
+Home
+====
 
 +-----------------+-----------------------------------------------------------------------------------------+
 | Project: lucidmode                                                                                        |
@@ -80,7 +80,7 @@ Contents
 .. toctree::
    :maxdepth: 1
    
-   Home <https://lucidmode.readthedocs.io/index.html>
+   :doc:`../index`
    pages/introduction
    pages/examples
    pages/installation
