@@ -1,3 +1,5 @@
+.. _index:
+
 Index
 =====
 
@@ -12,6 +14,7 @@ Index
 +-----------------+-----------------------------------------------------------------------------------------+
 | Repository:     | https://github.com/lucidmode/lucidmode                                                  |
 +-----------------+-----------------------------------------------------------------------------------------+
+
 
 ---------------
 Current version
@@ -77,7 +80,7 @@ Contents
 .. toctree::
    :maxdepth: 1
 
-   .. automodule:: index
+   :ref:`index`.
    pages/introduction
    pages/examples
    pages/installation
