@@ -43,6 +43,10 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The master toctree document.
 master_doc = 'home'
+root_doc = 'home'
+
+
+html_use_index = False
 
 # -- Options for HTML output -------------------------------------------------
 
