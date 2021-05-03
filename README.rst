@@ -13,7 +13,7 @@ methods optimized for visual interpretation of their must important calculations
 .. image:: https://img.shields.io/github/license/lucidmode/lucidmode
         :target: https://github.com/lucidmode/lucidmode/blob/master/LICENSE
         :alt: License
-
+        
 .. image:: https://img.shields.io/badge/python-v3.8-blue
         :target: https://github.com/lucidmode/lucidmode/
         :alt: Version
@@ -25,6 +25,8 @@ methods optimized for visual interpretation of their must important calculations
 .. image:: https://badges.pufler.dev/visits/lucidmode/lucidmode
         :target: https://github.com/lucidmode/lucidmode/graphs/traffic
         :alt: Visits     
+        
+|
 
 |
 
@@ -37,6 +39,8 @@ Install all the dependencies stated in the requirements.txt file, just run the f
         pip install -r requirements.txt
         
 Or you can manually install one by one using the name and version in the file.
+
+|
 
 ------
 Models
@@ -67,12 +71,16 @@ Complementary
 - **Public Datasets**: MNIST, Fashion MNIST
 - **Special Datasets**: OHLCV + Symbolic Features of Cryptocurrencies (ETH, BTC)
 
+|
+
 ---------------------------
 Author/Principal Maintainer
 ---------------------------
 
 IFFranciscoME Associate Professor of Financial Engineering and Financial Machine Learning
 @ITESO (Western Institute of Technology and Higher Education)
+
+|
 
 -------
 License
