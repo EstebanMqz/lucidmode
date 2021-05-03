@@ -18,10 +18,10 @@ A Lucid Framework for Transparent and Interpretable Machine Learning Models.
         :target: https://github.com/lucidmode/lucidmode/
         :alt: Version
         
-.. image:: https://img.shields.io/github/commit-activity/m/lucidmode/lucidmode
-        :target: https://github.com/lucidmode/lucidmode/
+.. image:: https://img.shields.io/github/commit-activity/w/lucidmode/lucidmode
+        :target: https://img.shields.io/github/commit-activity/m/lucidmode/lucidmode
         :alt: Commit history
-
+           
 --------------------
 Install dependencies
 --------------------
