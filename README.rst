@@ -22,11 +22,15 @@ methods optimized for visual interpretation of their most relevant calculations.
         :target: https://github.com/lucidmode/lucidmode/graphs/traffic
         :alt: Visits     
 
+
+|
+
+
 |
 
 .. image:: /images/lucidmode_logo.png
-	:width: 1200
-	:height: 400
+
+|
 
 |
 
@@ -46,7 +50,7 @@ Or you can manually install one by one using the name and version in the file.
 Documentation
 -------------
 
-Read the documentation: https://lucidmode.readthedocs.io
+Website: https://www.lucidmode.org, Read the documentation: https://lucidmode.readthedocs.io
 
 |
 
