@@ -24,6 +24,9 @@ methods optimized for visual interpretation of their most relevant calculations.
 
 |
 
+.. image:: /images/logo_text_bright.svg
+	:alt: lucidmode
+
 |
 
 --------------------

@@ -39,25 +39,25 @@ X_train, X_val, y_train, y_val = train_val_split(images, labels, train_size = 0.
 # -- Test dataset: X_train.shape(7200, 784) y_train.test(7200,)
 
 # Neural Net Topology Definition
-lucid = NeuralNet(hidden_l=[60, 30, 10], hidden_a=['tanh', 'tanh', 'relu'],
+lucid = NeuralNet(hidden_l=[60, 30, 10], hidden_a=['tanh', 'sigmoid', 'relu'],
                   hidden_r=[{'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
                             {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
                             {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1}],
                    
-                  output_r={'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
+                  output_r={'type': 'elasticnet', 'lmbda': 0.001, 'ratio':0.5},
                   output_n=10, output_a='softmax')
 
 # Model and implementation case Formation
 lucid.formation(cost={'function': 'multi-logloss', 'reg': {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1}},
-                init={'input_shape': X_train.shape[1], 'init_layers': 'common-uniform'},
-                optimizer={'type': 'SGD', 'params': {'learning_rate': 0.075, 'batch_size': 18000}},
+                init={'input_shape': X_train.shape[1], 'init_layers': 'xavier-standard'},
+                optimizer={'type': 'SGD', 'params': {'learning_rate': 0.0075, 'batch_size': 18000}},
                 metrics=['acc'])
 
 # Inspect object contents  (Weights initialization)
 inspect(lucid)
 
 # cost evolution
-lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val, epochs=100, verbosity=3)
+lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val, epochs=200, verbosity=3)
 
 # acces to the train history information
 history = lucid.history
