@@ -25,7 +25,6 @@ methods optimized for visual interpretation of their most relevant calculations.
 |
 
 .. image:: /images/lucidmode_logo.png
-	:alt: lucidmode
 	:width: 1200
 	:height: 400
 
