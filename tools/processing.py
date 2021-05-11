@@ -33,3 +33,91 @@ def train_val_split(x_data, y_data, train_size=0.8, random_state=1):
     y_val = y_data[~split]
 
     return x_train, x_val, y_train, y_val
+
+# ----------------------------------------------------------------------------------- RANDOM GRID SEARCH -- #
+# --------------------------------------------------------------------------------------------------------- #
+
+def gridsearch(model, X_train, y_train, X_val, y_val, metric_goal, fit_epochs, grid_iterations, es_call):
+    """
+    
+    params: list of parameters
+
+    random_state: seed for random numbers
+
+    memory: whether to store last value or not
+
+    goal: value of the metric of interest
+
+    """
+
+    # np.random.seed = 123
+    n = X_train.shape[0]
+
+    import matplotlib as plt
+    from tools.metrics import metrics
+
+    # grid values
+    grid_alpha = list(np.arange(0, .122, 0.002).round(decimals=4))[1:]
+    grid_batch_size =  list(np.arange(0, n, 64))[1:]
+
+    # random shuffle
+    np.random.shuffle(grid_alpha)
+    np.random.shuffle(grid_batch_size)
+
+    # Early stopping criteria: Number of iterations
+    counter = grid_iterations
+
+    # random grid search with memory
+    while counter > 0:
+        
+        # Keep track of grid epochs for early stopping
+        counter -= 1
+    
+        n = X_train.shape[1]             # number of features
+        k = len(np.unique(y_train))      # number of classes
+        
+        grid_model = model
+
+        # -- Parameters to try
+        alpha = grid_alpha.pop()
+        batch = 0
+        
+        # -- GRID MODEL FORMATION
+        grid_model.formation(cost={'function': 'multi-logloss'},
+                             init={'input_shape': X_train.shape[1], 'init_layers': 'xavier-uniform'},
+                             optimizer={'type': 'SGD',
+                                        'params': {'learning_rate': alpha, 'batch_size': 0}},
+                             metrics=['acc'])
+        
+        # -- GRID MODEL TRAIN LEARNING
+        grid_model.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val, epochs=fit_epochs,
+                       verbosity=3, random_state=1, callback=es_call)
+        
+        # Predict train
+        y_hat = grid_model.predict(x_train=X_train)
+        train_metrics = metrics(y_train, y_hat, type='classification')
+
+        # Overall accuracy
+        acc_train = train_metrics['acc']
+
+        # Predict train
+        y_val_hat = grid_model.predict(x_train=X_val)
+        val_metrics = metrics(y_val, y_val_hat, type='classification')
+
+        # Overall accuracy
+        acc_val = val_metrics['acc']
+       
+        print('\n-------------------- GRID VALUES -----------------------')
+        print(f'alpha={alpha}, lmbda={batch}, acc_train={acc_train}, acc_test={acc_val}')
+        print('--------------------------------------------------------\n')
+        
+        if acc_train > metric_goal:
+            metric_goal = acc_train
+            
+            print('\n\n-------------- A great result was found --------------')
+            print('--------------------------------------------------------')
+            print(f'alpha={alpha}, lmbda={batch}, acc_train={acc_train}, acc_test={acc_val}')
+            print('--------------------------------------------------------')
+            print('--------------------------------------------------------\n')
+
+            break
