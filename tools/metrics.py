@@ -14,6 +14,14 @@
 # -- Load libraries for script
 import numpy as np
 
+import warnings
+
+def fxn():
+    warnings.warn("RuntimeWarning", RuntimeWarning)
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
 # ---------------------------------------------------------------------------------- PERFORMANCE METRICS -- #
 # --------------------------------------------------------------------------------------------------------- #

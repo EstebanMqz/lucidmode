@@ -411,7 +411,7 @@ class NeuralNet:
 
 
     def fit(self, x_train, y_train, x_val=None, y_val=None, epochs=10, alpha=0.1, verbosity=3,
-            random_state=1):
+            random_state=1, callback=None):
         
         """
         Train model according to specified parameters
@@ -444,6 +444,11 @@ class NeuralNet:
             level of verbosity to show progress
             3: cost train and cost val at every epoch
         
+        callback: dict
+            whether there is a stopping criteria or action
+
+            {'earlyStopping': {'metric': 'acc', 'threshold': 0.80}}
+        
         Returns
         -------
 
@@ -454,10 +459,21 @@ class NeuralNet:
         # y_train = data['y'].astype(np.int)
 
         """ 
-                       
+
+        import learning.execution as ex
+
+        # Store callbacks in class
+        self.callbacks = callback
+
         # ------------------------------------------------------------------------------ TRAINING EPOCHS -- #
         
-        for epoch in range(epochs):
+        epoch_count = epochs
+        epoch_for = 0
+
+        while epoch_count > 0:
+
+            epoch_count -= 1
+            epoch_for += 1
 
             # reproducibility
             np.random.seed(random_state)
@@ -487,17 +503,26 @@ class NeuralNet:
                     batch_y = s_y_train[k*batch_size : (k + 1)*batch_size]
 
                     grads = prop._forward_backward(self, batch_x, batch_y, x_val=x_val, y_val=y_val,
-                                                   epoch=epoch)
-                
+                                                   epoch=epoch_for)
+
+                    # ------------------------------------------------------------------- CALLBACK CHECK -- #
+                    if ex.callback_es(self, epoch_for) == 'triggered':
+                        return 'callback triggered'
+                    
+                # If remaining batch is left, iterate over it
                 if m_train % batch_size != 0:
                     
                     num_last_batch = m_train - (batch_size * n_train)
-                    batch_x = s_x_train[:, m_train - num_last_batch:m_train]
-                    batch_y = s_y_train[:, m_train - num_last_batch:m_train]
+                    batch_x = s_x_train[m_train - num_last_batch:m_train, :]
+                    batch_y = s_y_train[m_train - num_last_batch:m_train]
 
                     grads = prop._forward_backward(self, batch_x, batch_y, x_val=x_val, y_val=y_val,
-                                                   epoch=epoch)
-        
+                                                   epoch=epoch_for)
+
+                    # ------------------------------------------------------------------- CALLBACK CHECK -- #
+                    if ex.callback_es(self, epoch_for) == 'triggered':
+                        return 'callback triggered'
+
                 # Update all layers weights and biases
                 for l in range(0, len(self.hidden_l) + 1):
 
@@ -524,6 +549,10 @@ class NeuralNet:
                     self.layers[layer]['W'] = W - (self.optimizer['params']['learning_rate'] * dW) + regW
                     self.layers[layer]['b'] = b - (self.optimizer['params']['learning_rate'] * db) + regb
                                            
+                # ----------------------------------------------------------------------- CALLBACK CHECK -- #
+                if ex.callback_es(self, epoch_for) == 'triggered':
+                    return 'callback triggered'
+
             # -- levenberg-Marquardt Algorithm
             elif self.optimizer['type'] == 'LMA':
                 

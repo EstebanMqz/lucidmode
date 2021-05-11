@@ -28,7 +28,18 @@
 # ------------------------------------------------------------------------------ CALLBACK: EarlyStopping -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-# -- Callback for early stopping on a metric value difference between Train-Validation sets.
+def callback_es(self, epoch):
+    """
+    Callback for early stopping on a metric value difference between Train-Validation sets.
+    """
+
+    if self.callbacks is not None and 'acc' in self.metrics:
+        if 'earlyStopping' in list(self.callbacks.keys()):
+            if 'acc' in self.callbacks['earlyStopping']['metric']:
+                epoch_metric = self.history['acc']['train'][epoch]['acc']
+                callback_threshold = self.callbacks['earlyStopping']['threshold']
+                if epoch_metric >= callback_threshold:
+                    return 'triggered'
 
 # ------------------------------------------------------------------------------------ SAVE/LOAD WEIGHTS -- #
 # --------------------------------------------------------------------------------------------------------- #

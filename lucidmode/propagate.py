@@ -119,15 +119,22 @@ def __backward_propagate(self, memory, Y):
 # --------------------------------------------------------------------------------- FORWARD <-> BACKWARD -- #
 
 
-def _forward_backward(self, x_train, y_train, x_val=None, y_val=None, epoch=0, verbosity=3):
+def _forward_backward(self, x_train, y_train, x_val=None, y_val=None, epoch=0, verbosity=3, metric_goal=None):
     """
     """
+
+    # -- Calculations for Train set
 
     # Forward pass
     memory_train = _forward_propagate(self, x_train)
     mem_layer = 'A_' + str(len(self.hidden_l) + 2)
 
-    # If there exists a validation test
+    # Probability prediction and cost value calculation for train
+    y_train_p = memory_train[mem_layer]
+    y_train_hat = self.predict(x_train)
+    cost_train = fn._cost(y_train_p, y_train, self.cost['function'])
+
+    # -- Calculations for Validation set
     if len(x_val) !=0:
 
         # Forward pass, cost and prediction value calculations for val
@@ -142,13 +149,8 @@ def _forward_backward(self, x_train, y_train, x_val=None, y_val=None, epoch=0, v
             metric_value = mt.metrics(y_val, y_val_hat, type='classification')
             self.history[metric]['val'][epoch] = metric_value
     
-    # Probability prediction and cost value calculation for train
-    y_train_p = memory_train[mem_layer]
-    y_train_hat = self.predict(x_train)
-    cost_train = fn._cost(y_train_p, y_train, self.cost['function'])
-
     # If there exists regularization in the layer, it is applied only for train.
-    if self.cost['reg']:
+    if 'reg' in list(self.cost.keys()):
         Weights = [self.layers[layer]['W'] for layer in self.layers]
         cost_train += rg._l1_l2_EN(Weights,
                                    type=self.cost['reg']['type'],
@@ -168,14 +170,16 @@ def _forward_backward(self, x_train, y_train, x_val=None, y_val=None, epoch=0, v
     if verbosity == 3:
 
         print('\n- epoch:', "%3i" % epoch, '\n --------------------------------------- ', 
-                '\n- cost_train:', "%.4f" % self.history[self.cost['function']]['train'][epoch],
-                '- cost_val:', "%.4f" % self.history[self.cost['function']]['val'][epoch])
+              '\n- cost_train:', "%.4f" % self.history[self.cost['function']]['train'][epoch],
+              '- cost_val:', "%.4f" % self.history[self.cost['function']]['val'][epoch])
+
         if self.metrics:
             for metric in self.metrics:
+
                 print('- ' + metric + '_train' + ': ' + 
                         "%.4f" % self.history[metric]['train'][epoch][metric],
                         '- ' + metric + '_val' + ': ' +
-                        "%.4f" % self.history[metric]['val'][epoch][metric])
+                        "%.4f" % self.history[metric]['val'][epoch][metric])                           
 
     elif verbosity == 2:
         print('coming soon: 2')

@@ -16,7 +16,7 @@ import numpy as np
 # ---------------------------------------------------------------------- L1-L2-ELASTICNET REGULARIZATION -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def _l1_l2_EN(n_weights, type='elasticnet', lmbda=0.01, ratio=0.5):
+def _l1_l2_EN(n_weights, type=None, lmbda=0, ratio=0):
     """
     Regularization operation, can perform 3 types, L1 (Lasso), L2 (Ridge), Elastic Net = ratio(L1 - L2)
 

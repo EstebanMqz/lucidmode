@@ -68,7 +68,7 @@ def gridsearch(model, X_train, y_train, X_val, y_val, metric_goal, fit_epochs, g
     counter = grid_iterations
 
     # random grid search with memory
-    while counter > 0:
+    while counter > 0:README.rst
         
         # Keep track of grid epochs for early stopping
         counter -= 1
