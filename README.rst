@@ -1,10 +1,15 @@
 
-"""""""""
-lucidmode
-"""""""""
+|
 
-A Lucid Framework for Transparent and Interpretable Machine Learning Models. It has built in machine learning
-methods optimized for visual interpretation of their most relevant calculations.
+
+|
+
+.. image:: /images/lucidmode_logo.png
+        :align: center
+
+|
+
+|
 
 .. image:: https://readthedocs.org/projects/lucidmode/badge/?version=latest
         :target: https://lucidmode.readthedocs.io
@@ -22,38 +27,39 @@ methods optimized for visual interpretation of their most relevant calculations.
         :target: https://github.com/lucidmode/lucidmode/graphs/traffic
         :alt: Visits     
 
-
 |
 
-
-|
-
-.. image:: /images/lucidmode_logo.png
-
-|
-
-|
-
---------------------
-Install dependencies
---------------------
-
-Install all the dependencies stated in the requirements.txt file, just run the following command in terminal:
-
-        pip install -r requirements.txt
-        
-Or you can manually install one by one using the name and version in the file.
-
-|
+**lucidmode** is an open-source, low-code and lightweight Python framework for transparent and interpretable machine learning models. It has built in machine learning methods optimized for visual interpretation of some of the most relevant calculations.
 
 -------------
 Documentation
 -------------
 
-Website: https://www.lucidmode.org, Read the documentation: https://lucidmode.readthedocs.io
+- Oficial Website: https://www.lucidmode.org
+- Documentation: https://lucidmode.readthedocs.io
+- Python Package Index (PyPI) repository: https://pypi.org/project/lucidmode/
+- Github repository: https://github.com/lucidmode/lucidmode
 
-|
+------------
+Installation
+------------
 
+- With package manager *(coming soon)*
+
+Install by using pip package manager:
+        
+        pip install lucidmode
+
+- Cloning repository
+  
+Clone entire github project
+
+        git@github.com:lucidmode/lucidmode.git
+
+and then install dependencies
+
+        pip install -r requirements.txt
+        
 ------
 Models
 ------
@@ -83,16 +89,21 @@ Complementary
 - **Public Datasets**: MNIST, Fashion MNIST
 - **Special Datasets**: OHLCV + Symbolic Features of Cryptocurrencies (ETH, BTC)
 
-|
+---------------
+Important Links
+---------------
+
+- Release notes: https://github.com/lucidmode/lucidmode/releases
+- Issues: https://github.com/lucidmode/lucidmode/issues
+- Example Notebooks: https://github.com/lucidmode/lucidmode/tree/main/notebooks
+- Documentation: https://lucidmode.readthedocs.io
+- Python Package Index (PyPI) repository: https://pypi.org/project/lucidmode/
 
 ---------------------------
 Author/Principal Maintainer
 ---------------------------
 
-IFFranciscoME Associate Professor of Financial Engineering and Financial Machine Learning
-@ITESO (Western Institute of Technology and Higher Education)
-
-|
+Francisco Munnoz (IFFranciscoME) Is an associate professor of financial engineering and financial machine learning @ITESO (Western Institute of Technology and Higher Education)
 
 -------
 License
@@ -105,5 +116,4 @@ complete source code of licensed works and modifications, which include larger
 works using a licensed work, under the same license. Copyright and license notices 
 must be preserved. Contributors provide an express grant of patent rights.*
 
-Contact
-*For more information in reggards of this repo, please contact if.francisco.me@gmail.com*
+*Contact: For more information in reggards of this repo, please contact francisco.me@iteso.mx*
