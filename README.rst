@@ -1,9 +1,6 @@
 
 |
 
-
-|
-
 .. image:: /images/lucidmode_logo.png
         :align: center
 
