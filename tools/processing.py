@@ -58,17 +58,15 @@ def gridsearch(model, X_train, y_train, X_val, y_val, metric_goal, fit_epochs, g
 
     # grid values
     grid_alpha = list(np.arange(0, .122, 0.002).round(decimals=4))[1:]
-    grid_batch_size =  list(np.arange(0, n, 64))[1:]
 
     # random shuffle
     np.random.shuffle(grid_alpha)
-    np.random.shuffle(grid_batch_size)
 
     # Early stopping criteria: Number of iterations
     counter = grid_iterations
 
     # random grid search with memory
-    while counter > 0:README.rst
+    while counter > 0:
         
         # Keep track of grid epochs for early stopping
         counter -= 1
