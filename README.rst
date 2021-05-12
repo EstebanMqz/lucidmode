@@ -1,7 +1,7 @@
 
 |
 
-.. image:: /images/lucidmode_logo.png
+.. image:: images/lucidmode_logo.png
         :align: center
 
 |
@@ -102,7 +102,7 @@ Important Links
 Author/Principal Maintainer
 ---------------------------
 
-Francisco Munnoz (IFFranciscoME) Is an associate professor of financial engineering and financial machine learning @ITESO (Western Institute of Technology and Higher Education)
+Francisco Munnoz (IFFranciscoME) Is an associate professor of financial engineering and financial machine learning ITESO (Western Institute of Technology and Higher Education)
 
 -------
 License

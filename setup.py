@@ -24,12 +24,12 @@ from shutil import rmtree
 
 from setuptools import find_packages, setup, Command
 
-with open("README.rst", "r", encoding="utf-8") as fh:
+with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 # Package meta-data.
 NAME = 'lucidmode'
-DESCRIPTION = long_description
+DESCRIPTION = 'A long description'
 URL = 'https://github.com/lucidmode/lucidmode'
 EMAIL = 'if.francisco.me@gmail.com'
 AUTHOR = 'IFFranciscoME'
@@ -122,16 +122,19 @@ setup(
     # },
     install_requires=REQUIRED,
     include_package_data=True,
-    license='MIT',
+    license='GPL-3.0 License',
     classifiers=[
-        # Trove classifiers
-        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python',
+        'Development Status :: 4 - Beta',
+        'License :: OSI Approved :: GPL-3.0 License ',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Developers',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy'
+        'Programming Language :: Python :: 3.8',
+        'Operating System :: Unix',
+        'Operating System :: Windows',
+        'Operating System :: MacOS',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
+        'Topic :: Scientific/Engineering :: Visualization'
     ],
     # $ setup.py publish support.
     cmdclass={
