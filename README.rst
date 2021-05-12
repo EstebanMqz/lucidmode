@@ -73,10 +73,12 @@ Initialization, Activations, Cost functions, regularization, optimization
 -------------------------------------------------------------------------
 
 - **Weights Initialization**: With 4 types of criterias (zeros, xavier, common, he)
-- **Activation Functions**: sigmoid, tanh, softmax
+- **Activation Functions**: sigmoid, tanh, ReLU
 - **Cost Functions**: Sum of Squared Error, Binary Cross-Entropy, Multi-Class Cross-Entropy
 - **Regularization**: L1, L2, ElasticNet for weights in cost function and in gradient updating
-- **Optimization**: Weights optimization with Gradient Descent and learning rate
+- **Optimization**: Weights optimization with Gradient Descent (GD, SGD, Batch) with learning rate
+- **Execution**: Callback (metric threshold), History (Cost and metrics)
+- **Hyperparameter Optimization**: Random Grid Search with Memory
 
 Complementary
 -------------
