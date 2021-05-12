@@ -20,6 +20,7 @@
 import io
 import os
 import sys
+import lucidmode
 from shutil import rmtree
 
 from setuptools import find_packages, setup, Command
@@ -34,7 +35,7 @@ URL = 'https://github.com/lucidmode/lucidmode'
 EMAIL = 'if.francisco.me@gmail.com'
 AUTHOR = 'IFFranciscoME'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '0.4.1'
+VERSION = lucidmode.__version__
 
 # What packages are required for this module to be executed?
 REQUIRED = ['pandas>=1.1.4', 'numpy>=1.20', 'rich>=9.5',
@@ -122,16 +123,15 @@ setup(
     # },
     install_requires=REQUIRED,
     include_package_data=True,
-    license='GPL-3.0 License',
     classifiers=[
         'Development Status :: 4 - Beta',
-        'License :: OSI Approved :: GPL-3.0 License ',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Intended Audience :: Science/Research',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.8',
         'Operating System :: Unix',
-        'Operating System :: Windows',
+        'Operating System :: Microsoft :: Windows',
         'Operating System :: MacOS',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Scientific/Engineering :: Visualization'

@@ -1,7 +1,7 @@
 
 |
 
-.. image:: images/lucidmode_logo.png
+.. image:: https://raw.githubusercontent.com/lucidmode/lucidmode/main/images/lucidmode_logo.png
         :align: center
 
 |
@@ -11,7 +11,7 @@
 .. image:: https://readthedocs.org/projects/lucidmode/badge/?version=latest
         :target: https://lucidmode.readthedocs.io
         :alt: Documentation Status
-        
+
 .. image:: https://img.shields.io/pypi/v/lucidmode.svg
         :target: https://pypi.python.org/pypi/lucidmode/
         :alt: Version
