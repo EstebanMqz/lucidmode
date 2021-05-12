@@ -411,7 +411,7 @@ class NeuralNet:
 
 
     def fit(self, x_train, y_train, x_val=None, y_val=None, epochs=10, alpha=0.1, verbosity=3,
-            random_state=1, callback=None):
+            random_state=1, callback=None, randomize=False):
         
         """
         Train model according to specified parameters
@@ -488,10 +488,15 @@ class NeuralNet:
                 # if batch size is 0 then use all of samples
                 batch_size = m_train if batch_size == 0 else batch_size
 
-                # randomize samples
-                perm_train = list(np.random.permutation(m_train))
-                s_x_train = x_train[perm_train, :]
-                s_y_train = y_train[perm_train]
+                # No random sampling by default
+                s_x_train = x_train
+                s_y_train = y_train
+
+                if randomize:
+                    # randomize samples
+                    perm_train = list(np.random.permutation(m_train))
+                    s_x_train = x_train[perm_train, :]
+                    s_y_train = y_train[perm_train]
 
                 # number of batches
                 n_train = np.trunc(m_train / batch_size).astype(int)
