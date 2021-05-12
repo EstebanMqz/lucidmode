@@ -37,7 +37,8 @@ def train_val_split(x_data, y_data, train_size=0.8, random_state=1):
 # ----------------------------------------------------------------------------------- RANDOM GRID SEARCH -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def gridsearch(model, X_train, y_train, X_val, y_val, metric_goal, fit_epochs, grid_iterations, es_call):
+def gridsearch(model, X_train, y_train, X_val, y_val, metric_goal, fit_epochs, grid_iterations, es_call,
+grid_alpha):
     """
     
     params: list of parameters
@@ -55,12 +56,6 @@ def gridsearch(model, X_train, y_train, X_val, y_val, metric_goal, fit_epochs, g
 
     import matplotlib as plt
     from tools.metrics import metrics
-
-    # grid values
-    grid_alpha = list(np.arange(0, .122, 0.002).round(decimals=4))[1:]
-
-    # random shuffle
-    np.random.shuffle(grid_alpha)
 
     # Early stopping criteria: Number of iterations
     counter = grid_iterations
