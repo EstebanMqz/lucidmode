@@ -24,14 +24,17 @@ from shutil import rmtree
 
 from setuptools import find_packages, setup, Command
 
+with open("README.rst", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 # Package meta-data.
 NAME = 'lucidmode'
-DESCRIPTION = __doc__
+DESCRIPTION = long_description
 URL = 'https://github.com/lucidmode/lucidmode'
 EMAIL = 'if.francisco.me@gmail.com'
 AUTHOR = 'IFFranciscoME'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = 'v0.4-beta1.0'
+VERSION = '0.4.1'
 
 # What packages are required for this module to be executed?
 REQUIRED = ['pandas>=1.1.4', 'numpy>=1.20', 'rich>=9.5',
