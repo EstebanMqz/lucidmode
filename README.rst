@@ -11,6 +11,10 @@
 .. image:: https://readthedocs.org/projects/lucidmode/badge/?version=latest
         :target: https://lucidmode.readthedocs.io
         :alt: Documentation Status
+        
+.. image:: https://img.shields.io/pypi/v/lucidmode.svg
+        :target: https://pypi.python.org/pypi/lucidmode/
+        :alt: Version
 
 .. image:: https://img.shields.io/github/license/lucidmode/lucidmode
         :target: https://github.com/lucidmode/lucidmode/blob/master/LICENSE
