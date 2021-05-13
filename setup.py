@@ -38,8 +38,8 @@ REQUIRES_PYTHON = '>=3.6.0'
 VERSION = lucidmode.__version__
 
 # What packages are required for this module to be executed?
-REQUIRED = ['pandas>=1.1.4', 'numpy>=1.20', 'rich>=9.5',
-	    	'matplotlib>=3.4.1', 'seaborn>=0.11.1']
+REQUIRED = ['pandas', 'numpy', 'rich',
+	    	'matplotlib', 'seaborn']
 
 here = os.path.abspath(os.path.dirname(__file__))
 
