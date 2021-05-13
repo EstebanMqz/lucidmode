@@ -10,6 +10,9 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
+# -- Load other scripts
+from lucidmode.tools.metrics import metrics
+
 # -- Load libraries for script
 import numpy as np
 
@@ -53,9 +56,6 @@ grid_alpha):
 
     # np.random.seed = 123
     n = X_train.shape[0]
-
-    import matplotlib as plt
-    from tools.metrics import metrics
 
     # Early stopping criteria: Number of iterations
     counter = grid_iterations
