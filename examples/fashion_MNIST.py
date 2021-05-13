@@ -14,15 +14,15 @@
 from lucidmode.models import NeuralNet
 
 # -- load datasets
-from tools.io_data import datasets
+from lucidmode.tools.io_data import datasets
 
 # -- base libraries
 import numpy as np
 
 # -- complementary tools
 from rich import inspect
-from tools.metrics import metrics
-from tools.processing import train_val_split, gridsearch
+from lucidmode.tools.metrics import metrics
+from lucidmode.tools.processing import train_val_split, gridsearch
 
 import warnings
 
@@ -127,12 +127,13 @@ val_metrics['acc']
 
 # grid values
 grid_alpha = list(np.arange(0.06, .10, 0.005).round(decimals=4))[1:]
+
 # random shuffle
 np.random.shuffle(grid_alpha)
 
-# Callback
+# callback
 es_callback = {'earlyStopping': {'metric': 'acc', 'threshold': 0.75}}
 
-# Random GridSearch
-ds = gridsearch(lucid, X_train, y_train, X_val, y_val,
+# random GridSearch
+ds = gridsearch(lucid, X_train, y_train, X_val, y_val, grid_alpha=grid_alpha,
                 es_call=es_callback, metric_goal=0.75, fit_epochs=100, grid_iterations=10)

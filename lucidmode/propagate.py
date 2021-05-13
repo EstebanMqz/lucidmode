@@ -15,10 +15,10 @@ import numpy as np
 
 # -- Load other scripts
 import lucidmode.functions as fn
-import tools.metrics as mt
+import lucidmode.tools.metrics as mt
 import lucidmode.regularization as rg
 
-# ---------------------------------------------------------------------------------------------- FORWARD -- #
+# --------------------------------------------------------------------------------- ------------- FORWARD -- #
 
 def __forward(self, A, l):
     layer = list(self.layers.keys())[l]

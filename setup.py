@@ -30,7 +30,7 @@ with open("README.rst", "r") as fh:
 
 # Package meta-data.
 NAME = 'lucidmode'
-DESCRIPTION = 'A long description'
+DESCRIPTION = 'Interpretable Machine Learning Models'
 URL = 'https://github.com/lucidmode/lucidmode'
 EMAIL = 'if.francisco.me@gmail.com'
 AUTHOR = 'IFFranciscoME'
@@ -39,17 +39,11 @@ VERSION = lucidmode.__version__
 
 # What packages are required for this module to be executed?
 REQUIRED = ['pandas>=1.1.4', 'numpy>=1.20', 'rich>=9.5',
-		'matplotlib>=3.4.1', 'seaborn>=0.11.1']
-
-# The rest you shouldn't have to touch too much :)
-# ------------------------------------------------
-# Except, perhaps the License and Trove Classifiers!
-# If you do change the License, remember to change the Trove Classifier for that!
+	    	'matplotlib>=3.4.1', 'seaborn>=0.11.1']
 
 here = os.path.abspath(os.path.dirname(__file__))
 
 # Import the README and use it as the long-description.
-# Note: this will only work if 'README.md' is present in your MANIFEST.in file!
 try:
     with io.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
         long_description = '\n' + f.read()
@@ -114,13 +108,15 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+    packages=find_packages(where='lu', exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
 
     # entry_points={
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
+
     install_requires=REQUIRED,
     include_package_data=True,
     classifiers=[

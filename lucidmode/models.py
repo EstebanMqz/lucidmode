@@ -13,6 +13,7 @@
 # -- Load other scripts
 import lucidmode.propagate as prop
 import lucidmode.regularization as reg
+import lucidmode.learning.execution as ex
 
 # -- Load libraries for script
 import numpy as np
@@ -459,8 +460,6 @@ class NeuralNet:
         # y_train = data['y'].astype(np.int)
 
         """ 
-
-        import learning.execution as ex
 
         # Store callbacks in class
         self.callbacks = callback
