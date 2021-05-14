@@ -76,8 +76,8 @@ grid_alpha):
         batch = 0
         
         # -- GRID MODEL FORMATION
-        grid_model.formation(cost={'function': 'multi-logloss'},
-                             init={'input_shape': X_train.shape[1], 'init_layers': 'xavier-uniform'},
+        grid_model.formation(cost={'function': 'binary-logloss'},
+                             init={'input_shape': X_train.shape[1], 'init_layers': 'xavier-standard'},
                              optimizer={'type': 'SGD',
                                         'params': {'learning_rate': alpha, 'batch_size': 0}},
                              metrics=['acc'])

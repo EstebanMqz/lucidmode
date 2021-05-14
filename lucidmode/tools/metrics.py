@@ -88,14 +88,15 @@ def metrics(y, y_hat, type, use='learning'):
         # -- SINGLE-CLASS
         if len(classes) == 2:
         
+            y_hat = np.squeeze(y_hat)
             cm = _confussion_matrix(y, y_hat, classes)
-            acc = np.round((cm['tpr'] + cm['tnr'])/(cm['tpr'] + cm['fnr'] + cm['fpr'] + cm['tnr']), 4)
+            acc = np.round((cm[0][0] + cm[1][1])/(cm[0][0] + cm[1][0] + cm[0][1] + cm[1][1]), 4)
 
-            lr_p = np.round(cm['tpr']/cm['fpr'], 4)
-            lr_n = np.round(cm['tnr']/cm['fnr'], 4)
+            lr_p = np.round(cm[0][0]/cm[0][1], 4)
+            lr_n = np.round(cm[1][1]/cm[1][0], 4)
 
             # Final format
-            c_metrics = {'tpr': cm['tpr'], 'fpr': cm['fpr'], 'tnr': cm['tnr'], 'fnr': cm['fnr'],
+            c_metrics = {'tpr': cm[0][0], 'fpr': cm[0][1], 'tnr': cm[1][1], 'fnr': cm[1][0],
                          'acc': acc, 'lr_p': lr_p, 'lr_n': lr_n, 'cm': cm}
             
             # Final return

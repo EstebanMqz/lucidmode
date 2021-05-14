@@ -409,16 +409,13 @@ class NeuralNet:
     # ------------------------------------------------------------------ FIT MODEL PARAMETERS (LEARNING) -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-
     def fit(self, x_train, y_train, x_val=None, y_val=None, epochs=10, alpha=0.1, verbosity=3,
             random_state=1, callback=None, randomize=False):
         
         """
         Train model according to specified parameters
-
         Parameters
         ----------
-
         x_train: np.array / pd.Series
             Features data with nxm dimensions, n = observations, m = features
         
@@ -427,10 +424,8 @@ class NeuralNet:
         
         x_val: np.array / pd.Series
             Same as x_train but with data considered as validation
-
         y_val: np.array / pd.Series
             Same as y_train but with data considered as validation
-
         epochs: int
             Epochs to iterate the model training
         
@@ -439,25 +434,20 @@ class NeuralNet:
         
         cost_f: str
             Cost function, options are according to functions.cost
-
         verbosity: int
             level of verbosity to show progress
             3: cost train and cost val at every epoch
         
         callback: dict
             whether there is a stopping criteria or action
-
             {'earlyStopping': {'metric': 'acc', 'threshold': 0.80}}
         
         Returns
         -------
-
         history: dict
             with dynamic keys and iterated values of selected metrics
-
         # binary output
         # y_train = data['y'].astype(np.int)
-
         """ 
 
         # Store callbacks in class
@@ -560,14 +550,46 @@ class NeuralNet:
             elif self.optimizer['type'] == 'LMA':
                 
                 return 'coming soon'
-
-
+    
     # ------------------------------------------------------------------------------- PREDICT WITH MODEL -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
 
     def predict(self, x_train):
         """
+abs_path = '/home/franciscome/Documents/Research/lucidmode/datasets/timeseries/genetic_finance/'
+
+X_train = pd.read_csv(abs_path + 'x_train.csv').iloc[:, 2:]
+
+y_train = pd.read_csv(abs_path + 'y_train.csv').iloc[:, 1:]
+y_train = [1 if float(y_train.iloc[i]) > 0 else 0 for i in range(y_train.shape[0])]
+
+X_val = pd.read_csv(abs_path + 'x_val.csv').iloc[:, 2:]
+
+y_val = pd.read_csv(abs_path + 'y_val.csv').iloc[:, 1:]
+y_val = [1 if float(y_val.iloc[i]) > 0 else 0 for i in range(y_val.shape[0])]
+
+# Neural Net Topology Definition
+lucid = NeuralNet(hidden_l=[60, 30, 10], hidden_a=['tanh', 'tanh', 'tanh'],
+                  hidden_r=[{'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
+                            {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
+                            {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1}],
+                
+                  output_r={'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
+                  output_n=10, output_a='softmax')
+
+# Model and implementation case Formation
+lucid.formation(cost={'function': 'multi-logloss', 'reg': {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1}},
+                init={'input_shape': X_train.shape[1], 'init_layers': 'common-uniform'},
+                optimizer={'type': 'SGD', 'params': {'learning_rate': 0.075, 'batch_size': 18000}},
+                metrics=['acc'])
+
+# Inspect object contents  (Weights initialization)
+# inspect(lucid)
+
+# cost evolution
+lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val, epochs=100, verbosity=3)
+
 
         PREDICT depends of the activation function and number of outpus in output layer
 

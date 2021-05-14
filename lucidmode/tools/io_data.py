@@ -12,6 +12,7 @@
 
 # -- Load libraries for script
 import numpy as np
+import pandas as pd
 import os
 
 # ----------------------------------------------------------------------------- READ PRE-LOADED DATASETS -- #
@@ -39,19 +40,18 @@ def datasets(p_dataset):
     # Base directory
     basedir = 'datasets/'
 
-    # ------------------------------------------------------------------------------------------- ETH H8 -- #
+    # ---------------------------------------------------------------------------------- GENETIC FINANCE -- #
 
-    if p_dataset == 'eth_ohlcv_H8':
+    if p_dataset == 'genetic_finance':
     
+        folder = basedir + 'timeseries/' + p_dataset + '/'
         # read file from files folder
-        return np.genfromtxt(basedir + 'timeseries/ETH_USDT_8h.csv', delimiter=',')
-
-    # ------------------------------------------------------------------------------------------- BTC H8 -- #
-
-    elif p_dataset == 'btc_ohlcv_H8':
-
-        # read file from files folder
-        return np.genfromtxt(basedir + 'timeseries/BTC_USDT_8h.csv', delimiter=',')
+        X_train = pd.read_csv(folder + 'X_train.csv').iloc[:, 2:]
+        y_train = pd.read_csv(folder + 'y_train.csv')
+        X_val = pd.read_csv(folder + 'X_val.csv').iloc[:, 2:]
+        y_val = pd.read_csv(folder + 'y_val.csv')
+        
+        return {'X_train': X_train, 'y_train': y_train, 'X_val': X_val, 'y_val': y_val}
         
     # --------------------------------------------------------------------------------------- RANDOM XOR -- #
     

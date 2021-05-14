@@ -36,7 +36,7 @@ def _cost(A, Y, type):
         # loss as the errors within each value
         loss = np.multiply(Y, np.log(A)) + np.multiply(1 - Y, np.log(1 - A))
         # cost as the mean of loss
-        cost = -(1/Y.shape[1]) * np.sum(loss)
+        cost = -(1/Y.shape[0]) * np.sum(loss)
     
     # -- Multiclass Cross-Entropy (pending)
     elif type == 'multi-logloss':
