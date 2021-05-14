@@ -14,15 +14,12 @@
 
 """ A Lucid Framework for Transparent and Interpretable Machine Learning Models. """
 
-# Note: To use the 'upload' functionality of this file, you must:
-#   $ pipenv install twine --dev
-
+# library dependencies to build
 import io
 import os
 import sys
 import lucidmode
 from shutil import rmtree
-
 from setuptools import find_packages, setup, Command
 
 with open("README.rst", "r") as fh:
