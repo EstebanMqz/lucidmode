@@ -58,9 +58,6 @@ else:
 class UploadCommand(Command):
     """
     Automated upload support process for setup.py
-
-    >>> python3 setup.py upload
-
     """
 
     description = 'Build and publish the package on pypi.org'
@@ -70,6 +67,12 @@ class UploadCommand(Command):
     def status(s):
         """Prints things in bold."""
         print('\033[1m{0}\033[0m'.format(s))
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
 
     def run(self):
         try:
@@ -101,24 +104,29 @@ setup(name=NAME,
       long_description_content_type='text/x-rst',
       author=AUTHOR,
       author_email=EMAIL,
-      python_requires=REQUIRES_PYTHON,
       url=URL,
-      packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
 
-    install_requires=REQUIRED,
-    include_package_data=False,
-    classifiers=['Development Status :: 4 - Beta',
-                 'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-                 'Intended Audience :: Science/Research',
-                 'Intended Audience :: Developers',
-                 'Programming Language :: Python :: 3',
-                 'Programming Language :: Python :: 3.8',
-                 'Operating System :: Unix',
-                 'Operating System :: Microsoft :: Windows',
-                 'Operating System :: MacOS',
-                 'Topic :: Scientific/Engineering :: Artificial Intelligence',
-                 'Topic :: Scientific/Engineering :: Visualization'],
+      python_requires=REQUIRES_PYTHON,
+      packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+      install_requires=REQUIRED,
+
+      include_package_data=True,
+      package_data={'genetic-finance': ['datasets/timeseries/genetic-finance/*.csv'],
+                    'digits-mnist': ['datasets/images/digits-mnist/*.gz'],
+                    'fashion-mnist': ['datasets/images/fashion-mnist/*.gz']},
+
+      classifiers=['Development Status :: 4 - Beta',
+                   'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+                   'Intended Audience :: Science/Research',
+                   'Intended Audience :: Developers',
+                   'Programming Language :: Python :: 3',
+                   'Programming Language :: Python :: 3.8',
+                   'Operating System :: Unix',
+                   'Operating System :: Microsoft :: Windows',
+                   'Operating System :: MacOS',
+                   'Topic :: Scientific/Engineering :: Artificial Intelligence',
+                   'Topic :: Scientific/Engineering :: Visualization'],
     
-    # $ setup.py publish support.
-    cmdclass={'upload': UploadCommand},
+      # $ setup.py publish support.
+      cmdclass={'upload': UploadCommand,},
 )
