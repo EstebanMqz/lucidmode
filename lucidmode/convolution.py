@@ -12,6 +12,7 @@
 
 # -- Load libraries for script
 import numpy as np
+from numpy.lib.stride_tricks import as_strided
 from scipy import signal
 from matplotlib import pyplot as plt
 
@@ -28,6 +29,7 @@ References
 
 https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html
 https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.windows.gaussian.html
+https://numpy.org/doc/stable/reference/generated/numpy.lib.stride_tricks.as_strided.html
 
 """
 
@@ -38,11 +40,13 @@ https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.windows.gaussi
 # 3) Specify memory of convolution: from 1 to batch_size
 # 4) Specify kernel parameters: 1) Distribution Variance
 # 5) Scale output of convolution: between 0 to 1
-# 6) To apply an activation function after convolution: sigmoid, tanh, relu
+# 6) Apply a block pool function (max, min, mean, median)
+# 6) Apply an activation function after convolution: sigmoid, tanh, relu
 
 # Challenge 1) How to compute the gradient of J with respect to the output of 1d Conv layer?
-# Since output of convolution goes through an activation function, forward and backward are according to 
-# such activation
+# Option 1: 
+#           Since output of convolution goes through an activation function, forward and backward are 
+#           according to such activation
 
 np.random.seed(123) 
 
@@ -53,7 +57,7 @@ y = np.cumsum(np.random.randn(10))
 prev_n = 10
 
 # Memory to convolve
-param_m = 1
+param_m = 10
 
 # -- Kernel Parameters {'k_0': Type of kernel, 'k_1': Variance}
 param_k_0 = 'gaussian'
@@ -66,15 +70,70 @@ y_convolved = signal.fftconvolve(y, z, mode='same')
 # -- Scaling, Dimensions and Shape
 y_convolved = y_convolved/np.max(abs(y_convolved))
 y = y/np.max(abs(y))
-
 y_convolved = np.matrix(y_convolved).T
 
+
+def block_formation(array, block_shape):
+
+    block_shape = np.array(block_shape)
+    if (block_shape <= 0).any():
+        raise ValueError('block_shape elements must be strictly positive')
+
+    if block_shape.size != array.ndim:
+        raise ValueError('block_shape must have the same length as arr_in.shape')
+
+    arr_shape = np.array(array.shape)
+    if (arr_shape % block_shape).sum() != 0:
+        raise ValueError('block_shape is not compatible with arr_in')
+
+    # -- use as_strided in the array to perform the block formation as needed
+    new_shape = tuple(arr_shape // block_shape) + tuple(block_shape)
+    new_strides = tuple(array.strides * block_shape) + array.strides
+    arr_out = as_strided(array, shape=new_shape, strides=new_strides, writeable=False)
+
+    return arr_out
+
+# -- 
+def block_pool(array, block_shape, func=np.sum):
+
+    if len(block_shape) != array.ndim:
+        raise ValueError('block_size must have the same length as array.shape')
+
+    pad_width = []
+    for i in range(len(block_shape)):
+
+        if block_shape[i] < 1:
+            raise ValueError('Down-sampling factors must be >= 1')
+
+        if array.shape[i] % block_shape[i] != 0:
+            after_width = block_shape[i] - (array.shape[i] % block_shape[i])
+        else:
+            after_width = 0
+        pad_width.append((0, after_width))
+
+    array = np.pad(array, pad_width=pad_width, mode='constant')
+
+    blocked = block_formation(array, block_shape)
+
+    return func(blocked, axis=tuple(range(array.ndim, blocked.ndim)))
+
+
+# -- Tests 
 plt.plot(y, label='original')
 plt.legend()
-plt.title('Original TS - Gaussian Random Walk')
+plt.title('Original TS - Convolved TS')
  
 plt.plot(y_convolved, label='convolved')
 plt.legend()
 plt.title('Convolved TS')
+
+plt.show()
+
+# -- Reference pooling with (max, min, mean, median)
+function_pooling = block_pool(array=y_convolved, block_shape=(5,1), func=np.mean)
+
+plt.plot(function_pooling, label='function pooling')
+plt.legend()
+plt.title('Function Pooling of Convolved TS')
 
 plt.show()
