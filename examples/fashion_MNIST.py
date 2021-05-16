@@ -36,12 +36,12 @@ with warnings.catch_warnings():
 # --------------------------------------------------------------------------------------------------------- #
 
 # load example data 
-data = datasets('fashion_MNIST')
-labels = data['labels']
-images = data['images']
+data = datasets('digits-mnist')
+y_train = data['y_train']
+X_train = data['X_train']
 
 # split data
-X_train, X_val, y_train, y_val = train_val_split(images, labels, train_size = 0.3, random_state = 1)
+X_train, X_val, y_train, y_val = train_val_split(X_train, y_train, train_size = 0.3, random_state = 1)
 
 # -- Train dataset: X_train.shape(16800, 784) y_train.shape(16800,)
 # -- Test dataset: X_test.shape(7200, 784) y_test.shape(7200,)

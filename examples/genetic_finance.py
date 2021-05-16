@@ -28,8 +28,8 @@ from lucidmode.tools.visualizations import plot_ohlc_class
 # --------------------------------------------------------------------------------------------------------- #
 
 # load example data 
-data = datasets('genetic_finance')
-ohlc_data = pd.read_csv('datasets/timeseries/genetic_finance/eth_usd_8h.csv')
+data = datasets('genetic-finance')
+train_ohlc = data['X_train']
 
 X_train = data['X_train']
 X_train = np.array(X_train)
@@ -87,6 +87,8 @@ lucid.formation(cost={'function': 'binary-logloss',
 # Inspect object contents  (Weights initialization)
 # inspect(lucid)
 
+# --------------------------------------------------------------------------------------------------------- #
+
 # grid values
 grid_alpha = list(np.arange(1e-4, 1e-2, 1e-4).round(decimals=6))[1:]
 
@@ -127,14 +129,7 @@ val_metrics['acc']
 
 # --------------------------------------------------------------------------------------------------------- #
 
-y_train = pd.read_csv('datasets/timeseries/genetic_finance/exp1_y_train.csv')
-y_train['co'] = [1 if i > 0 else 0 for i in y_train.iloc[:, 1]]
-
-y_train_pred = pd.read_csv('datasets/timeseries/genetic_finance/exp1_y_train.csv')
-y_train_pred['co'] = y_hat
-
-date_vlines = []
-ohlc_class = {'val_y': y_train, 'val_y_pred': y_train_pred}
+# -- OHLC Class plot work in progress
 
 # Plot_3 Observed Class vs Predicted Class
 theme_plot_4 = dict(p_colors={'color_1': '#6b6b6b', 'color_2': '#ABABAB', 'color_3': '#ABABAB'},
@@ -142,12 +137,3 @@ theme_plot_4 = dict(p_colors={'color_1': '#6b6b6b', 'color_2': '#ABABAB', 'color
                     p_dims={'width': 900, 'height': 500},
                     p_labels={'title': 'Clasifications',
                               'x_title': 'Dates', 'y_title': 'Continuous Future Price USD/MXN'})
-
-# Make plot
-plot_3 = plot_ohlc_class(p_ohlc=ohlc_data, p_theme=theme_plot_4, p_data_class=ohlc_class,
-                         p_vlines=date_vlines)
-
-plot_3 = plot_3.update_layout(title=None)
-
-# Show plot in script
-# plot_3.show()

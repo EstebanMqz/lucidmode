@@ -14,6 +14,7 @@
 import numpy as np
 import pandas as pd
 import os
+import gzip
 
 # ----------------------------------------------------------------------------- READ PRE-LOADED DATASETS -- #
 # --------------------------------------------------------------------------------------------------------- #
@@ -39,12 +40,58 @@ def datasets(p_dataset):
 
     # Base directory
     basedir = 'datasets/'
+    
+    # ------------------------------------------------------------------------------------ GENERIC MNIST -- #
+    
+    def load_mnist(path, kind='train'):
+        """
+        Helper function to read data for MNIST datasets
+        """
 
-    # ---------------------------------------------------------------------------------- GENETIC FINANCE -- #
+        labels_path = os.path.join(path, '%s-labels-idx1-ubyte.gz' % kind)
+        images_path = os.path.join(path, '%s-images-idx3-ubyte.gz' % kind)
 
-    if p_dataset == 'genetic_finance':
+        with gzip.open(labels_path, 'rb') as lbpath:
+            labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8)
+
+        with gzip.open(images_path, 'rb') as imgpath:
+            images = np.frombuffer(imgpath.read(), dtype=np.uint8, offset=16).reshape(len(labels), 784)
+
+        return images, labels
+
+    # ------------------------------------------------------------------------------------ FASHION MNIST -- #
+
+    if p_dataset == 'fashion-mnist':
+        """
+        28x28 pixel pictures of fashion clothes: https://github.com/zalandoresearch/fashion-mnist
+        """
+
+        folder = basedir + 'images/' + p_dataset + '/'
+        X_train, y_train = load_mnist(folder, kind='train')
+        X_test, y_test = load_mnist(folder, kind='t10k')
+
+        return {'X_train': X_train, 'y_train': y_train, 'X_test': X_test, 'y_test': y_test}
+    
+    # ------------------------------------------------------------------------------------ DIGITS MNIST -- #
+
+    elif p_dataset == 'digits-mnist':
+
+        """
+        28x28 pixel pictures of handwritten digits: http://yann.lecun.com/exdb/mnist/
+        """
+
+        folder = basedir + 'images/' + p_dataset + '/'
+        X_train, y_train = load_mnist(folder, kind='train')
+        X_test, y_test = load_mnist(folder, kind='t10k')
+
+        return {'X_train': X_train, 'y_train': y_train, 'X_test': X_test, 'y_test': y_test}
+    
+     # ---------------------------------------------------------------------------------- GENETIC FINANCE -- #
+
+    elif p_dataset == 'genetic-finance':
     
         folder = basedir + 'timeseries/' + p_dataset + '/'
+        
         # read file from files folder
         X_train = pd.read_csv(folder + 'X_train.csv').iloc[:, 2:]
         y_train = pd.read_csv(folder + 'y_train.csv')
@@ -65,58 +112,5 @@ def datasets(p_dataset):
         
         return {'y': y, 'x': x}
     
-    # ------------------------------------------------------------------------------------ FASHION MNIST -- #
-
-    elif p_dataset == 'fashion_MNIST':
-        """
-        28x28 pixel pictures of fashion clothes: https://github.com/zalandoresearch/fashion-mnist
-        """
-
-        folder = basedir + 'images/' + p_dataset + '/'
-        file_1 = 'train-labels-idx1-ubyte'
-        file_2 = 'train-images-idx3-ubyte'
-
-        # -- read files from local system folder (both )
-        labels_path = os.path.join(folder + file_1)
-        with open(labels_path,'rb') as lbpath:
-            labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8)
-                
-        images_path = os.path.join(folder + file_2)
-        with open(images_path,'rb') as imgpath:
-            images = np.frombuffer(imgpath.read(), dtype=np.uint8, offset=16).reshape(len(labels), 784)
-
-        # SIMPLIER VERSION: drop all samples from the following class. 
-        """
-        todrop = [4, 5, 6, 7, 8, 9]
-        for i in todrop:
-            idxs = (labels == i)
-            images = images[~idxs]
-            labels = labels[~idxs]
-        """
-
-        return {'images': images, 'labels': labels}
-    
-    # ------------------------------------------------------------------------------------ DIGITS MNIST -- #
-
-    elif p_dataset == 'digits_MNIST':
-
-        """
-        28x28 pixel pictures of handwritten digits: http://yann.lecun.com/exdb/mnist/
-        """
-
-        # -- read files from local system folder (both )
-        labels_path = os.path.join('datasets/images/' + p_dataset + '/', 'train-labels-idx1-ubyte')
-        with open(labels_path,'rb') as lbpath:
-            labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8).reshape(-1, 1)
-                
-        images_path = os.path.join('files/data/images/' + p_dataset + '/', 'train-images-idx3-ubyte')
-        with open(images_path,'rb') as imgpath:
-            images = np.frombuffer(imgpath.read(), dtype=np.uint8, offset=16).reshape(len(labels), 784)
-        
-        # normalize images 
-        img_norm = images / 255
-
-        return {'images': img_norm, 'labels': labels}
-
     else:
         print('Error in: p_dataset')
