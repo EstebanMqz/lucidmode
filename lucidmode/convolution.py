@@ -59,6 +59,18 @@ prev_n = 10
 # Memory to convolve
 param_m = 10
 
+# -- 1D CONVOLUTION LAYER -- #
+
+"""
+Notes: 
+Each one-dimensional time series feature is provided to the model as a separate channel or input.
+
+The model will read each input sequence onto a separate set of filter maps, then use a separate kernel to transform each one, essentially learning features from each convolved time series input variable.
+
+1D Convolution operation depends on the kernel transformation which in times depends on the parameters necessary to perform the internal operation. For time series it is necessary to specify a memory value for such operation, that is, at every time t a fixed amount of T values will be used to perform the f(x) transformation.
+
+"""
+
 # -- Kernel Parameters {'k_0': Type of kernel, 'k_1': Variance}
 param_k_0 = 'gaussian'
 param_k_1 = 1.5
@@ -128,6 +140,8 @@ plt.legend()
 plt.title('Convolved TS')
 
 plt.show()
+
+# -- FUNCTIONAL POOLING LAYER -- #
 
 # -- Reference pooling with (max, min, mean, median)
 function_pooling = block_pool(array=y_convolved, block_shape=(5,1), func=np.mean)
