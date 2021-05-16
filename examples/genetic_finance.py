@@ -121,7 +121,6 @@ ds = gridsearch(lucid, X_train, y_train, X_val, y_val, grid_alpha=grid_alpha,
                 es_call=es_callback, metric_goal=0.70, fit_epochs=500, grid_iterations=50)
 
 # --------------------------------------------------------------------------------------------------------- #
-
 # -- OHLC Class plot work in progress
 
 # Plot_3 Observed Class vs Predicted Class

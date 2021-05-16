@@ -93,7 +93,6 @@ class UploadCommand(Command):
 
         sys.exit()
 
-
 # Pass arguments for publishing via twine:
 
 setup(name=NAME,
