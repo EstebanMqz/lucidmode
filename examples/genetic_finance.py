@@ -20,28 +20,21 @@ import pandas as pd
 # -- complementary tools
 from rich import inspect
 from lucidmode.tools.metrics import metrics
-from lucidmode.tools.io_data import datasets
 from lucidmode.tools.processing import gridsearch
-from lucidmode.tools.visualizations import plot_ohlc_class
 
 # -------------------------------------------------------------------------------------- GENETIC FINANCE -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-# load example data 
-data = datasets('genetic-finance')
-train_ohlc = data['X_train']
+# read file from files folder
+p_path = 'lucidmode/datasets/timeseries/genetic-finance/'
 
-X_train = data['X_train']
-X_train = np.array(X_train)
+X_train = np.array(pd.read_csv(p_path + 'X_train.csv').iloc[:, 1:])
+y_train_num = np.array(pd.read_csv(p_path + 'y_train.csv'))
+X_val = np.array(pd.read_csv(p_path + 'X_val.csv').iloc[:, 1:])
+y_val_num = np.array(pd.read_csv(p_path + 'y_val.csv'))
 
-y_train_num = data['y_train']
-y_train_num = np.array(y_train_num)
+train_ohlc = X_train
 y_train = np.zeros((y_train_num.shape[0], 1)).astype(int)
-
-X_val = data['X_val']
-X_val = np.array(X_val)
-y_val_num = data['y_val']
-y_val_num = np.array(y_val_num)
 y_val = np.zeros((y_val_num.shape[0], 1)).astype(int)
 
 # -- Multiclass formulation -- #
@@ -81,7 +74,7 @@ lucid = NeuralNet(hidden_l=[90, 90],
 lucid.formation(cost={'function': 'binary-logloss',
                       'reg': {'type': 'elasticnet', 'lmbda': 0.001, 'ratio':0.95}},
                 init={'input_shape': X_train.shape[1], 'init_layers': 'xavier-uniform'},
-                optimizer={'type': 'SGD', 'params': {'learning_rate': 0.0091, 'batch_size': 0}},
+                optimizer={'type': 'SGD', 'params': {'learning_rate': 0.001, 'batch_size': 0}},
                 metrics=['acc'])
 
 # Inspect object contents  (Weights initialization)
@@ -89,23 +82,8 @@ lucid.formation(cost={'function': 'binary-logloss',
 
 # --------------------------------------------------------------------------------------------------------- #
 
-# grid values
-grid_alpha = list(np.arange(1e-4, 1e-2, 1e-4).round(decimals=6))[1:]
-
-# random shuffle
-np.random.shuffle(grid_alpha)
-
-# callback
-es_callback = {'earlyStopping': {'metric': 'acc', 'threshold': 0.70}}
-
-# random GridSearch
-ds = gridsearch(lucid, X_train, y_train, X_val, y_val, grid_alpha=grid_alpha,
-                es_call=es_callback, metric_goal=0.70, fit_epochs=500, grid_iterations=50)
-
-# --------------------------------------------------------------------------------------------------------- #
-
 # cost evolution
-lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val, epochs=20, verbosity=3)
+lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val, epochs=1000, verbosity=3)
 
 # acces to the train history information
 history = lucid.history
@@ -126,6 +104,21 @@ val_metrics = metrics(y_val, y_val_hat, type='classification')
 
 # Overall accuracy
 val_metrics['acc']
+
+# --------------------------------------------------------------------------------------------------------- #
+
+# grid values
+grid_alpha = list(np.arange(1e-4, 1e-2, 1e-4).round(decimals=6))[1:]
+
+# random shuffle
+np.random.shuffle(grid_alpha)
+
+# callback
+es_callback = {'earlyStopping': {'metric': 'acc', 'threshold': 0.70}}
+
+# random GridSearch
+ds = gridsearch(lucid, X_train, y_train, X_val, y_val, grid_alpha=grid_alpha,
+                es_call=es_callback, metric_goal=0.70, fit_epochs=500, grid_iterations=50)
 
 # --------------------------------------------------------------------------------------------------------- #
 

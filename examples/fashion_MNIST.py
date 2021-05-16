@@ -13,9 +13,6 @@
 # -- load class
 from lucidmode.models import NeuralNet
 
-# -- load datasets
-from lucidmode.tools.io_data import datasets
-
 # -- base libraries
 import numpy as np
 
@@ -24,27 +21,42 @@ from rich import inspect
 from lucidmode.tools.metrics import metrics
 from lucidmode.tools.processing import train_val_split, gridsearch
 
-import warnings
-
-def fxn():
-    warnings.warn("RuntimeWarning", RuntimeWarning)
-
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    fxn()
 # ------------------------------------------------------------------------------------- IMAGE CLASSIFIER -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-# load example data 
-data = datasets('digits-mnist')
-y_train = data['y_train']
-X_train = data['X_train']
+"""
+This example is for an image classifier using mnist data sets
+"""
+
+# -------------------------------------------------------------------------------- LOAD DATA FROM FOLDER -- #
+
+def _load_mnist(path, kind='train'):
+        """
+        Helper function to read data for MNIST datasets
+        """
+
+        import os
+        import gzip
+
+        labels_path = os.path.join(path, '%s-labels-idx1-ubyte.gz' % kind)
+        images_path = os.path.join(path, '%s-images-idx3-ubyte.gz' % kind)
+
+        with gzip.open(labels_path, 'rb') as lbpath:
+            labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8)
+
+        with gzip.open(images_path, 'rb') as imgpath:
+            images = np.frombuffer(imgpath.read(), dtype=np.uint8, offset=16).reshape(len(labels), 784)
+
+        return images, labels
+
+path = 'lucidmode/datasets/images/fashion-mnist/'    
+X_train, y_train = _load_mnist(path, kind='train')
+X_test, y_test = _load_mnist(path, kind='t10k')
 
 # split data
 X_train, X_val, y_train, y_val = train_val_split(X_train, y_train, train_size = 0.3, random_state = 1)
 
-# -- Train dataset: X_train.shape(16800, 784) y_train.shape(16800,)
-# -- Test dataset: X_test.shape(7200, 784) y_test.shape(7200,)
+# --------------------------------------------------------------------------------------- MODEL FORMATION-- #
 
 # Neural Net Topology Definition
 lucid = NeuralNet(hidden_l=[60, 30, 10], hidden_a=['tanh', 'tanh', 'tanh'],
@@ -62,7 +74,9 @@ lucid.formation(cost={'function': 'multi-logloss', 'reg': {'type': 'l1', 'lmbda'
                 metrics=['acc'])
 
 # Inspect object contents  (Weights initialization)
-inspect(lucid)
+# inspect(lucid)
+
+# ---------------------------------------------------------------------------------------- MODEL TRAINING-- #
 
 # cost evolution
 lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val, epochs=100, verbosity=3)

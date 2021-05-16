@@ -33,8 +33,7 @@ REQUIRES_PYTHON = '>=3.6.0'
 VERSION = lucidmode.__version__
 
 # Packages are required for this module to be executed
-REQUIRED = ['pandas', 'numpy', 'rich',
-	    	'matplotlib', 'plotly', 'seaborn']
+REQUIRED = ['pandas', 'numpy', 'rich', 'matplotlib', 'plotly', 'seaborn']
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -107,13 +106,9 @@ setup(name=NAME,
       url=URL,
 
       python_requires=REQUIRES_PYTHON,
-      packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
       install_requires=REQUIRED,
-
-      include_package_data=True,
-      package_data={'genetic-finance': ['datasets/timeseries/genetic-finance/*.csv'],
-                    'digits-mnist': ['datasets/images/digits-mnist/*.gz'],
-                    'fashion-mnist': ['datasets/images/fashion-mnist/*.gz']},
+      
+      packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
 
       classifiers=['Development Status :: 4 - Beta',
                    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
