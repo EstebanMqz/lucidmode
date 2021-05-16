@@ -10,8 +10,6 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
-#! /usr/bin/env python
-
 """ A Lucid Framework for Transparent and Interpretable Machine Learning Models. """
 
 # library dependencies to build
@@ -34,9 +32,9 @@ AUTHOR = 'IFFranciscoME'
 REQUIRES_PYTHON = '>=3.6.0'
 VERSION = lucidmode.__version__
 
-# What packages are required for this module to be executed?
+# Packages are required for this module to be executed
 REQUIRED = ['pandas', 'numpy', 'rich',
-	    	'matplotlib', 'seaborn']
+	    	'matplotlib', 'plotly', 'seaborn']
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -58,21 +56,20 @@ else:
 
 
 class UploadCommand(Command):
-    """Support setup.py upload."""
+    """
+    Automated upload support process for setup.py
 
-    description = 'Build and publish the package.'
+    >>> python3 setup.py upload
+
+    """
+
+    description = 'Build and publish the package on pypi.org'
     user_options = []
 
     @staticmethod
     def status(s):
         """Prints things in bold."""
         print('\033[1m{0}\033[0m'.format(s))
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
 
     def run(self):
         try:
@@ -81,56 +78,47 @@ class UploadCommand(Command):
         except OSError:
             pass
 
-        self.status('Building Source and Wheel (universal) distribution…')
+        self.status('Building Source and Wheel (universal) distribution ...')
         os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
 
-        self.status('Uploading the package to PyPI via Twine…')
+        self.status('Uploading the package to PyPI via Twine ...')
         os.system('twine upload dist/*')
 
-        self.status('Pushing git tags…')
-        os.system('git tag v{0}'.format(about['__version__']))
-        os.system('git push --tags')
+        # -- disable pushing with tags to make quick tests
+        # self.status('Pushing git tags ...')
+        # os.system('git tag v{0}'.format(about['__version__']))
+        # os.system('git push --tags')
 
         sys.exit()
 
 
-# Where the magic happens:
-setup(
-    name=NAME,
-    version=about['__version__'],
-    description=DESCRIPTION,
-    long_description=long_description,
-    long_description_content_type='text/x-rst',
-    author=AUTHOR,
-    author_email=EMAIL,
-    python_requires=REQUIRES_PYTHON,
-    url=URL,
-    packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+# Pass arguments for publishing via twine:
 
-    # If your package is a single module, use this instead of 'packages':
-    # py_modules=['mypackage'],
-
-    # entry_points={
-    #     'console_scripts': ['mycli=mymodule:cli'],
-    # },
+setup(name=NAME,
+      version=about['__version__'],
+      description=DESCRIPTION,
+      long_description=long_description,
+      long_description_content_type='text/x-rst',
+      author=AUTHOR,
+      author_email=EMAIL,
+      python_requires=REQUIRES_PYTHON,
+      url=URL,
+      packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
 
     install_requires=REQUIRED,
     include_package_data=False,
-    classifiers=[
-        'Development Status :: 4 - Beta',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-        'Intended Audience :: Science/Research',
-        'Intended Audience :: Developers',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
-        'Operating System :: Unix',
-        'Operating System :: Microsoft :: Windows',
-        'Operating System :: MacOS',
-        'Topic :: Scientific/Engineering :: Artificial Intelligence',
-        'Topic :: Scientific/Engineering :: Visualization'
-    ],
+    classifiers=['Development Status :: 4 - Beta',
+                 'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+                 'Intended Audience :: Science/Research',
+                 'Intended Audience :: Developers',
+                 'Programming Language :: Python :: 3',
+                 'Programming Language :: Python :: 3.8',
+                 'Operating System :: Unix',
+                 'Operating System :: Microsoft :: Windows',
+                 'Operating System :: MacOS',
+                 'Topic :: Scientific/Engineering :: Artificial Intelligence',
+                 'Topic :: Scientific/Engineering :: Visualization'],
+    
     # $ setup.py publish support.
-    cmdclass={
-        'upload': UploadCommand,
-    },
+    cmdclass={'upload': UploadCommand},
 )

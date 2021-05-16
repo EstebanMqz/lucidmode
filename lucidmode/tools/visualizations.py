@@ -10,14 +10,10 @@
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
 
-# basic
+# -- Load libraries for script
 import numpy as np
 import pandas as pd
-
-# visualizations
 import plotly.graph_objects as go
-import plotly.io as pio
-pio.renderers.default = "browser"
 
 # ------------------------------------------------------------------------------------- WEIGHTS ON LAYER -- #
 # --------------------------------------------------------------------------------------------------------- #
