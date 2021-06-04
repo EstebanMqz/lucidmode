@@ -18,6 +18,9 @@ import lucidmode.learning.execution as ex
 # -- Load libraries for script
 import numpy as np
 
+# Expose the following classes to the exterior
+__all__ = ['NeuralNet', 'LogisticRegression']
+
 # ------------------------------------------------------------------------------------------------------ -- #
 # ------------------------------------------------------------------- FEEDFORWARD MULTILAYER PERECEPTRON -- #
 # ------------------------------------------------------------------------------------------------------ -- #
@@ -26,105 +29,42 @@ import numpy as np
 class NeuralNet:
 
     """
-    Artificial Neural Network (Feedforward multilayer pereceptron with backpropagation)
+    Artificial Neural Network: Feedforward multilayer pereceptron.
 
-    Topology characteristics
-    ------------------------
+    It supports a wide variations of topologies, from number of hidden layers, number of hidden neurons per layer, one input layer and one output layer where both of them could have from 1 to N number of neurons.
 
-    hidden_l: Number of neurons per hidden layer (list of int, with length of l_hidden)
-    hidden_a: Activation of hidden layers (list of str, with length l_hidden)   
-    output_n: Number of neurons in output layer (int)
-    output_a: Activation of output layer (str)
-   
-    Other characteristics
-    ---------------------
+    Parameters
+    ----------
 
-    Layer transformations:
-        - linear
-        - (pending) convolution
-   
-    Activation functions:
-        For hidden layers: 
-            - Sigmoid, Tanh, ReLu (pending)
-        For output layer:
-            - Softmax, Linear (pending), Sigmoid (pending)
+    hidden_l: list (of int)
+        Number of neurons to include per hidden layer.
+
+    hidden_a: list (list of str, with length hidden_l)
+        Activation of hidden layers
+
+    output_n: int
+        Number of neurons in output layer
+
+    output_a: str
+        Activation of output layer (str)
     
-    Methods
-    -------
-    
-    Weights Initialization:
-        - Xavier normal, Xavier uniform, common uniform, according to [1]
-        - He, according to [2]
-        - (pending) Save/Load from object.
-    
-    Training Schemes:
-        - Gradient Descent (Use all data)
-            - train: use all the data on each epoch
-            - validation: use all the data on each epoch
-            - (pending) note for FTS: None of particular importance
+    hidden_r / output_r: list (of str, of size l_hidden)
+        list with each pre-layer weights and biases regularization criteria, options are:
 
-        - Stochastic Gradient Descent (use 1 sample)
-            - train: use 1 saample at a time and iterate through all of them on each epoch
-            - validation: use all the data when train finishes, do that on each epoch 
-            - (pending) note for FTS: Do not shuffle data
+        - 'l1': Lasso regularization :math:`|b|`
+        - 'l2': Ridge regularization :math:`|b|^2`
+        - 'elasticnet': :math:`C(L1 - L2)`
+        - 'dropout': Randomly (uniform) select N neurons in layer and turn its weight to 0
+                
+    cost: str
+        cost information for model.
 
-        - Mini-Batch Gradient Descent (use N samples)
-            - train: use a partition or subset of the whole data
-            - validation: use a partition or subset of the whole data (same as train)
-            - (pending) note for FTS: Do not shuffle data
+        - 'function': 'binary-logloss', 'multi-logloss', 'mse'
+        - 'reg': {'type': ['l1', 'l2', 'elasticnet'], 'lambda': 0.001, 'ratio': 0.01}
 
-        - (pending) Adapting Learning
-            - Momentum
-            - Nesterov
+    init: str
+        initialization of weights specified from compile method
         
-        - (pending) Levenberg-Marquardt Algorithm
-
-    Regularization:
-        - Types: l1, l2, elasticnet, dropout
-        
-        - In Cost Function:
-            - Weights values of all layers (l1, l2, elasticnet)
-        
-        - In layers
-            - (pending) Weights gradient values (l1, l2, elasticnet)
-            - (pending) Bias gradient values (l1, l2, elasticnet)
-            - (pending) Neurons activation (dropout)
-
-    Cost Functions: 
-        - For classification: 
-            - Binary Cross-Entropy 
-            - Multiclass Cross-Entropy
-
-        - For regression:
-            - Mean Squared Error
-    
-    Execution Tools:
-        - (pending) Preprocessing input data: Scale, Standard, Robust Standard.
-        - (pending) Callback for termination on NaN (cost functions divergence).
-        - (pending) Callback for early stopping on a metric value difference between Train-Validation sets.
-        - (pending) Save weights to external object/file.
-        - (pending) Load weights from external object/file.
-
-    Visualization/Interpretation Tools: 
-        - (pending) Weight values per layer (Colored bar for each neuron, separation of all layers).
-        - (pending) CostFunction (train-val) evolution (two lines plot with two y-axis).
-        - (pending) Convolution operation between layers.
-    
-    General Methods List:
-        - public: fit, predict
-    
-    Special:
-    --------
-
-    "Ubuntu does not mean that people should not address themselves, the question, therefore is, are you
-     going to do so in order to enable the community around you?", Nelson Mandela, 2006. Recorded in a 
-     video made previously to the launch of Ubuntu linux distribution.
-
-    - (pending) ubuntu_fit: Distributed learning using parallel processing among mini-batches of data 
-                            selected by its value on an information divergence matrix.
-
-    - (pending) ubuntu_predict: Voting system (classification) or Average system (regression).
-
     """
 
     # -------------------------------------------------------------------------------- CLASS CONSTRUCTOR -- #
@@ -132,41 +72,13 @@ class NeuralNet:
 
     def __init__(self, hidden_l, hidden_a, output_n, output_a, cost=None, 
                  hidden_r=None, output_r=None, optimizer=None):
+        super(NeuralNet, self).__init__(hidden_l=hidden_l, hidden_a=hidden_a,
+              output_n=output_n, output_a=output_a, cost=cost, 
+              hidden_r=hidden_r, output_r=output_r, optimizer=optimizer)
 
         """
         ANN Class constructor
         
-        Parameters
-        ----------
-
-        hidden_l: list (of int)
-            Number of neurons per hidden layer
-
-        hidden_a: list (list of str, with length hidden_l)
-            Activation of hidden layers
-
-        output_n: int
-            Number of neurons in output layer
-
-        output_a: str
-            Activation of output layer (str)
-        
-        hidden_r / output_r: list (of str, of size l_hidden)
-            list with each pre-layer weights and biases regularization criteria, options are:
-
-                'l1': Lasso regularization |b|
-                'l2': Ridge regularization |b|^2
-                'elasticnet': C(L1 - L2)
-                'dropout': Randomly (uniform) select N neurons in layer and turn its weight to 0
-                   
-        cost: str
-            cost information for model.
-            'function': 'binary-logloss', 'multi-logloss', 'mse'
-            'reg': {'type': ['l1', 'l2', 'elasticnet'], 'lambda': 0.001, 'ratio': 0.01}
-
-        init: str
-            initialization of weights specified from compile method
-
         Returns
         -------
         
@@ -201,9 +113,9 @@ class NeuralNet:
     # --------------------------------------------------------------------------- WEIGHTS INITIALIZATION -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-    def __init_weights(self, input_shape, init_layers, random_state=1):
+    def init_weights(self, input_shape, init_layers, random_state=1):
         """
-        Weight initialization
+        Weight initialization of a model that was previously instantiated by a topology formation process
         
         Parameters
         ----------
@@ -215,19 +127,17 @@ class NeuralNet:
         
             list with each layer criteria for weights initialization, with options: 
 
-                'common-uniform': Commonly used factor & uniformly distributed random weights [1]
-                'xavier_uniform': Xavier factor & uniformly distributed random weights [1]
-                'xavier_normal': Xavier factor & standard-normally distributed random weights [1]            
-                'he-standard': Factor [2]
+            - 'common-uniform': Commonly used factor & uniformly distributed random weights [1]
+            - 'xavier_uniform': Xavier factor & uniformly distributed random weights [1]
+            - 'xavier_normal': Xavier factor & standard-normally distributed random weights [1]            
+            - 'he-standard': Factor formulatated according to [2]
         
         References
         ----------
         
-        [1] X. Glorot and Y. Bengio.  Understanding the difficulty oftraining deep feedforward neural   
-            networks. International Conference on Artificial Intelligence and Statistics, 2010.
-        
-        [2] He et al. "Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet 
-            Classification," 2015 IEEE International Conference on Computer Vision (ICCV), 2015, pp. 1026-1034, doi: 10.1109/ICCV.2015.123.
+        - **[1]** X. Glorot and Y. Bengio, "Understanding the difficulty oftraining deep feedforward neural networks. International Conference on Artificial Intelligence and Statistics", 2010.
+                
+        - **[2]** He et al, "Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification", 2015 IEEE International Conference on Computer Vision (ICCV), 2015, pp. 1026-1034, doi: 10.1109/ICCV.2015.123.
 
         """
 
@@ -333,18 +243,18 @@ class NeuralNet:
 
     def formation(self, cost=None, optimizer=None, init=None, metrics=None):
         """
-        Neural Network Model Formation.        
+        Neural Network Model Formation.
         
         Parameters
         ----------
         
-        self: Instance of class
-
-        cost: 
-            cost_f: Cost function
-            cost_r: Cost regularization
+        cost: dict
+            Details of the cost function. Includes the following elements:     
+            
+            - 'cost_f': Cost function by its name, options are: {'logloss', 'mse'}
+            - 'cost_r': Cost regularization
         
-        optimizer: 
+        optimizer: dict, str
             type: Name of method for optimization
             params: parameters according to method
         
@@ -390,7 +300,7 @@ class NeuralNet:
             self.layers['hl_' + str(layer)]['i'] = ''
         
         # Weights initialization
-        self.__init_weights(input_shape=init['input_shape'], init_layers=init['init_layers'])
+        self.init_weights(input_shape=init['input_shape'], init_layers=init['init_layers'])
 
         # Cost (function and regularization definition)
         self.cost = cost
@@ -411,11 +321,12 @@ class NeuralNet:
 
     def fit(self, x_train, y_train, x_val=None, y_val=None, epochs=10, alpha=0.1, verbosity=3,
             random_state=1, callback=None, randomize=False):
-        
         """
-        Train model according to specified parameters
+        Train a previously specified (formed) model according to specified parameters.
+
         Parameters
         ----------
+
         x_train: np.array / pd.Series
             Features data with nxm dimensions, n = observations, m = features
         
@@ -424,8 +335,10 @@ class NeuralNet:
         
         x_val: np.array / pd.Series
             Same as x_train but with data considered as validation
+
         y_val: np.array / pd.Series
             Same as y_train but with data considered as validation
+
         epochs: int
             Epochs to iterate the model training
         
@@ -433,7 +346,8 @@ class NeuralNet:
             Learning rate for Gradient Descent
         
         cost_f: str
-            Cost function, options are according to functions.cost
+            Cost function, options are according to functions
+
         verbosity: int
             level of verbosity to show progress
             3: cost train and cost val at every epoch
@@ -444,10 +358,10 @@ class NeuralNet:
         
         Returns
         -------
+
         history: dict
             with dynamic keys and iterated values of selected metrics
-        # binary output
-        # y_train = data['y'].astype(np.int)
+        
         """ 
 
         # Store callbacks in class
@@ -551,63 +465,92 @@ class NeuralNet:
                 
                 return 'coming soon'
     
-    # ------------------------------------------------------------------------------- PREDICT WITH MODEL -- #
+    # --------------------------------------------------------------------------- CLASS/VALUE PREDICTION -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
-
-    def predict(self, x_train):
+    def predict(self, X, threshold=0.5):
         """
-abs_path = '/home/franciscome/Documents/Research/lucidmode/datasets/timeseries/genetic_finance/'
+        Computes a class or value prediction given the inherited model of the class.
 
-X_train = pd.read_csv(abs_path + 'x_train.csv').iloc[:, 2:]
+        Parameters
+        ----------
 
-y_train = pd.read_csv(abs_path + 'y_train.csv').iloc[:, 1:]
-y_train = [1 if float(y_train.iloc[i]) > 0 else 0 for i in range(y_train.shape[0])]
+        x_train: np.array
+            Array with n-dimensional samples to generate the predictions from.
 
-X_val = pd.read_csv(abs_path + 'x_val.csv').iloc[:, 2:]
-
-y_val = pd.read_csv(abs_path + 'y_val.csv').iloc[:, 1:]
-y_val = [1 if float(y_val.iloc[i]) > 0 else 0 for i in range(y_val.shape[0])]
-
-# Neural Net Topology Definition
-lucid = NeuralNet(hidden_l=[60, 30, 10], hidden_a=['tanh', 'tanh', 'tanh'],
-                  hidden_r=[{'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
-                            {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
-                            {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1}],
-                
-                  output_r={'type': 'l1', 'lmbda': 0.001, 'ratio':0.1},
-                  output_n=10, output_a='softmax')
-
-# Model and implementation case Formation
-lucid.formation(cost={'function': 'multi-logloss', 'reg': {'type': 'l1', 'lmbda': 0.001, 'ratio':0.1}},
-                init={'input_shape': X_train.shape[1], 'init_layers': 'common-uniform'},
-                optimizer={'type': 'SGD', 'params': {'learning_rate': 0.075, 'batch_size': 18000}},
-                metrics=['acc'])
-
-# Inspect object contents  (Weights initialization)
-# inspect(lucid)
-
-# cost evolution
-lucid.fit(x_train=X_train, y_train=y_train, x_val=X_val, y_val=y_val, epochs=100, verbosity=3)
-
-
-        PREDICT depends of the activation function and number of outpus in output layer
+        threshold: float
+            Threshold value for the classification case. Default is 0.5
 
         """
         
+        # inherit data from class
+        memory = prop._forward_propagate(self, X)
+
         # -- SINGLE-CLASS
-        if self.output_n == 1:            
-            # tested only with sigmoid output
-            memory = prop._forward_propagate(self, x_train)
+        if self.output_n == 1:             
             p = memory['A_' + str(len(self.hidden_l) + 2)]
-            thr = 0.5
-            indx = p > thr
+
+            # binary classification
+            indx = p > threshold
             p[indx] = 1
             p[~indx] = 0
 
         # -- MULTI-CLASS 
         else:
-            memory = prop._forward_propagate(self, x_train)
+            # One Versus Rest criteria for predicted class
             p = np.argmax(memory['A_' + str(len(self.hidden_l) + 2)], axis=1)
 
         return p
+
+    # ------------------------------------------------------------------------- PROBABILISTIC PREDICTION -- #
+    # -------------------------------------------------------------------------------------------------- -- #
+
+    def predict_proba(self, X):
+            """
+            Given the input samples, generates the class probability predictions for all the classes 
+            specified in the target variable. Inherits the model, hyperparameters and execution conditions
+            from the class after the fit method is called.
+
+            """
+            
+            # inherit data from class
+            memory = prop._forward_propagate(self, X)
+            p = memory['A_' + str(len(self.hidden_l) + 2)]
+
+            return p
+
+
+# ------------------------------------------------------------------------------------------------------ -- #
+# --------------------------------------------------------------- LOGISTIC REGRESSION WITH REGULARIZATION-- #
+# ------------------------------------------------------------------------------------------------------ -- #
+
+
+class LogisticRegression:
+
+    """
+    Logistic Regression model under construction ... 
+    """
+
+    # -------------------------------------------------------------------------------- CLASS CONSTRUCTOR -- #
+    # -------------------------------------------------------------------------------------------------- -- #
+
+    def __init__(self, penalty='elasticnet'):
+        self.penalty = penalty
+
+    # ------------------------------------------------------------------ FIT MODEL PARAMETERS (LEARNING) -- #
+    # -------------------------------------------------------------------------------------------------- -- #
+
+    def fit():
+        pass
+
+    # --------------------------------------------------------------------------------- CLASS PREDICTION -- #
+    # -------------------------------------------------------------------------------------------------- -- #
+
+    def predict():
+        pass
+
+    # ------------------------------------------------------------------------- PROBABILISTIC PREDICTION -- #
+    # -------------------------------------------------------------------------------------------------- -- #
+
+    def predic_proba():
+        pass

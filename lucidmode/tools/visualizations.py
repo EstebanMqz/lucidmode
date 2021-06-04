@@ -61,8 +61,30 @@ import plotly.graph_objects as go
 # -- -------------------------------------------- PLOT: OHLC Candlesticks + Colored Classificator Result -- #
 # -- --------------------------------------------------------------------------------------------------- -- #
 
-def plot_ohlc_class(p_ohlc, p_theme, p_data_class, p_vlines):
+def ohlc_class(p_ohlc, p_theme, p_data_class, p_vlines):
     """
+    OHLC Candlestick plot with color indicator of class prediction success or failure.
+
+    Parameters
+    ----------
+    
+    p_ohlc: pd.DataFrame, dict
+        With OHLC Price data Open, Hight, Low, Close for one particular time period 
+
+    p_theme: dict, optional
+        Aesthetics and labels for the plot
+
+    p_data_class: array, list
+        With the correct class, so a visual distinction will be made if prediction is correct or incorrect
+
+    p_vlines: list, optional
+        With timestamp values to generate vertical lines at those values.
+
+    Returns
+    -------
+
+    plot_ohlc_class: plotly
+        A plotly object to use in a .show() or iplot(), plot()
 
     """
 

@@ -1,26 +1,30 @@
 
-=====
-Index
-=====
+lucidmode's documentation
+=========================
 
-+-----------------+-----------------------------------------------------------------------------------------+
-| **lucidmode** A Lucid Framework for Interpretable Machine Learning Models                                 |
-+=================+=========================================================================================+
-| Author:         | IFFranciscoME - if.francisco.me@gmail.com                                               |
-+-----------------+-----------------------------------------------------------------------------------------+
-| Version:        | **v0.4.1-beta1.0**                                                                      |
-+-----------------+-----------------------------------------------------------------------------------------+
-| License:        | GPL-3.0 License.                                                                        |
-+-----------------+-----------------------------------------------------------------------------------------+
-| Repository:     | https://github.com/lucidmode/lucidmode                                                  |
-+-----------------+-----------------------------------------------------------------------------------------+
+|
+
+.. image:: _images/lucidmode_logo.png
+    :align: center
+
+|
+
+.. currentmodule:: lucidmode
+
+``lucidmode`` is built using similar elements and structure as the API of `scikit-learn` and `TensorFlow`, so in order to preserve standard references like ``fit``, ``predict``, ``predict_proba`` and others.
+
+Next, read some more details about What are the key elements of :ref:`Explainable Artificial Intelligence <introduction>`, and what tools does ``lucidmode`` provide.
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 1
    
-   home
    introduction
-   examples
    installation
+   models
+   visualizations
+   examples
    roadmap
    releases

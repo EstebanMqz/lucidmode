@@ -1,7 +1,7 @@
 
 |
 
-.. image:: https://raw.githubusercontent.com/lucidmode/lucidmode/main/images/lucidmode_logo.png
+.. image:: https://raw.githubusercontent.com/lucidmode/lucidmode/main/docs/images/lucidmode_logo.png
         :align: center
 
 |
@@ -102,11 +102,24 @@ Important Links
 - Documentation: https://lucidmode.readthedocs.io
 - Python Package Index (PyPI) repository: https://pypi.org/project/lucidmode/
 
----------------------------
-Author/Principal Maintainer
----------------------------
+------
+Author
+------
 
-Francisco Munnoz (IFFranciscoME) Is an associate professor of financial engineering and financial machine learning ITESO (Western Institute of Technology and Higher Education)
+J.Francisco Munnoz - `IFFranciscoME`_ - Is an Associate Professor in the Mathematics and Physics Department, at `ITESO`_ University.
+
+.. _ITESO: https://iteso.mx/
+.. _IFFranciscoME: https://iffranciscome.com/
+
+
+--------------------
+Current Contributors
+--------------------
+
+.. image:: https://contrib.rocks/image?repo=IFFranciscoME/T-Fold-SV
+        :target: https://github.com/IFFranciscoME/T-Fold-SV/graphs/contributors
+        :alt: Contributors
+
 
 -------
 License
