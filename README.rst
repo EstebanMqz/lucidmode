@@ -1,7 +1,7 @@
 
 |
 
-.. image:: https://raw.githubusercontent.com/lucidmode/lucidmode/main/docs/images/lucidmode_logo.png
+.. image:: https://raw.githubusercontent.com/lucidmode/lucidmode/main/docs/_images/lucidmode_logo.png
         :align: center
 
 |
