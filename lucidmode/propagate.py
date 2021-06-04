@@ -132,7 +132,7 @@ def _forward_backward(self, x_train, y_train, x_val=None, y_val=None, epoch=0, v
     # Probability prediction and cost value calculation for train
     y_train_p = memory_train[mem_layer]
     y_train_hat = self.predict(x_train)
-    cost_train = fn._cost(y_train_p, y_train, self.cost['function'])
+    cost_train = fn.cost(y_train_p, y_train, self.cost['function'])
 
     # -- Calculations for Validation set
     if len(x_val) !=0:
@@ -140,7 +140,7 @@ def _forward_backward(self, x_train, y_train, x_val=None, y_val=None, epoch=0, v
         # Forward pass, cost and prediction value calculations for val
         memory_val = _forward_propagate(self, x_val)
         y_val_hat = memory_val[mem_layer]
-        cost_val = fn._cost(y_val_hat, y_val, self.cost['function'])
+        cost_val = fn.cost(y_val_hat, y_val, self.cost['function'])
         self.history[self.cost['function']]['val'][epoch] = cost_val
         y_val_hat = self.predict(x_val)
         

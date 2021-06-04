@@ -16,7 +16,33 @@ import numpy as np
 # --------------------------------------------------------------------------------------- COST FUNCTIONS -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def _cost(Y_hat, Y, type):
+def cost(Y_hat, Y, type):
+    """
+    Cost functions
+
+    Parameters
+    ----------
+
+    Y_hat: np.array
+        Predicted values
+    
+    Y: np.array
+        Ground truth or real values
+    
+    type: str
+        One of the following options:
+        
+        - 'sse': sum of squared errors
+        - 'mse': mean of squared errors
+        - 'binary-logloss': binary cross-entropy
+        - 'multi-logloss': multi-class cross-entropy
+    
+    Returns
+    -------
+
+        cost: np.float32 
+
+    """
     
     # numerical stability parameter
     ns = 1e-25
@@ -27,7 +53,7 @@ def _cost(Y_hat, Y, type):
         # loss as the difference on prediction
         loss = Y_hat - Y
         # cost as the sum of the squared errors
-        cost = np.sum(((loss)**2))
+        cost = np.sum(loss**2)
 
     # -- Mean of Squared Errors
     elif type == 'mse':
@@ -58,7 +84,7 @@ def _cost(Y_hat, Y, type):
 
     # check final dimensions
     assert(cost.shape == ())
-    
+
     # function final result
     return cost.astype(np.float32).round(decimals=4)
  

@@ -18,10 +18,7 @@ import numpy as np
 
 def metrics(y, y_hat, type, use='learning'):
     """
-    
-    Metrics for classification. for single class One-Vs-One, for multiclass One-Vs-Rest.
-    Metrics for regression. R2 and Residuals Tests (autocorrelation, normality, heteroskedasticity)
-
+    Statistical and performance metrics for regression and classification, for single class One-Vs-One, for multiclass One-Vs-Rest.
 
     Parameters
     ----------
@@ -36,24 +33,23 @@ def metrics(y, y_hat, type, use='learning'):
         The type of model is going to be tested. The options are: 'classification', 'regression'
     
     use: str
-        'learning': To measeure performance of models in the learning process
-        'information': To measure information aspects for generalization goals
+        - 'learning': To measure performance of models in the learning process
+        - 'information': To measure information aspects for generalization goals
 
     Results
     -------
 
     c_metrics: dict
+
         with the calculated metrics according to type.
 
-        tpr : True Positive Rate also known as sensitivity
-        fpr : False Positive Rate (1 - tpr)
-        tnr : True Negative Rate also known as specificity
-        fnr : False Negative Rate (1 - tnr)
-        acc : Accuracy of results (tpr + tnr) / Population
-        lr_p : Positive Likelihodd (tpr/fpr)
-        lr_n : Negative Likelihodd (fnr/tnr)
-
-    Pending: Precision, Recall, AUC
+        - tpr : True Positive Rate also known as sensitivity
+        - fpr : False Positive Rate (1 - tpr)
+        - tnr : True Negative Rate also known as specificity
+        - fnr : False Negative Rate (1 - tnr)
+        - acc : Accuracy of results (tpr + tnr) / Population
+        - lr_p : Positive Likelihodd (tpr/fpr)
+        - lr_n : Negative Likelihodd (fnr/tnr)
 
     """
 

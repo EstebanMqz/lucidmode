@@ -24,6 +24,7 @@ Contents
    introduction
    installation
    models
+   functions
    visualizations
    examples
    roadmap
