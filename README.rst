@@ -30,7 +30,11 @@
 
 |
 
-**lucidmode** is an open-source, low-code and lightweight Python framework for transparent and interpretable machine learning models. It has built in machine learning methods optimized for visual interpretation of some of the most relevant calculations.
+**Currently a Beta-Version**
+
+|
+
+**lucidmode** is an open-source, low-code and lightweight Python framework for transparent and interpretable machine learning models. It has built in machine learning methods optimized for visual interpretation of some of the most relevant calculations. 
 
 -------------
 Documentation
