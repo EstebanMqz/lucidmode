@@ -16,37 +16,40 @@ import numpy as np
 # --------------------------------------------------------------------------------------- COST FUNCTIONS -- #
 # --------------------------------------------------------------------------------------------------------- #
 
-def _cost(A, Y, type):
+def _cost(Y_hat, Y, type):
     
     # numerical stability parameter
     ns = 1e-25
-    A = A + ns
+    Y_hat = Y_hat + ns
 
-    # -- Mean Squared Error
+    # -- Sum of Squared Errors
     if type == 'sse':
-        
         # loss as the difference on prediction
-        loss = A - Y
+        loss = Y_hat - Y
         # cost as the sum of the squared errors
         cost = np.sum(((loss)**2))
 
+    # -- Mean of Squared Errors
+    elif type == 'mse':
+        # loss as the difference on prediction
+        loss = Y_hat - Y
+        # cost as the sum of the squared errors
+        cost = np.mean(loss**2)
+
     # -- Binary Cross-Entropy (pending)
     elif type == 'binary-logloss':
-        
         # loss as the errors within each value
-        loss = np.multiply(Y, np.log(A)) + np.multiply(1 - Y, np.log(1 - A))
+        loss = np.multiply(Y, np.log(Y_hat)) + np.multiply(1 - Y, np.log(1 - Y_hat))
         # cost as the mean of loss
         cost = -(1/Y.shape[0]) * np.sum(loss)
     
     # -- Multiclass Cross-Entropy (pending)
     elif type == 'multi-logloss':
-
         # auxiliary object
-        y_hat = np.zeros(shape=(Y.shape[0], A.shape[1]))
+        y_hat = np.zeros(shape=(Y.shape[0], Y_hat.shape[1]))
         y_hat[range(len(Y)), Y] = 1
-
         # loss as the errors within each value
-        loss = np.sum(-y_hat * np.log(A))
+        loss = np.sum(-y_hat * np.log(Y_hat))
         # cost as the mean of loss
         cost = np.sum(loss)/y_hat.shape[0]
     
@@ -55,7 +58,7 @@ def _cost(A, Y, type):
 
     # check final dimensions
     assert(cost.shape == ())
-
+    
     # function final result
     return cost.astype(np.float32).round(decimals=4)
  

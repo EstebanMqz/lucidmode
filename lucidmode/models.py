@@ -529,12 +529,23 @@ class LogisticRegression:
 
     """
     Logistic Regression model under construction ... 
+
+    Parameters
+    ----------
+
+        - 'l1': Lasso regularization :math:`|b|`
+        - 'l2': Ridge regularization :math:`|b|^2`
+        - 'elasticnet': :math:`C(L1 - L2)`
+
     """
 
     # -------------------------------------------------------------------------------- CLASS CONSTRUCTOR -- #
     # -------------------------------------------------------------------------------------------------- -- #
 
     def __init__(self, penalty='elasticnet'):
+        """
+        """
+        
         self.penalty = penalty
 
     # ------------------------------------------------------------------ FIT MODEL PARAMETERS (LEARNING) -- #
