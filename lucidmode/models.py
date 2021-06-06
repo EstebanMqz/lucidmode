@@ -17,6 +17,7 @@ import lucidmode.learning.execution as ex
 
 # -- Load libraries for script
 import numpy as np
+import inspect
 
 # Expose the following classes to the exterior
 __all__ = ['NeuralNet', 'LogisticRegression']
@@ -72,7 +73,7 @@ class NeuralNet:
 
     def __init__(self, hidden_l, hidden_a, output_n, output_a, cost=None, 
                  hidden_r=None, output_r=None, optimizer=None):
-        super(NeuralNet, self).__init__(hidden_l=hidden_l, hidden_a=hidden_a,
+        super().__init__(hidden_l=hidden_l, hidden_a=hidden_a,
               output_n=output_n, output_a=output_a, cost=cost, 
               hidden_r=hidden_r, output_r=output_r, optimizer=optimizer)
 
@@ -506,18 +507,50 @@ class NeuralNet:
     # -------------------------------------------------------------------------------------------------- -- #
 
     def predict_proba(self, X):
-            """
-            Given the input samples, generates the class probability predictions for all the classes 
-            specified in the target variable. Inherits the model, hyperparameters and execution conditions
-            from the class after the fit method is called.
+        """
+        Given the input samples, generates the class probability predictions for all the classes 
+        specified in the target variable. Inherits the model, hyperparameters and execution conditions
+        from the class after the fit method is called.
+        """
+        
+        # inherit data from class
+        memory = prop._forward_propagate(self, X)
+        p = memory['A_' + str(len(self.hidden_l) + 2)]
 
-            """
+        return p
+    
+    # --------------------------------------------------------------------------------- MODEL INSPECTION -- #
+    # -------------------------------------------------------------------------------------------------- -- #
+
+    def inspect(self, *params):
+        """
+        Method for model inspection, which consists in a terminal print of the model topology and values
+        through the use of the inspect method from the rich package for rich text and beautiful formatting in
+        the terminal. 
+
+        Parameters
+        ----------
+            params: list
+                With the parameters to select which element to include in the console print, all the elements included in the list will be considered in conjunction, the options are the following:
+
+                - 'help': Show full help for the model
+                - 'methods': Show just callable methods
+                - 'private-l1' Priavate and layer 1 methods (beginning with single underscore)
+                - 'private-l2' Priavate and layer 2 methods (beginning with double underscore)
             
-            # inherit data from class
-            memory = prop._forward_propagate(self, X)
-            p = memory['A_' + str(len(self.hidden_l) + 2)]
+        References
+        ----------
+            - `Github` repo: https://github.com/willmcgugan/rich
+            - `Pypi.org`: 
+            - `inspect` method docs: https://rich.readthedocs.io/en/latest/reference/init.html#rich.inspect
 
-            return p
+        """
+        
+        # =['help']
+
+        inspect(obj=self, title='Multi-Layer Perceptron Object', help=True)
+
+        return 1
 
 
 # ------------------------------------------------------------------------------------------------------ -- #

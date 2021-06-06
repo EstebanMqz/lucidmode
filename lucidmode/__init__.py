@@ -4,5 +4,5 @@
 
 """
 
-__version__ = '0.4.3.11'
+__version__ = '0.4.3.12'
 __all__ = ['models', 'functions']

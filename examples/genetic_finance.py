@@ -26,16 +26,16 @@ from lucidmode.tools.processing import gridsearch
 # --------------------------------------------------------------------------------------------------------- #
 
 # read file from files folder
-p_path = 'lucidmode/datasets/timeseries/genetic-finance/'
+# p_path = 'lucidmode/datasets/timeseries/genetic-finance/'
 
-X_train = np.array(pd.read_csv(p_path + 'X_train.csv').iloc[:, 1:])
-y_train_num = np.array(pd.read_csv(p_path + 'y_train.csv'))
-X_val = np.array(pd.read_csv(p_path + 'X_val.csv').iloc[:, 1:])
-y_val_num = np.array(pd.read_csv(p_path + 'y_val.csv'))
+# X_train = np.array(pd.read_csv(p_path + 'X_train.csv').iloc[:, 1:])
+# y_train_num = np.array(pd.read_csv(p_path + 'y_train.csv'))
+# X_val = np.array(pd.read_csv(p_path + 'X_val.csv').iloc[:, 1:])
+# y_val_num = np.array(pd.read_csv(p_path + 'y_val.csv'))
 
-train_ohlc = X_train
-y_train = np.zeros((y_train_num.shape[0], 1)).astype(int)
-y_val = np.zeros((y_val_num.shape[0], 1)).astype(int)
+# train_ohlc = X_train
+# y_train = np.zeros((y_train_num.shape[0], 1)).astype(int)
+# y_val = np.zeros((y_val_num.shape[0], 1)).astype(int)
 
 # -- Multiclass formulation -- #
 
@@ -53,32 +53,32 @@ y_val = np.zeros((y_val_num.shape[0], 1)).astype(int)
 
 # -- Binary formulation -- #
 
-y_train[y_train_num <= 0] = 0
-y_train[y_train_num > 0] = 1
-y_train = np.squeeze(y_train)
+# y_train[y_train_num <= 0] = 0
+# y_train[y_train_num > 0] = 1
+# y_train = np.squeeze(y_train)
 
-y_val[y_val_num <= 0] = 0
-y_val[y_val_num > 0] = 1
-y_val = np.squeeze(y_val)
+# y_val[y_val_num <= 0] = 0
+# y_val[y_val_num > 0] = 1
+# y_val = np.squeeze(y_val)
 
 # Neural Net Topology Definition
 lucid = NeuralNet(hidden_l=[90, 90],
                   hidden_a=['sigmoid', 'sigmoid'],
-                  hidden_r=[{'type': 'l1', 'lmbda': 0.001, 'ratio':0.95},
-                            {'type': 'l2', 'lmbda': 0.001, 'ratio':0.95}],
+                  hidden_r=[{'type': 'l1', 'lmbda': 0.001, 'ratio': 0.95},
+                            {'type': 'l2', 'lmbda': 0.001, 'ratio': 0.95}],
                 
-                  output_r={'type': 'l2', 'lmbda': 0.001, 'ratio':0.1},
+                  output_r={'type': 'l2', 'lmbda': 0.001, 'ratio': 0.1},
                   output_n=1, output_a='sigmoid')
 
 # Model and implementation case Formation
 lucid.formation(cost={'function': 'binary-logloss',
-                      'reg': {'type': 'elasticnet', 'lmbda': 0.001, 'ratio':0.95}},
-                init={'input_shape': X_train.shape[1], 'init_layers': 'xavier-uniform'},
+                      'reg': {'type': 'elasticnet', 'lmbda': 0.001, 'ratio': 0.95}},
+                init={'input_shape': 12, 'init_layers': 'xavier-uniform'},
                 optimizer={'type': 'SGD', 'params': {'learning_rate': 0.001, 'batch_size': 0}},
                 metrics=['acc'])
 
 # Inspect object contents  (Weights initialization)
-# inspect(lucid)
+lucid.inspect(params=['help', 'methods'])
 
 # --------------------------------------------------------------------------------------------------------- #
 
