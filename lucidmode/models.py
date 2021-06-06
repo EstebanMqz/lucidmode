@@ -540,14 +540,9 @@ class NeuralNet:
             
         References
         ----------
-            - `Github` repo: https://github.com/willmcgugan/rich
-            - `Pypi.org`: 
-            - `inspect` method docs: https://rich.readthedocs.io/en/latest/reference/init.html#rich.inspect
 
         """
         
-        # =['help']
-
         inspect(obj=self, title='Multi-Layer Perceptron Object', help=True)
 
         return 1
