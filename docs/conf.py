@@ -99,9 +99,16 @@ html_static_path = ['_static']
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
 html_favicon = '_images/favicon.ico'
+html_logo = '_images/lucidmode_logo_transparent.png'
 
 # If true, links to the reST sources are added to the pages.
 html_show_sourcelink = False
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None}
+
+html_theme_options = {
+    'logo_only': True,
+    'display_version': True,
+    'style_nav_header_background': 'white'
+}

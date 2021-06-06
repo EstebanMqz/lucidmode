@@ -18,3 +18,8 @@ Roadmap
 | Repository:     | https://github.com/lucidmode/lucidmode                                                  |
 +-----------------+-----------------------------------------------------------------------------------------+
 
+Understanding Versions
+----------------------
+
+https://semver.org/
+

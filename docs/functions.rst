@@ -10,7 +10,6 @@ Cost functions
 
 .. autofunction:: lucidmode.functions.cost
 
-
 The binary cross-entropy or logloss cost function was utilized for both of the implemented models. 
 
 .. math::
