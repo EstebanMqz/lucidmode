@@ -120,8 +120,8 @@ J.Francisco Munnoz - `IFFranciscoME`_ - Is an Associate Professor in the Mathema
 Current Contributors
 --------------------
 
-.. image:: https://contrib.rocks/image?repo=IFFranciscoME/T-Fold-SV
-        :target: https://github.com/IFFranciscoME/T-Fold-SV/graphs/contributors
+.. image:: https://contrib.rocks/image?repo=lucidmode/lucidmode
+        :target: https://github.com/lucidmode/lucidmode/graphs/contributors
         :alt: Contributors
 
 
